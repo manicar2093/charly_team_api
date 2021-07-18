@@ -22,8 +22,9 @@ exports.up = function(knex) {
         t.decimal('resting_heart_rate').nullable();
         t.decimal('maximum_heart_rate').nullable();
         t.string('heart_health').nullable();
-        t.string('observations');
-        t.string('recommendations');
+        t.string('observations').nullable();
+        t.string('recommendations').nullable();
+        t.date('next_evaluation').nullable();
         t.date('created_at').notNullable().defaultTo(knex.fn.now());
     });
 
