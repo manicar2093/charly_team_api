@@ -24,6 +24,10 @@ exports.up = function(knex) {
         t.string('heart_health').nullable();
         t.string('observations').nullable();
         t.string('recommendations').nullable();
+        t.string('front_picture').nullable();
+        t.string('back_picture').nullable();
+        t.string('right_side_picture').nullable();
+        t.string('left_side_picture').nullable();
         t.date('next_evaluation').nullable();
         t.date('created_at').notNullable().defaultTo(knex.fn.now());
     });
