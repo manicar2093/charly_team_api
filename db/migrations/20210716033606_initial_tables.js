@@ -4,17 +4,19 @@ exports.up = function(knex) {
     const biotypes = () => knex.schema.createTable('Biotype', t => {
         t.increments('id').primary();
         t.string('description').notNullable();
+        t.date('created_at').notNullable().defaultTo(knex.fn.now());
     });
 
     const bone_density = () => knex.schema.createTable('BoneDensity', t => {
         t.increments('id').primary();
         t.string('description').notNullable();
+        t.date('created_at').notNullable().defaultTo(knex.fn.now());
     });
 
     const role = () => knex.schema.createTable('Role', t => {
         t.increments('id').primary();
         t.string('description').notNullable().unique();
-        t.timestamps(true);
+        t.date('created_at').notNullable().defaultTo(knex.fn.now());
     });
 
     const customerSchema = () => knex.schema.createTable("Customer", t => {
