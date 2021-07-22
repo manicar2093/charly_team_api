@@ -23,7 +23,6 @@ exports.up = function(knex) {
         t.increments('id').primary();
         t.integer('biotype_id').notNullable().references('Biotype.id');
         t.integer('bone_density_id').notNullable().references('BoneDensity.id');
-        t.integer('rol_id').notNullable().references('Role.id');
         t.string('bone_density').notNullable();
         t.string('name').notNullable();
         t.string('last_name').notNullable();
