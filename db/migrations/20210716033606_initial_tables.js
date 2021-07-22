@@ -23,6 +23,7 @@ exports.up = function(knex) {
         t.increments('id').primary();
         t.integer('biotype_id').notNullable().references('Biotype.id');
         t.integer('bone_density_id').notNullable().references('BoneDensity.id');
+        t.integer('user_id').unique().notNullable().references('User.id');
         t.string('bone_density').notNullable();
         t.string('name').notNullable();
         t.string('last_name').notNullable();
@@ -44,8 +45,8 @@ exports.up = function(knex) {
     return biotypes()
         .then(bone_density)
         .then(role)
-        .then(customerSchema)
-        .then(userSchema);
+        .then(userSchema)
+        .then(customerSchema);
 };
 
 exports.down = function(knex) {
@@ -55,8 +56,8 @@ exports.down = function(knex) {
     const customerSchema = () => knex.schema.dropTable('Customer');
     const userSchema = () => knex.schema.dropTable('User');
 
-    return userSchema()
-        .then(customerSchema)
+    return customerSchema()
+        .then(userSchema)
         .then(biotypes)
         .then(bone_density)
         .then(role);
