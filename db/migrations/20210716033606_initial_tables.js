@@ -23,11 +23,11 @@ exports.up = function(knex) {
         t.increments('id').primary();
         t.integer('biotype_id').notNullable().references('Biotype.id');
         t.integer('bone_density_id').notNullable().references('BoneDensity.id');
-        t.integer('user_id').unique().notNullable().references('User.id');
-        t.string('bone_density').notNullable();
+        t.integer('rol_id').notNullable().references('Role.id').defaultTo(2);
         t.string('name').notNullable();
         t.string('last_name').notNullable();
         t.string('email').unique().nullable();
+        t.string('password').notNullable();
         t.date('birthday').notNullable();
         t.timestamps(true);
     });
@@ -38,7 +38,7 @@ exports.up = function(knex) {
         t.string('name').notNullable();
         t.string('last_name').notNullable();
         t.string('username').unique().nullable();
-        t.string('password').unique().notNullable();
+        t.string('password').notNullable();
         t.timestamps(true);
     });
 
