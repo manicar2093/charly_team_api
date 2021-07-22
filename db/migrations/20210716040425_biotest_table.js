@@ -4,6 +4,7 @@ exports.up = function(knex) {
     const weight_clasification = () => knex.schema.createTable('WeightClasifications', t => {
         t.increments('id').primary();
         t.string('description').notNullable();
+        t.date('created_at').notNullable().defaultTo(knex.fn.now());
     });
 
     const biotest = () => knex.schema.createTable('Biotest', t => {
