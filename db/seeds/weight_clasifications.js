@@ -1,9 +1,5 @@
 
 exports.seed = function(knex) {
-  // Deletes ALL existing entries
-  return knex('WeightClasifications').del()
-    .then(function () {
-      // Inserts seed entries
       return knex('WeightClasifications').insert([
         {id: 1, description: 'Underweight'},
         {id: 2, description: 'Normal weight'},
@@ -12,5 +8,4 @@ exports.seed = function(knex) {
         {id: 5, description: 'Obesity 2'},
         {id: 6, description: 'Obesity 3'},
       ]);
-    });
 };
