@@ -23,7 +23,7 @@ exports.up = function(knex) {
         t.increments('id').primary();
         t.integer('biotype_id').notNullable().references('Biotype.id');
         t.integer('bone_density_id').notNullable().references('BoneDensity.id');
-        t.integer('rol_id').notNullable().references('Role.id').defaultTo(2);
+        t.integer('role_id').notNullable().references('Role.id').defaultTo(2);
         t.string('name').notNullable();
         t.string('last_name').notNullable();
         t.string('email').unique().nullable();
@@ -34,7 +34,7 @@ exports.up = function(knex) {
 
     const userSchema = () => knex.schema.createTable("User", t => {
         t.increments('id').primary();
-        t.integer('rol_id').notNullable().references('Role.id');
+        t.integer('role_id').notNullable().references('Role.id');
         t.string('name').notNullable();
         t.string('last_name').notNullable();
         t.string('username').unique().nullable();
