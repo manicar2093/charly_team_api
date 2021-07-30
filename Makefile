@@ -12,3 +12,4 @@ db_rollback:
 
 db_fill:
 	@ knex migrate:latest
+	@ knex seed:run
