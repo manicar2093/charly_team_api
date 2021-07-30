@@ -29,11 +29,10 @@ exports.up = function(knex) {
 
     const skinFolds = () => knex.schema.createTable('SkinFolds', t => {
         t.increments('id').primary()
-        t.decimal('hips');
-        t.decimal('right_leg');
-        t.decimal('left_leg');
-        t.decimal('right_calf');
-        t.decimal('left_calf');
+        t.integer('subscapular');
+        t.integer('suprailiac');
+        t.integer('bicipital');
+        t.integer('tricipital');
     });
 
     return higherMuscleDensity()
