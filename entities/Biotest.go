@@ -15,7 +15,7 @@ type Biotest struct {
 	Customer                Customer `gorm:"foreignKey:CustomerID"`
 	CustomerID              int32
 	Weight                  float32
-	Height                  float32
+	Height                  int32
 	BodyFatPercentage       float32
 	TotalBodyWater          float32
 	BodyMassIndex           float32

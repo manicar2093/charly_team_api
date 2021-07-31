@@ -15,7 +15,7 @@ exports.up = function(knex) {
         t.integer('weight_clasification_id').notNullable().references('WeightClasifications.id');
         t.integer('customer_id').notNullable().references('Customer.id');
         t.decimal('weight').notNullable();
-        t.decimal('height').notNullable();
+        t.integer('height').notNullable();
         t.decimal('body_fat_percentage').notNullable();
         t.decimal('total_body_water').notNullable();
         t.decimal('body_mass_index').notNullable();
