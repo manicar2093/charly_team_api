@@ -1,7 +1,6 @@
 package entities
 
 import (
-	"log"
 	"os"
 	"testing"
 
@@ -19,8 +18,6 @@ func TestMain(m *testing.M) {
 		panic(err)
 	}
 	DB = db
-	log.Println("Corriendo tests")
-	log.Println(DB)
 	os.Exit(m.Run())
 
 }
