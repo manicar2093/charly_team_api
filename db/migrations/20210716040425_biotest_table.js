@@ -7,6 +7,12 @@ exports.up = function(knex) {
         t.date('created_at').notNullable().defaultTo(knex.fn.now());
     });
 
+    const heart_health = () => knex.schema.createTable('HeartHealths', t => {
+        t.increments('id').primary()
+        t.string('description').notNullable();
+        t.date('created_at').notNullable().defaultTo(knex.fn.now());
+    });
+
     const biotest = () => knex.schema.createTable('Biotest', t => {
         t.increments('id').primary();
         t.integer('higher_muscle_density_id').notNullable().references('HigherMuscleDensity.id');
@@ -35,13 +41,17 @@ exports.up = function(knex) {
     });
 
     return weight_clasification()
+        .then(heart_health)
         .then(biotest);
 };
 
 exports.down = function(knex) {
     const weight_clasification = () => knex.schema.dropTable('WeightClasifications');
     const biotest = () => knex.schema.dropTable('Biotest');
+    const heart_health = () => knex.schema.dropTable('HeartHealths');
+
 
     return biotest()
-        .then(weight_clasification);
+        .then(weight_clasification)
+        .then(heart_health);
 };
