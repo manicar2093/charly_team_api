@@ -9,5 +9,5 @@ type SkinFolds struct {
 }
 
 func (s SkinFolds) TableName() string {
-	return " SkinFolds"
+	return "SkinFolds"
 }
