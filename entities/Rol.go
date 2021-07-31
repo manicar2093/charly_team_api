@@ -5,7 +5,7 @@ import (
 )
 
 type Role struct {
-	ID          int32
+	ID          int32 `gorm:"primaryKey"`
 	Description string
 	CreatedAt   time.Time
 }
