@@ -6,4 +6,4 @@ tag_format = "v$version"
 version_files = [
   ".cz.toml:version"
 ]
-bump_message = "release $current_version -> $new_version [skip-ci]"
+bump_message = "bump: Semantic Release Bot: Realease Version: $new_version 🤖🚀 [skip ci]"
