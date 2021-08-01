@@ -1,7 +1,7 @@
 package entities
 
 type LowerMuscleDensity struct {
-	ID        int32
+	ID        int32 `gorm:"primaryKey"`
 	Hips      float32
 	RightLeg  float32
 	LeftLeg   float32
