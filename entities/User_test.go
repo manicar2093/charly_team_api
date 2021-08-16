@@ -2,19 +2,28 @@ package entities
 
 import (
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 )
 
-func TestUserEntity(t *testing.T) {
+func TestCustomerEntity(t *testing.T) {
+
 	user := User{
-		Role:     Role{ID: 1},
-		Name:     "Manuel",
-		LastName: "Carbajal",
-		Username: "manicar2093",
-		Password: "12345678",
+		Biotype:     Biotype{ID: 1},
+		BoneDensity: BoneDensity{ID: 1},
+		Role:        Role{ID: 1},
+		Name:        "Test",
+		LastName:    "Test",
+		Email:       "test@test.com",
+		Password:    "12345678",
+		Birthday:    time.Now(),
 	}
+
 	DB.Create(&user)
-	assert.NotEmpty(t, user.ID, "ID should not be 0")
+
+	assert.NotEmpty(t, user.ID, "ID should not be empty. Customer was not created")
+
 	DB.Delete(&user)
+
 }

@@ -11,7 +11,8 @@ func TestBiotestEntity(t *testing.T) {
 	var higherMuscleDensity HigherMuscleDensity
 	var lowerMuscleDensity LowerMuscleDensity
 	var skinFolds SkinFolds
-	var customer Customer
+	var customer User
+	var creator User
 	var biotest Biotest
 
 	t.Run("Test creation of HigherMuscleDensity instance", func(t *testing.T) {
@@ -62,7 +63,7 @@ func TestBiotestEntity(t *testing.T) {
 	})
 
 	t.Run("Customer creation for test", func(t *testing.T) {
-		customer = Customer{
+		customer = User{
 			Biotype:     Biotype{ID: 1},
 			BoneDensity: BoneDensity{ID: 1},
 			Role:        Role{ID: 1},
@@ -77,6 +78,23 @@ func TestBiotestEntity(t *testing.T) {
 		assert.NotEmpty(t, customer.ID, "ID should not be empty")
 	})
 
+	t.Run("Creator creation for test", func(t *testing.T) {
+		creator = User{
+			Biotype:     Biotype{ID: 1},
+			BoneDensity: BoneDensity{ID: 1},
+			Role:        Role{ID: 1},
+			Name:        "Test",
+			LastName:    "Test",
+			Email:       "creator_test_1@test.com",
+			Password:    "12345678",
+			Birthday:    time.Now(),
+		}
+
+		DB.Create(&creator)
+		assert.NotEmpty(t, creator.ID, "ID should not be empty")
+
+	})
+
 	t.Run("Test creation of Biotest instance", func(t *testing.T) {
 
 		biotest = Biotest{
@@ -85,6 +103,7 @@ func TestBiotestEntity(t *testing.T) {
 			HigherMuscleDensity:     higherMuscleDensity,
 			WeightClasification:     WeightClasification{ID: 4},
 			Customer:                customer,
+			Creator:                 creator,
 			Weight:                  250.1,
 			Height:                  195,
 			BodyFatPercentage:       12.5,
@@ -114,5 +133,6 @@ func TestBiotestEntity(t *testing.T) {
 		DB.Delete(&lowerMuscleDensity)
 		DB.Delete(&skinFolds)
 		DB.Delete(&customer)
+		DB.Delete(&creator)
 	})
 }

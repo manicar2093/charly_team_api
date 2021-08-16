@@ -14,8 +14,10 @@ type Biotest struct {
 	WeightClasificationID   int32
 	HeartHealth             HeartHealth `gorm:"foreignKey:HeartHealthID"`
 	HeartHealthID           int32
-	Customer                Customer `gorm:"foreignKey:CustomerID"`
+	Customer                User `gorm:"foreignKey:CustomerID"`
 	CustomerID              int32
+	Creator                 User `gorm:"foreignKey:CreatorID"`
+	CreatorID               int32
 	Weight                  float32
 	Height                  int32
 	BodyFatPercentage       float32
