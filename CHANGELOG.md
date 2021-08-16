@@ -1,3 +1,14 @@
+## v0.2.0 (2021-08-16)
+
+### Feat
+
+- add some features for serverless (#4)
+
+### Fix
+
+- change bump_message [skip ci]
+- Change if condition to bump [skip ci]
+
 ## v0.1.0 (2021-08-01)
 
 ### Feat
