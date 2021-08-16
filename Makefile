@@ -21,5 +21,8 @@ test:
 	@ go test ./... -v
 
 coverage:
-	@ echo "[ERROR] -> Not implemented"
-	@ exit 1
+	@ go test -cover ./...
+
+coverage_html:
+	@ go test ./... -coverprofile=coverage.out
+	@ go tool cover -html=coverage.out
