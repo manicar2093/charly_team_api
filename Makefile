@@ -16,6 +16,10 @@ db_fill:
 
 mocking:
 	@ mockery --all
+
+test:
+	@ go test ./... -v
+
 coverage:
 	@ echo "[ERROR] -> Not implemented"
 	@ exit 1
