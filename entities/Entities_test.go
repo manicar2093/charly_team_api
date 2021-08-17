@@ -4,16 +4,17 @@ import (
 	"os"
 	"testing"
 
-	"gorm.io/driver/postgres"
+	"gorm.io/driver/sqlite"
 
 	"gorm.io/gorm"
 )
 
 var DB *gorm.DB
-var dns = "postgres://development:development@localhost:3456/charly_team_db_dev?sslmode=disable"
+var dns = "../testing.db"
 
 func TestMain(m *testing.M) {
-	db, err := gorm.Open(postgres.Open(dns))
+
+	db, err := gorm.Open(sqlite.Open(dns))
 	if err != nil {
 		panic(err)
 	}
