@@ -3,17 +3,22 @@ package entities
 import "time"
 
 type User struct {
-	ID        int32 `gorm:"primaryKey"`
-	Role      Role  `gorm:"foreignKey:RoleID"`
-	RoleID    uint32
-	Name      string
-	LastName  string
-	Username  string
-	Password  string
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID            int32   `gorm:"primaryKey"`
+	Biotype       Biotype `gorm:"foreignKey:BiotypeID"`
+	BiotypeID     int32
+	BoneDensity   BoneDensity `gorm:"foreignKey:BoneDensityID"`
+	BoneDensityID int32
+	Role          Role `gorm:"foreignKey:RoleID"`
+	RoleID        int32
+	Name          string
+	LastName      string
+	Email         string
+	Password      string
+	Birthday      time.Time
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
 }
 
-func (u User) TableName() string {
+func (c User) TableName() string {
 	return "User"
 }
