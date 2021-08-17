@@ -1,3 +1,10 @@
+## v0.4.0 (2021-08-17)
+
+### Feat
+
+- Add new configuration for knex.
+- Add sqlite3 dependency on NPM.
+
 ## v0.3.0 (2021-08-17)
 
 ### Feat
