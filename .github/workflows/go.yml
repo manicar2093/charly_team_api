@@ -1,9 +1,8 @@
 name: Go
 
 on:
-  push:
-    branches: [ main ]
   pull_request:
+    types: [edited, synchronize, opened, reopened]
     branches: [ main ]
 
 jobs:
@@ -13,6 +12,7 @@ jobs:
       matrix:
         go-version: [ 1.16.x ]
         os: [ ubuntu-latest ]
+        node-version: [ 14.16.x ]
     runs-on: ${{ matrix.os }}
     steps:
     
@@ -20,12 +20,20 @@ jobs:
       uses: actions/setup-go@v2
       with:
         go-version: ${{ matrix.go-version }}
+
+    - name: Set up NodeJS
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
     
     - name: Checkout code
       uses: actions/checkout@v2
       
     - name: Install dependencies
       run: go mod download
+
+    - name: Install Node dependencies
+      run: npm install
       
     - name: Test
       run: make test
