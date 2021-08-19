@@ -1,3 +1,9 @@
+## v0.5.0 (2021-08-19)
+
+### Feat
+
+- Add workflow to run test CI (#15)
+
 ## v0.4.0 (2021-08-17)
 
 ### Feat
