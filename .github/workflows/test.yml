@@ -52,9 +52,6 @@ jobs:
 
     - name: Migrate DB
       run: make db_testing_fill
-
-    - name: Validate DB
-      run: ls -la
       
     - name: Test
       run: go test ./... -v
