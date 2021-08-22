@@ -51,7 +51,7 @@ jobs:
       run: npm install
 
     - name: Migrate DB
-      run: make db_fill
+      run: make db_testing_fill
 
     - name: Validate DB
       run: ls -la
@@ -60,4 +60,4 @@ jobs:
       run: go test ./... -v
     
     - name: Rollback to DB
-      run: make db_rollback
+      run: make db_testing_rollback
