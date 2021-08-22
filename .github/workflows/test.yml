@@ -20,11 +20,11 @@ jobs:
       postgres:
         image: postgres
         ports:
-            - "3456:5432"
+          - 3456:5432
         env:
-            - "POSTGRES_USER=development"
-            - "POSTGRES_PASSWORD=development"
-            - "POSTGRES_DB=charly_team_db_dev"
+          POSTGRES_USER: development
+          POSTGRES_PASSWORD: development
+          POSTGRES_DB: charly_team_db_dev
 
     steps:
     
