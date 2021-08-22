@@ -15,6 +15,17 @@ jobs:
         os: [ ubuntu-latest ]
         node-version: [ 14.16.x ]
     runs-on: ${{ matrix.os }}
+
+    services:
+      postgres:
+        image: postgres
+        ports:
+            - "3456:5432"
+        env:
+            - "POSTGRES_USER=development"
+            - "POSTGRES_PASSWORD=development"
+            - "POSTGRES_DB=charly_team_db_dev"
+
     steps:
     
     - name: Set up Go
@@ -38,6 +49,12 @@ jobs:
 
     - name: Install Node dependencies
       run: npm install
+
+    - name: Migrate DB
+      run: make db_testing_fill
       
     - name: Test
-      run: make test
+      run: go test ./... -v
+    
+    - name: Rollback to DB
+      run: make db_testing_rollback
