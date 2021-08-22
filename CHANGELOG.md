@@ -1,3 +1,9 @@
+## v0.7.0 (2021-08-22)
+
+### Feat
+
+- Add validation service for structs. (#20)
+
 ## v0.6.1 (2021-08-22)
 
 ### Fix
