@@ -8,6 +8,8 @@ import (
 )
 
 func TestSQLiteConnection(t *testing.T) {
+	sqliteFile = "./connectionTest.db"
+
 	conn := SQLiteConnection()
 
 	assert.NotNil(t, conn, "connection should not be nil")
