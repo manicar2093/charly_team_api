@@ -27,9 +27,9 @@ mocking:
 	@ mockery --all
 
 test:
-	@ make db_testing_fill
-	@ go test ./... -v
-	@ make db_testing_rollback
+	@ - make db_testing_fill
+	@ - go test ./... -v
+	@ - make db_testing_rollback
 
 coverage:
 	@ make db_testing_fill
