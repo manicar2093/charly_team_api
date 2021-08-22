@@ -3,8 +3,6 @@ package config
 import (
 	"fmt"
 	"os"
-
-	"github.com/joho/godotenv"
 )
 
 var (
@@ -30,12 +28,7 @@ func DBConnectionURL() string {
 	return DBURL
 }
 
-func init() {
-	err := godotenv.Load("../.env.example")
-	if err != nil {
-		panic(err)
-	}
-
+func StartConfig() {
 	DBHost = GetEnvOrPanic("DB_HOST")
 	DBPort = GetEnvOrPanic("DB_PORT")
 	DBName = GetEnvOrPanic("DB_NAME")
