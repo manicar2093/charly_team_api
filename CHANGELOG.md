@@ -1,3 +1,9 @@
+## v0.6.0 (2021-08-22)
+
+### Feat
+
+- Add config and connections packages (#18)
+
 ## v0.5.0 (2021-08-19)
 
 ### Feat
