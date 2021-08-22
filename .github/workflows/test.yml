@@ -50,6 +50,14 @@ jobs:
     - name: Install Node dependencies
       run: npm install
 
+    - name: Migrate DB
+      run: make db_fill
+
+    - name: Validate DB
+      run: ls -la
+      
     - name: Test
-      run: make test
+      run: go test ./... -v
     
+    - name: Rollback to DB
+      run: make db_rollback
