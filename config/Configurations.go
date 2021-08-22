@@ -31,7 +31,7 @@ func DBConnectionURL() string {
 }
 
 func init() {
-	err := godotenv.Load("../.env")
+	err := godotenv.Load("../.env.example")
 	if err != nil {
 		panic(err)
 	}
