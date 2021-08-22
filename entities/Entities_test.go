@@ -4,20 +4,16 @@ import (
 	"os"
 	"testing"
 
-	"gorm.io/driver/sqlite"
+	"github.com/manicar2093/charly_team_api/connections"
 
 	"gorm.io/gorm"
 )
 
 var DB *gorm.DB
-var dns = "../testing.db"
 
 func TestMain(m *testing.M) {
 
-	db, err := gorm.Open(sqlite.Open(dns))
-	if err != nil {
-		panic(err)
-	}
+	db := connections.SQLiteConnection()
 	DB = db
 	os.Exit(m.Run())
 
