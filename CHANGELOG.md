@@ -1,3 +1,9 @@
+## v0.6.1 (2021-08-22)
+
+### Fix
+
+- Change configurations starting. (#19)
+
 ## v0.6.0 (2021-08-22)
 
 ### Feat
