@@ -1,11 +1,17 @@
 package services
 
 import (
+	"errors"
+	"log"
 	"reflect"
 	"strings"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/manicar2093/charly_team_api/apperrors"
+)
+
+var (
+	ErrorUnexpectedValidation = errors.New("an unexpected error occured as validation was executed")
 )
 
 type ValidatorService interface {
@@ -38,13 +44,16 @@ func (sv structValidatorService) Validate(e interface{}) (bool, error) {
 	err := sv.provider.Struct(e)
 	if err != nil {
 
-		if _, ok := err.(*validator.InvalidValidationError); ok {
-			return false, err
+		err, ok := err.(validator.ValidationErrors)
+
+		if !ok {
+			log.Println("Unexpected error on StructValidator: ", err)
+			return false, ErrorUnexpectedValidation
 		}
 
 		var allErrors apperrors.ValidationErrors
 
-		for _, err := range err.(validator.ValidationErrors) {
+		for _, err := range err {
 
 			customError := apperrors.ValidationError{}
 

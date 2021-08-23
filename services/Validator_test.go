@@ -24,13 +24,21 @@ func TestStructValidator(t *testing.T) {
 		isCorrect, err := validator.Validate(userToValidate)
 
 		assert.False(t, isCorrect, "validation should not be accepted")
-
 		val, ok := err.(apperrors.ValidationErrors)
 
 		assert.True(t, ok, "error type is not correct")
-
 		assert.Len(t, val, 5, "errors count is not correct")
 
+	})
+
+	t.Run("should return an unexpected error", func(t *testing.T) {
+		toValidate := "bad data"
+
+		isCorrect, err := validator.Validate(toValidate)
+
+		assert.False(t, isCorrect, "validation shouldnot be accepted")
+		assert.NotNil(t, err, "any error should have existed")
+		assert.Equal(t, ErrorUnexpectedValidation, err, "bad error received")
 	})
 
 	t.Run("should pass all validation", func(t *testing.T) {
@@ -45,7 +53,6 @@ func TestStructValidator(t *testing.T) {
 		isCorrect, err := validator.Validate(userToValidate)
 
 		assert.True(t, isCorrect, "validation should be accepted")
-
 		assert.Nil(t, err, "any error should have existed")
 	})
 
