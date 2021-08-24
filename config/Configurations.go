@@ -6,7 +6,7 @@ import (
 )
 
 var (
-	DBHost, DBPort, DBName, DBUser, DBPassword, DBURL string
+	DBHost, DBPort, DBName, DBUser, DBPassword, DBURL, AWSRegion, AWSAccessKeyID, AWSSecretAccessKey string
 )
 
 func GetEnvOrPanic(envName string) string {
@@ -34,5 +34,8 @@ func StartConfig() {
 	DBName = GetEnvOrPanic("DB_NAME")
 	DBUser = GetEnvOrPanic("DB_USER")
 	DBPassword = GetEnvOrPanic("DB_PASSWORD")
+	AWSRegion = GetEnvOrPanic("AWS_REGION")
+	AWSAccessKeyID = GetEnvOrPanic("AWS_ACCESS_KEY_ID")
+	AWSSecretAccessKey = GetEnvOrPanic("AWS_SECRET_ACCESS_KEY")
 	DBURL = os.Getenv("DB_URL")
 }
