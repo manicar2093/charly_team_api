@@ -1,3 +1,9 @@
+## v0.8.0 (2021-08-24)
+
+### Feat
+
+- Add aws session and env variables (#23)
+
 ## v0.7.0 (2021-08-22)
 
 ### Feat
