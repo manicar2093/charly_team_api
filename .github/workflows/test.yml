@@ -15,6 +15,12 @@ jobs:
         os: [ ubuntu-latest ]
         node-version: [ 14.16.x ]
     runs-on: ${{ matrix.os }}
+    env:
+        DB_HOST: localhost
+        DB_PORT: 3456
+        DB_NAME: charly_team_db_dev
+        DB_USER: development
+        DB_PASSWORD: development
 
     services:
       postgres:
@@ -55,12 +61,6 @@ jobs:
       
     - name: Test
       run: go test ./... -v
-      env:
-        DB_HOST: localhost
-        DB_PORT: 3456
-        DB_NAME: charly_team_db_dev
-        DB_USER: development
-        DB_PASSWORD: development
     
     - name: Rollback to DB
       run: make db_testing_rollback
