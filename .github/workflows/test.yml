@@ -1,4 +1,5 @@
-name: Test project 
+name: Test project
+description: "Runs all test to ensure code integrity"
 
 on:
   pull_request:
@@ -8,7 +9,7 @@ on:
 jobs:
 
   test:
-    name: "Runs all test to ensure code integrity" 
+    name: Run Test
     strategy:
       matrix:
         go-version: [ 1.16.x ]
@@ -55,6 +56,12 @@ jobs:
       
     - name: Test
       run: go test ./... -v
+      env:
+        DB_HOST: localhost
+        DB_PORT: 3456
+        DB_NAME: charly_team_db_dev
+        DB_USER: development
+        DB_PASSWORD: development
     
     - name: Rollback to DB
       run: make db_testing_rollback
