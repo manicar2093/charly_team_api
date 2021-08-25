@@ -1,5 +1,4 @@
 name: Test project
-description: "Runs all test to ensure code integrity"
 
 on:
   pull_request:
