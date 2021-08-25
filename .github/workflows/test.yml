@@ -21,6 +21,9 @@ jobs:
         DB_NAME: charly_team_db_dev
         DB_USER: development
         DB_PASSWORD: development
+        AWS_REGION: development
+        AWS_ACCESS_KEY_ID: development
+        AWS_SECRET_ACCESS_KEY: development
 
     services:
       postgres:
