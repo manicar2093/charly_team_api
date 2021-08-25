@@ -15,11 +15,10 @@ import (
 func LoadEnvFileOrPanic(envFilePath string) {
 	err := godotenv.Load(envFilePath)
 	if err != nil {
-		if _, ok := err.(*os.PathError); ok {
-			log.Printf("Loading from sys env instead %s file", envFilePath)
-			return
+		if _, ok := err.(*os.PathError); !ok {
+			panic(err)
 		}
-		panic(err)
+		log.Printf("Loading from sys env instead %s file", envFilePath)
 	}
 
 	config.StartConfig()
