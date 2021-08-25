@@ -6,7 +6,7 @@ import (
 )
 
 var (
-	DBHost, DBPort, DBName, DBUser, DBPassword, DBURL, AWSRegion, AWSAccessKeyID, AWSSecretAccessKey string
+	DBHost, DBPort, DBName, DBUser, DBPassword, dbUrl, AWSRegion, AWSAccessKeyID, AWSSecretAccessKey string
 )
 
 func GetEnvOrPanic(envName string) string {
@@ -21,11 +21,11 @@ func GetEnvOrPanic(envName string) string {
 }
 
 func DBConnectionURL() string {
-	if DBURL == "" {
+	if dbUrl == "" {
 		return fmt.Sprintf("postgres://%s:%s@%s:%s/%s", DBUser, DBPassword, DBHost, DBPort, DBName)
 	}
 
-	return DBURL
+	return dbUrl
 }
 
 func StartConfig() {
@@ -37,5 +37,5 @@ func StartConfig() {
 	AWSRegion = GetEnvOrPanic("AWS_REGION")
 	AWSAccessKeyID = GetEnvOrPanic("AWS_ACCESS_KEY_ID")
 	AWSSecretAccessKey = GetEnvOrPanic("AWS_SECRET_ACCESS_KEY")
-	DBURL = os.Getenv("DB_URL")
+	dbUrl = os.Getenv("DB_URL")
 }

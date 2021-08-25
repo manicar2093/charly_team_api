@@ -1,4 +1,4 @@
-name: Test project 
+name: Test project
 
 on:
   pull_request:
@@ -8,13 +8,22 @@ on:
 jobs:
 
   test:
-    name: "Runs all test to ensure code integrity" 
+    name: Run Test
     strategy:
       matrix:
         go-version: [ 1.16.x ]
         os: [ ubuntu-latest ]
         node-version: [ 14.16.x ]
     runs-on: ${{ matrix.os }}
+    env:
+        DB_HOST: localhost
+        DB_PORT: 3456
+        DB_NAME: charly_team_db_dev
+        DB_USER: development
+        DB_PASSWORD: development
+        AWS_REGION: development
+        AWS_ACCESS_KEY_ID: development
+        AWS_SECRET_ACCESS_KEY: development
 
     services:
       postgres:
