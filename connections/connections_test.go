@@ -9,7 +9,7 @@ import (
 
 func TestMain(m *testing.M) {
 
-	testfunc.LoadEnvFileOrPanic("../.env.example")
+	testfunc.LoadEnvFileOrPanic("../.env")
 
 	os.Exit(m.Run())
 }
