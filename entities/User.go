@@ -13,7 +13,6 @@ type User struct {
 	Name          string
 	LastName      string
 	Email         string
-	Password      string
 	Birthday      time.Time
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
