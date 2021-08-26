@@ -1,3 +1,9 @@
+## v0.9.0 (2021-08-26)
+
+### Feat
+
+- Add cognito client generator with unit test (#26)
+
 ## v0.8.0 (2021-08-24)
 
 ### Feat
