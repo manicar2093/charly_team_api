@@ -29,7 +29,7 @@ jobs:
       postgres:
         image: postgres
         ports:
-          - "${{ secrets.DB_HOST_DEV }}":5432
+          - 3456:5432
         env:
           POSTGRES_USER: ${{ secrets.DB_USER_DEV }}
           POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD_DEV }}
