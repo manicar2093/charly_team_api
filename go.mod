@@ -7,6 +7,7 @@ require (
 	github.com/aws/aws-sdk-go v1.27.0
 	github.com/go-playground/validator/v10 v10.9.0
 	github.com/joho/godotenv v1.3.0
+	github.com/sethvargo/go-password v0.2.0
 	github.com/stretchr/testify v1.7.0
 	gorm.io/driver/postgres v1.1.0
 	gorm.io/driver/sqlite v1.1.4

@@ -6,7 +6,16 @@ import (
 )
 
 var (
-	DBHost, DBPort, DBName, DBUser, DBPassword, dbUrl, AWSRegion, AWSAccessKeyID, AWSSecretAccessKey string
+	DBHost, DBPort, DBName, DBUser, DBPassword, dbUrl, AWSRegion, AWSAccessKeyID, AWSSecretAccessKey, CognitoPoolID string
+)
+
+const (
+	// PassLen represent the number of character will compose a password
+	PassLen = 8
+	// PassNumDigits indicates how many digits a password will contain
+	PassNumDigits = 2
+	// PassNumSymbols indicates how many symbols a password will contain
+	PassNumSymbols = 1
 )
 
 func GetEnvOrPanic(envName string) string {
@@ -37,5 +46,6 @@ func StartConfig() {
 	AWSRegion = GetEnvOrPanic("AWS_REGION")
 	AWSAccessKeyID = GetEnvOrPanic("AWS_ACCESS_KEY_ID")
 	AWSSecretAccessKey = GetEnvOrPanic("AWS_SECRET_ACCESS_KEY")
+	CognitoPoolID = GetEnvOrPanic("COGNITO_POOL_ID")
 	dbUrl = os.Getenv("DB_URL")
 }
