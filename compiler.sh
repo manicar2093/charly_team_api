@@ -1,4 +1,8 @@
 #!/bin/bash
+DIRECTORY=$PWD
+HANDLERS_PATH="/handlers"
+BIN_PATH="/dist"
+FULL_BIN_PATH="$DIRECTORY/$BIN_PATH"
 
 function if_not_exist_create {
     REQ_PATH=$1
@@ -7,20 +11,18 @@ function if_not_exist_create {
         mkdir $REQ_PATH
     fi
 }
-DIRECTORY=$PWD
-HANDLERS_PATH="/handlers"
 
 if [ "$1" != "" ]; then
-  HANDLERS_PATH="$1"
+    HANDLERS_PATH="$1"
 fi
 
-if_not_exist_create "$DIRECTORY/bin"
+if_not_exist_create "$FULL_BIN_PATH"
 
 export GO111MODULE=on
 for CMD in `ls handlers`; do
     echo "Compiling $CMD"
     MAIN_PATH="$DIRECTORY/$HANDLERS_PATH/$CMD"
-    DESTINY="$DIRECTORY/bin/$CMD"
+    DESTINY="$FULL_BIN_PATH/$CMD"
     if_not_exist_create $DESTINY
     env GOARCH=amd64 GOOS=linux go build -o $DESTINY $MAIN_PATH
     cd $DIRECTORY

@@ -41,3 +41,6 @@ coverage_html:
 	@ go test ./... -coverprofile=coverage.out
 	@ go tool cover -html=coverage.out
 	@ make db_testing_rollback
+
+clean:
+	@ rm -r ./dist
