@@ -1,3 +1,9 @@
+## v0.11.0 (2021-08-28)
+
+### Feat
+
+- Add UserId created to create user response (#29)
+
 ## v0.10.0 (2021-08-28)
 
 ### Feat
