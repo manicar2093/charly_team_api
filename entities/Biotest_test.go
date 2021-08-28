@@ -70,7 +70,6 @@ func TestBiotestEntity(t *testing.T) {
 			Name:        "Test",
 			LastName:    "Test",
 			Email:       "test1@test.com",
-			Password:    "12345678",
 			Birthday:    time.Now(),
 		}
 
@@ -86,7 +85,6 @@ func TestBiotestEntity(t *testing.T) {
 			Name:        "Test",
 			LastName:    "Test",
 			Email:       "creator_test_1@test.com",
-			Password:    "12345678",
 			Birthday:    time.Now(),
 		}
 

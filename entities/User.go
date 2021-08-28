@@ -1,20 +1,23 @@
 package entities
 
-import "time"
+import (
+	"database/sql"
+	"time"
+)
 
 type User struct {
 	ID            int32   `gorm:"primaryKey"`
 	Biotype       Biotype `gorm:"foreignKey:BiotypeID"`
-	BiotypeID     int32
+	BiotypeID     sql.NullInt32
 	BoneDensity   BoneDensity `gorm:"foreignKey:BoneDensityID"`
-	BoneDensityID int32
+	BoneDensityID sql.NullInt32
 	Role          Role `gorm:"foreignKey:RoleID"`
 	RoleID        int32
 	Name          string
 	LastName      string
 	Email         string
-	Password      string
 	Birthday      time.Time
+	IsCreated     bool
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 }

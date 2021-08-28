@@ -16,7 +16,6 @@ func TestCustomerEntity(t *testing.T) {
 		Name:        "Test",
 		LastName:    "Test",
 		Email:       "test@test.com",
-		Password:    "12345678",
 		Birthday:    time.Now(),
 	}
 

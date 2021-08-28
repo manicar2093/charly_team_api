@@ -3,6 +3,7 @@ init_dev_env:
 	@ npm install
 	@ echo "Initializing dev db..."
 	@ docker-compose -f dev_kit.yml up -d
+	@ sleep 8
 	@ echo "Creating DB..."
 	@ knex migrate:latest
 	@ echo "Running seeds..."
@@ -41,3 +42,6 @@ coverage_html:
 	@ go test ./... -coverprofile=coverage.out
 	@ go tool cover -html=coverage.out
 	@ make db_testing_rollback
+
+clean:
+	@ rm -r ./dist

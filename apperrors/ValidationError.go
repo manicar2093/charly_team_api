@@ -1,6 +1,8 @@
 package apperrors
 
-import "fmt"
+import (
+	"fmt"
+)
 
 // ValidationError represents a validation error formated to
 // send to the front end
