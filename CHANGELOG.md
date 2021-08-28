@@ -1,3 +1,9 @@
+## v0.10.0 (2021-08-28)
+
+### Feat
+
+- Add registry user function (#27)
+
 ## v0.9.0 (2021-08-26)
 
 ### Feat
