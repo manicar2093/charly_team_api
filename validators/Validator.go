@@ -33,10 +33,6 @@ type structValidatorService struct {
 	provider *validator.Validate
 }
 
-type handledErrors interface {
-	StatusCode() int
-}
-
 func getJSONTagName(fld reflect.StructField) string {
 	name := strings.SplitN(fld.Tag.Get("json"), ",", 2)[0]
 
@@ -121,7 +117,7 @@ func CreateResponseError(err error) *models.Response {
 		errorMessage string = err.Error()
 	)
 
-	if handledErr, ok := err.(handledErrors); ok {
+	if handledErr, ok := err.(apperrors.HandableErrors); ok {
 		statusCode = handledErr.StatusCode()
 	} else {
 		statusCode = http.StatusInternalServerError
