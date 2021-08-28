@@ -23,6 +23,7 @@ type UserServiceTest struct {
 	username              string
 	temporaryPass         string
 	name, lastName, email string
+	idUserCreated         int32
 	birthday              time.Time
 	userRequest           models.CreateUserRequest
 }
@@ -38,6 +39,7 @@ func (u *UserServiceTest) SetupTest() {
 	u.lastName = "testing"
 	u.email = strings.Join([]string{u.username, "@gmail.com"}, "")
 	u.birthday = time.Date(1993, time.August, 20, 0, 0, 0, 0, time.UTC)
+	u.idUserCreated = 1
 
 	u.userRequest = models.CreateUserRequest{
 		Name:     u.name,
@@ -81,10 +83,10 @@ func (u *UserServiceTest) TestCreateUser() {
 	}
 	saveFuncMock := func(args mock.Arguments) {
 		user := args[0].(*entities.User)
-		user.ID = 1
+		user.ID = u.idUserCreated
 		user.IsCreated = true
 
-		userDBReq.ID = 1
+		userDBReq.ID = u.idUserCreated
 		userDBReq.IsCreated = true
 	}
 
@@ -105,11 +107,11 @@ func (u *UserServiceTest) TestCreateUser() {
 		passGen:  u.passGenMock,
 	}
 
-	err := userService.CreateUser(u.userRequest)
+	userCreated, err := userService.CreateUser(u.userRequest)
 
-	if err != nil {
-		u.T().Fatal(err)
-	}
+	u.Nil(err)
+	u.Equal(u.idUserCreated, userCreated, "user id is not correct")
+
 }
 
 func TestUserService(t *testing.T) {

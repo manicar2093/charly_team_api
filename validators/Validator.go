@@ -33,6 +33,10 @@ type structValidatorService struct {
 	provider *validator.Validate
 }
 
+type handledErrors interface {
+	StatusCode() int
+}
+
 func getJSONTagName(fld reflect.StructField) string {
 	name := strings.SplitN(fld.Tag.Get("json"), ",", 2)[0]
 
@@ -88,31 +92,47 @@ func (sv structValidatorService) Validate(e interface{}) ValidateOutput {
 }
 
 // CheckValidationErrors receive Validate output to create a models.Response
-func CheckValidationErrors(validateOutput ValidateOutput) (bool, models.Response) {
+func CheckValidationErrors(validateOutput ValidateOutput) (bool, *models.Response) {
 
 	if validateOutput.Err == nil {
-		return true, models.Response{}
-	}
-
-	internalError := func(e error) models.Response {
-		return models.Response{
-			Code:   http.StatusInternalServerError,
-			Status: http.StatusText(http.StatusInternalServerError),
-			Body:   validateOutput.Err.Error(),
-		}
+		return true, &models.Response{}
 	}
 
 	validationErr, ok := validateOutput.Err.(apperrors.ValidationErrors)
 	if !ok {
-		return false, internalError(ErrorUnexpectedValidation)
+		return false, CreateResponseError(ErrorUnexpectedValidation)
 	}
 
-	return false, models.Response{
+	return false, &models.Response{
 		Code:   http.StatusBadRequest,
 		Status: http.StatusText(http.StatusBadRequest),
 		Body: map[string]interface{}{
 			"message": ValidationErrorMessage,
 			"errors":  validationErr,
+		},
+	}
+}
+
+// CreateResponseError validates if error implements StatusCode() int
+// func to build error. If does not returns a InternalServerError http status
+func CreateResponseError(err error) *models.Response {
+	var (
+		statusCode   int
+		errorMessage string = err.Error()
+	)
+
+	if handledErr, ok := err.(handledErrors); ok {
+		statusCode = handledErr.StatusCode()
+	} else {
+		statusCode = http.StatusInternalServerError
+	}
+
+	return &models.Response{
+		Code:   statusCode,
+		Status: http.StatusText(statusCode),
+		Body: map[string]interface{}{
+			"message": ValidationErrorMessage,
+			"errors":  errorMessage,
 		},
 	}
 }

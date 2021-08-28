@@ -87,7 +87,7 @@ func TestCheckValidationErrors(t *testing.T) {
 
 	})
 
-	t.Run("if error is not of required type return need response", func(t *testing.T) {
+	t.Run("if error is not of required type return internal server error response", func(t *testing.T) {
 		validationOutput := ValidateOutput{
 			false,
 			errors.New("an unexpected error"),
@@ -99,7 +99,7 @@ func TestCheckValidationErrors(t *testing.T) {
 		assert.Equal(t, http.StatusInternalServerError, responseGot.Code, "response code incorrect")
 		assert.Equal(t, http.StatusText(http.StatusInternalServerError), responseGot.Status)
 
-		body, _ := responseGot.Body.(string)
+		body, _ := responseGot.Body.(map[string]interface{})
 
 		assert.NotEmpty(t, body, "reponse body should not be empty")
 	})

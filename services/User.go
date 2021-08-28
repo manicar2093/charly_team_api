@@ -26,7 +26,7 @@ const (
 )
 
 type UserService interface {
-	CreateUser(user models.CreateUserRequest) error
+	CreateUser(user models.CreateUserRequest) (int32, error)
 }
 
 // UserServiceCognito is a middleware to Cognito Services. PoolID is taken from config package.
@@ -46,7 +46,7 @@ func NewUserServiceCognito(
 
 func (u UserServiceCognito) CreateUser(
 	user models.CreateUserRequest,
-) error {
+) (int32, error) {
 
 	userEntity := entities.User{
 		Name:     user.Name,
@@ -60,13 +60,13 @@ func (u UserServiceCognito) CreateUser(
 
 	if dbResponse.Error != nil {
 		log.Println(dbResponse.Error)
-		return errors.New("error saving user into de db")
+		return 0, errors.New("error saving user into de db")
 	}
 
 	pass, err := u.passGen.Generate()
 	if err != nil {
 		log.Println(err)
-		return errors.New("error generating temporary password")
+		return 0, errors.New("error generating temporary password")
 	}
 
 	requestData := cognitoidentityprovider.AdminCreateUserInput{
@@ -84,7 +84,7 @@ func (u UserServiceCognito) CreateUser(
 	_, err = u.provider.AdminCreateUser(&requestData)
 	// TODO: Add aws error handling
 	if err != nil {
-		return err
+		return 0, err
 	}
 
 	userEntity.IsCreated = true
@@ -92,10 +92,10 @@ func (u UserServiceCognito) CreateUser(
 	dbResponse = u.db.Save(&userEntity)
 	if dbResponse.Error != nil {
 		log.Println(dbResponse.Error)
-		return errors.New("error confirming user creation")
+		return 0, errors.New("error confirming user creation")
 	}
 
-	return nil
+	return userEntity.ID, nil
 
 }
 
