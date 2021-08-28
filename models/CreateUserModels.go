@@ -9,3 +9,7 @@ type CreateUserRequest struct {
 	Birthday time.Time `json:"birthday,omitempty" validate:"required"`
 	RoleID   int       `json:"role_id,omitempty" validate:"required, gt=0"`
 }
+
+type CreateUserResponse struct {
+	UserID int32 `json:"user_id,omitempty"`
+}

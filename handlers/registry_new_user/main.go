@@ -1,6 +1,8 @@
 package main
 
 import (
+	"net/http"
+
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/manicar2093/charly_team_api/aws"
 	"github.com/manicar2093/charly_team_api/connections"
@@ -23,7 +25,7 @@ func CreateLambdaHandlerWDependencies(
 	validator validators.ValidatorService,
 ) interface{} {
 
-	return func(req models.CreateUserRequest) (models.Response, error) {
+	return func(req models.CreateUserRequest) (*models.Response, error) {
 
 		isValid, response := validators.CheckValidationErrors(validator.Validate(req))
 
@@ -37,9 +39,13 @@ func CreateLambdaHandlerWDependencies(
 			passGen,
 		)
 
-		err := userService.CreateUser(req)
+		userCreated, err := userService.CreateUser(req)
 
-		return models.Response{}, err
+		return models.CreateResponse(
+			http.StatusCreated,
+			models.CreateUserResponse{
+				UserID: userCreated,
+			}), err
 
 	}
 
