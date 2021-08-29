@@ -6,6 +6,7 @@ import (
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/manicar2093/charly_team_api/aws"
 	"github.com/manicar2093/charly_team_api/db/connections"
+	"github.com/manicar2093/charly_team_api/db/repositories"
 	"github.com/manicar2093/charly_team_api/models"
 	"github.com/manicar2093/charly_team_api/services"
 	"github.com/manicar2093/charly_team_api/validators"
@@ -13,14 +14,16 @@ import (
 
 func main() {
 	lambda.Start(CreateLambdaHandlerWDependencies(
-		connections.PostgressConnection(),
+		repositories.NewUserRepositoryGorm(
+			connections.PostgressConnection(),
+		),
 		services.PasswordGenerator{},
 		validators.NewStructValidator(),
 	))
 }
 
 func CreateLambdaHandlerWDependencies(
-	db connections.Repository,
+	repository repositories.UserRepository,
 	passGen services.PassGen,
 	validator validators.ValidatorService,
 ) interface{} {
@@ -35,7 +38,7 @@ func CreateLambdaHandlerWDependencies(
 
 		userService := services.NewUserServiceCognito(
 			aws.NewCognitoClient(),
-			db,
+			repository,
 			passGen,
 		)
 

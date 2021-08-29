@@ -1,6 +1,7 @@
 package services
 
 import (
+	"errors"
 	"strings"
 	"testing"
 	"time"
@@ -12,13 +13,12 @@ import (
 	"github.com/manicar2093/charly_team_api/models"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
-	"gorm.io/gorm"
 )
 
 type UserServiceTest struct {
 	suite.Suite
 	providerMock          *mocks.CongitoClient
-	dbMock                *mocks.Repository
+	repoMock              *mocks.UserRepository
 	passGenMock           *mocks.PassGen
 	username              string
 	temporaryPass         string
@@ -30,7 +30,7 @@ type UserServiceTest struct {
 
 func (u *UserServiceTest) SetupTest() {
 	u.providerMock = &mocks.CongitoClient{}
-	u.dbMock = &mocks.Repository{}
+	u.repoMock = &mocks.UserRepository{}
 	u.passGenMock = &mocks.PassGen{}
 	u.username = "testing"
 	u.temporaryPass = "12345678"
@@ -52,16 +52,12 @@ func (u *UserServiceTest) SetupTest() {
 
 func (u *UserServiceTest) TearDownTest() {
 	t := u.T()
-	u.dbMock.AssertExpectations(t)
+	u.repoMock.AssertExpectations(t)
 	u.passGenMock.AssertExpectations(t)
 	u.providerMock.AssertExpectations(t)
 }
 
 func (u *UserServiceTest) TestCreateUser() {
-
-	dbReturn := &gorm.DB{
-		Error: nil,
-	}
 
 	adminCreateUserReq := cognitoidentityprovider.AdminCreateUserInput{
 		UserPoolId:        &config.CognitoPoolID,
@@ -98,19 +94,44 @@ func (u *UserServiceTest) TestCreateUser() {
 		nil,
 	)
 	u.passGenMock.On("Generate").Return(u.temporaryPass, nil)
-	u.dbMock.On("Save", &userDBReq).Run(saveFuncMock).Return(dbReturn)
-	u.dbMock.On("Save", &userDBReq).Return(dbReturn)
+	u.repoMock.On("Save", &userDBReq).Run(saveFuncMock).Return(nil)
+	u.repoMock.On("Save", &userDBReq).Return(nil)
 
-	userService := UserServiceCognito{
-		provider: u.providerMock,
-		db:       u.dbMock,
-		passGen:  u.passGenMock,
-	}
+	userService := NewUserServiceCognito(u.providerMock, u.repoMock, u.passGenMock)
 
 	userCreated, err := userService.CreateUser(u.userRequest)
 
 	u.Nil(err)
 	u.Equal(u.idUserCreated, userCreated, "user id is not correct")
+
+}
+
+func (u *UserServiceTest) TestCreateUserRepoErr() {
+
+	userDBReq := entities.User{
+		Name:     u.userRequest.Name,
+		LastName: u.userRequest.LastName,
+		RoleID:   int32(u.userRequest.RoleID),
+		Email:    u.userRequest.Email,
+		Birthday: u.userRequest.Birthday,
+	}
+	saveFuncMock := func(args mock.Arguments) {
+		user := args[0].(*entities.User)
+		user.ID = u.idUserCreated
+		user.IsCreated = true
+
+		userDBReq.ID = u.idUserCreated
+		userDBReq.IsCreated = true
+	}
+
+	u.repoMock.On("Save", &userDBReq).Run(saveFuncMock).Return(errors.New("An error")).Once()
+
+	userService := NewUserServiceCognito(u.providerMock, u.repoMock, u.passGenMock)
+
+	userCreated, err := userService.CreateUser(u.userRequest)
+
+	u.NotNil(err, "should return an error")
+	u.Equal(userCreated, int32(0), "user id is not correct")
 
 }
 

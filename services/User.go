@@ -8,8 +8,8 @@ import (
 	"github.com/aws/aws-sdk-go/service/cognitoidentityprovider"
 	"github.com/manicar2093/charly_team_api/aws"
 	"github.com/manicar2093/charly_team_api/config"
-	"github.com/manicar2093/charly_team_api/db/connections"
 	"github.com/manicar2093/charly_team_api/db/entities"
+	"github.com/manicar2093/charly_team_api/db/repositories"
 	"github.com/manicar2093/charly_team_api/models"
 )
 
@@ -31,17 +31,21 @@ type UserService interface {
 
 // UserServiceCognito is a middleware to Cognito Services. PoolID is taken from config package.
 type UserServiceCognito struct {
-	provider aws.CongitoClient
-	db       connections.Repository
-	passGen  PassGen
+	provider   aws.CongitoClient
+	repository repositories.UserRepository
+	passGen    PassGen
 }
 
 func NewUserServiceCognito(
 	provider aws.CongitoClient,
-	db connections.Repository,
+	repository repositories.UserRepository,
 	passGen PassGen,
 ) *UserServiceCognito {
-	return &UserServiceCognito{}
+	return &UserServiceCognito{
+		provider:   provider,
+		repository: repository,
+		passGen:    passGen,
+	}
 }
 
 func (u UserServiceCognito) CreateUser(
@@ -56,10 +60,10 @@ func (u UserServiceCognito) CreateUser(
 		Birthday: user.Birthday,
 	}
 
-	dbResponse := u.db.Save(&userEntity)
+	err := u.repository.Save(&userEntity)
 
-	if dbResponse.Error != nil {
-		log.Println(dbResponse.Error)
+	if err != nil {
+		log.Println(err)
 		return 0, errors.New("error saving user into de db")
 	}
 
@@ -89,9 +93,9 @@ func (u UserServiceCognito) CreateUser(
 
 	userEntity.IsCreated = true
 
-	dbResponse = u.db.Save(&userEntity)
-	if dbResponse.Error != nil {
-		log.Println(dbResponse.Error)
+	err = u.repository.Save(&userEntity)
+	if err != nil {
+		log.Println(err)
 		return 0, errors.New("error confirming user creation")
 	}
 
