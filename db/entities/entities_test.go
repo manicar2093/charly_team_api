@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/manicar2093/charly_team_api/connections"
+	"github.com/manicar2093/charly_team_api/db/connections"
 
 	"gorm.io/gorm"
 )

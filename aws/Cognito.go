@@ -2,7 +2,6 @@ package aws
 
 import (
 	"github.com/aws/aws-sdk-go/service/cognitoidentityprovider"
-	"github.com/manicar2093/charly_team_api/connections"
 )
 
 type CongitoClient interface {
@@ -10,6 +9,6 @@ type CongitoClient interface {
 }
 
 func NewCognitoClient() *cognitoidentityprovider.CognitoIdentityProvider {
-	session := connections.GetAWSSession()
+	session := GetAWSSession()
 	return cognitoidentityprovider.New(session)
 }
