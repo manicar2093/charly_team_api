@@ -1,3 +1,9 @@
+## v0.12.0 (2021-08-29)
+
+### Feat
+
+- create get catalogs function (#32)
+
 ## v0.11.0 (2021-08-28)
 
 ### Feat
