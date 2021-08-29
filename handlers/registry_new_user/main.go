@@ -5,7 +5,7 @@ import (
 
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/manicar2093/charly_team_api/aws"
-	"github.com/manicar2093/charly_team_api/connections"
+	"github.com/manicar2093/charly_team_api/db/connections"
 	"github.com/manicar2093/charly_team_api/models"
 	"github.com/manicar2093/charly_team_api/services"
 	"github.com/manicar2093/charly_team_api/validators"

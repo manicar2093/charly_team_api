@@ -5,7 +5,7 @@ import (
 	"gorm.io/gorm"
 )
 
-var sqliteFile = "../testing.db"
+var sqliteFile = "../../testing.db"
 
 func SQLiteConnection() *gorm.DB {
 	db, err := gorm.Open(sqlite.Open(sqliteFile))

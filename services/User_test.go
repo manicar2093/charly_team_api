@@ -7,7 +7,7 @@ import (
 
 	"github.com/aws/aws-sdk-go/service/cognitoidentityprovider"
 	"github.com/manicar2093/charly_team_api/config"
-	"github.com/manicar2093/charly_team_api/entities"
+	"github.com/manicar2093/charly_team_api/db/entities"
 	"github.com/manicar2093/charly_team_api/mocks"
 	"github.com/manicar2093/charly_team_api/models"
 	"github.com/stretchr/testify/mock"
