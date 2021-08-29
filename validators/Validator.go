@@ -7,12 +7,10 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/go-playground/validator/v10"
+	"github.com/go-playground/validator"
 	"github.com/manicar2093/charly_team_api/apperrors"
 	"github.com/manicar2093/charly_team_api/models"
 )
-
-const ValidationErrorMessage = "Request body does not satisfy needs. Please check documentation"
 
 var (
 	ErrorUnexpectedValidation = errors.New("an unexpected error occured as validation was executed")
@@ -51,40 +49,40 @@ func NewStructValidator() *structValidatorService {
 
 func (sv structValidatorService) Validate(e interface{}) ValidateOutput {
 	err := sv.provider.Struct(e)
-	if err != nil {
-
-		err, ok := err.(validator.ValidationErrors)
-
-		if !ok {
-			log.Println("Unexpected error on StructValidator: ", err)
-			return ValidateOutput{
-				false,
-				ErrorUnexpectedValidation,
-			}
+	if err == nil {
+		return ValidateOutput{
+			true,
+			nil,
 		}
+	}
 
-		var allErrors apperrors.ValidationErrors
+	valErr, ok := err.(validator.ValidationErrors)
 
-		for _, err := range err {
-
-			customError := apperrors.ValidationError{}
-
-			customError.Validation = err.Tag()
-			customError.Field = err.Field()
-
-			allErrors = append(allErrors, customError)
-		}
-
+	if !ok {
+		log.Println("Unexpected error on StructValidator: ", err)
 		return ValidateOutput{
 			false,
-			allErrors,
+			ErrorUnexpectedValidation,
 		}
+	}
+
+	var allErrors apperrors.ValidationErrors
+
+	for _, err := range valErr {
+
+		customError := apperrors.ValidationError{}
+
+		customError.Validation = err.Tag()
+		customError.Field = err.Field()
+
+		allErrors = append(allErrors, customError)
 	}
 
 	return ValidateOutput{
-		true,
-		nil,
+		false,
+		allErrors,
 	}
+
 }
 
 // CheckValidationErrors receive Validate output to create a models.Response
@@ -96,39 +94,13 @@ func CheckValidationErrors(validateOutput ValidateOutput) (bool, *models.Respons
 
 	validationErr, ok := validateOutput.Err.(apperrors.ValidationErrors)
 	if !ok {
-		return false, CreateResponseError(ErrorUnexpectedValidation)
+		return false, models.CreateResponseFromError(ErrorUnexpectedValidation)
 	}
 
-	return false, &models.Response{
-		Code:   http.StatusBadRequest,
-		Status: http.StatusText(http.StatusBadRequest),
-		Body: map[string]interface{}{
-			"message": ValidationErrorMessage,
-			"errors":  validationErr,
-		},
-	}
-}
+	return false, models.CreateResponse(
+		http.StatusBadRequest,
+		map[string]interface{}{
+			"error": validationErr,
+		})
 
-// CreateResponseError validates if error implements StatusCode() int
-// func to build error. If does not returns a InternalServerError http status
-func CreateResponseError(err error) *models.Response {
-	var (
-		statusCode   int
-		errorMessage string = err.Error()
-	)
-
-	if handledErr, ok := err.(apperrors.HandableErrors); ok {
-		statusCode = handledErr.StatusCode()
-	} else {
-		statusCode = http.StatusInternalServerError
-	}
-
-	return &models.Response{
-		Code:   statusCode,
-		Status: http.StatusText(statusCode),
-		Body: map[string]interface{}{
-			"message": ValidationErrorMessage,
-			"errors":  errorMessage,
-		},
-	}
 }

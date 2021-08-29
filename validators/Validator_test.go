@@ -73,17 +73,14 @@ func TestCheckValidationErrors(t *testing.T) {
 		isValidGot, responseGot := CheckValidationErrors(validationOutput)
 
 		assert.False(t, isValidGot, "data should not be valid")
-		assert.Equal(t, http.StatusBadRequest, responseGot.Code, "response code incorrect")
+		assert.Equal(t, http.StatusBadRequest, responseGot.StatusCode, "response code incorrect")
 		assert.Equal(t, http.StatusText(http.StatusBadRequest), responseGot.Status)
 
 		body, _ := responseGot.Body.(map[string]interface{})
 
-		errorsList := body["errors"].(apperrors.ValidationErrors)
+		errorsList := body["error"].(apperrors.ValidationErrors)
 
 		assert.Len(t, errorsList, 1, "error count not correct")
-
-		message := body["message"].(string)
-		assert.Contains(t, message, "Please check documentation", "message has not documentation reading warn")
 
 	})
 
@@ -96,12 +93,24 @@ func TestCheckValidationErrors(t *testing.T) {
 		isValidGot, responseGot := CheckValidationErrors(validationOutput)
 
 		assert.False(t, isValidGot, "data should not be valid")
-		assert.Equal(t, http.StatusInternalServerError, responseGot.Code, "response code incorrect")
+		assert.Equal(t, http.StatusInternalServerError, responseGot.StatusCode, "response code incorrect")
 		assert.Equal(t, http.StatusText(http.StatusInternalServerError), responseGot.Status)
 
 		body, _ := responseGot.Body.(map[string]interface{})
 
 		assert.NotEmpty(t, body, "reponse body should not be empty")
+	})
+
+	t.Run("if there is any error return true validation", func(t *testing.T) {
+		validationOutput := ValidateOutput{
+			true,
+			nil,
+		}
+
+		isValidGot, responseGot := CheckValidationErrors(validationOutput)
+
+		assert.True(t, isValidGot, "data should be valid")
+		assert.Empty(t, responseGot, "response should be empty")
 	})
 
 }
