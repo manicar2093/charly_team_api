@@ -2,6 +2,7 @@ package apperrors
 
 import (
 	"fmt"
+	"net/http"
 )
 
 // ValidationError represents a validation error formated to
@@ -19,4 +20,8 @@ func (v ValidationErrors) Error() string {
 	errorCount := len(v)
 
 	return fmt.Sprintf("error count: %v", errorCount)
+}
+
+func (v ValidationError) StatusCode() int {
+	return http.StatusBadRequest
 }

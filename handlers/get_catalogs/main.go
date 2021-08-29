@@ -4,7 +4,8 @@ import (
 	"net/http"
 
 	"github.com/aws/aws-lambda-go/lambda"
-	"github.com/manicar2093/charly_team_api/connections"
+	"github.com/manicar2093/charly_team_api/db/connections"
+	"github.com/manicar2093/charly_team_api/db/repositories"
 	"github.com/manicar2093/charly_team_api/models"
 	"github.com/manicar2093/charly_team_api/validators"
 )
@@ -12,7 +13,9 @@ import (
 func main() {
 	lambda.Start(
 		CreateLambdaHandlerWDependencies(
-			connections.PostgressConnection(),
+			repositories.NewCatalogRepositoryGorm(
+				connections.PostgressConnection(),
+			),
 			validators.NewStructValidator(),
 		),
 	)
@@ -20,9 +23,9 @@ func main() {
 }
 
 func CreateLambdaHandlerWDependencies(
-	db connections.Findable,
+	catalogsRepository repositories.CatalogRepository,
 	validator validators.ValidatorService,
-) interface{} {
+) func(catalogs models.GetCatalogsRequest) *models.Response {
 
 	return func(catalogs models.GetCatalogsRequest) *models.Response {
 
@@ -31,15 +34,10 @@ func CreateLambdaHandlerWDependencies(
 			return response
 		}
 
-		gotCatalogs := make(map[string]interface{})
+		gotCatalogs, err := CatalogFactoryLoop(catalogs, catalogsRepository)
 
-		for _, catalog := range catalogs.CatalogNames {
-			foundCatalog, err := CatalogFactory(catalog, db)
-			if err != nil {
-				return validators.CreateResponseError(err)
-			}
-			gotCatalogs[catalog] = foundCatalog
-
+		if err != nil {
+			return validators.CreateResponseError(err)
 		}
 
 		return models.CreateResponse(http.StatusOK, gotCatalogs)

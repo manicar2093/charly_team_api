@@ -2,41 +2,48 @@ package main
 
 import (
 	"github.com/manicar2093/charly_team_api/apperrors"
-	"github.com/manicar2093/charly_team_api/connections"
-	"github.com/manicar2093/charly_team_api/entities"
+	"github.com/manicar2093/charly_team_api/db/entities"
+	"github.com/manicar2093/charly_team_api/db/repositories"
+	"github.com/manicar2093/charly_team_api/models"
 )
 
-func CatalogFactory(
-	catalog string,
-	db connections.Findable,
-) (interface{}, error) {
-
-	switch catalog {
-	case "biotype":
-		var data []entities.Biotype
-		return FindCatalogByName(data, db)
-	case "bone_density":
-		var data []entities.BoneDensity
-		return FindCatalogByName(data, db)
-	case "heart_healths":
-		var data []entities.HeartHealth
-		return FindCatalogByName(data, db)
-	case "roles":
-		var data []entities.Role
-		return FindCatalogByName(data, db)
-	case "weight_classifications":
-		var data []entities.WeightClasification
-		return FindCatalogByName(data, db)
-	default:
-		return []interface{}{}, apperrors.NoCatalogFound{CatalogName: catalog}
-
-	}
+var catalogs = map[string]interface{}{
+	"biotype":                []entities.Biotype{},
+	"bone_density":           []entities.BoneDensity{},
+	"heart_healths":          []entities.HeartHealth{},
+	"roles":                  []entities.Role{},
+	"weight_classifications": []entities.WeightClasification{},
 }
 
-func FindCatalogByName(holderEntity interface{}, db connections.Findable) (interface{}, error) {
-	dataSlice := db.Find(holderEntity)
-	if dataSlice.Error != nil {
-		return holderEntity, dataSlice.Error
+// CatalogFactory creates the need catalog response
+func CatalogFactory(
+	catalog string,
+	catalogsRepository repositories.CatalogRepository,
+) (interface{}, error) {
+
+	handler, isRegistred := catalogs[catalog]
+	if !isRegistred {
+		return []interface{}{}, apperrors.NoCatalogFound{CatalogName: catalog}
 	}
-	return holderEntity, nil
+
+	return catalogsRepository.FindAllCatalogItems(&handler)
+
+}
+
+// CatalogFactoryLoop creates all catalog response from a slice of requested catalogs
+func CatalogFactoryLoop(
+	catalogs models.GetCatalogsRequest,
+	catalogsRepository repositories.CatalogRepository,
+) (map[string]interface{}, error) {
+	gotCatalogs := make(map[string]interface{})
+
+	for _, catalog := range catalogs.CatalogNames {
+		foundCatalog, err := CatalogFactory(catalog, catalogsRepository)
+		if err != nil {
+			return gotCatalogs, err
+		}
+		gotCatalogs[catalog] = foundCatalog
+	}
+
+	return gotCatalogs, nil
 }
