@@ -37,7 +37,7 @@ func CreateLambdaHandlerWDependencies(
 		gotCatalogs, err := CatalogFactoryLoop(catalogs, catalogsRepository)
 
 		if err != nil {
-			return validators.CreateResponseError(err)
+			return models.CreateResponseFromError(err)
 		}
 
 		return models.CreateResponse(http.StatusOK, gotCatalogs)

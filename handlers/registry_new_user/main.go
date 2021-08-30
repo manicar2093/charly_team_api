@@ -6,6 +6,7 @@ import (
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/manicar2093/charly_team_api/aws"
 	"github.com/manicar2093/charly_team_api/db/connections"
+	"github.com/manicar2093/charly_team_api/db/repositories"
 	"github.com/manicar2093/charly_team_api/models"
 	"github.com/manicar2093/charly_team_api/services"
 	"github.com/manicar2093/charly_team_api/validators"
@@ -13,39 +14,41 @@ import (
 
 func main() {
 	lambda.Start(CreateLambdaHandlerWDependencies(
-		connections.PostgressConnection(),
-		services.PasswordGenerator{},
+		services.NewUserServiceCognito(
+			aws.NewCognitoClient(),
+			repositories.NewUserRepositoryGorm(
+				connections.PostgressConnection(),
+			),
+			services.PasswordGenerator{},
+		),
 		validators.NewStructValidator(),
 	))
 }
 
 func CreateLambdaHandlerWDependencies(
-	db connections.Repository,
-	passGen services.PassGen,
+	userService services.UserService,
 	validator validators.ValidatorService,
-) interface{} {
+) func(req models.CreateUserRequest) *models.Response {
 
-	return func(req models.CreateUserRequest) (*models.Response, error) {
+	return func(req models.CreateUserRequest) *models.Response {
 
 		isValid, response := validators.CheckValidationErrors(validator.Validate(req))
 
 		if !isValid {
-			return response, nil
+			return response
 		}
 
-		userService := services.NewUserServiceCognito(
-			aws.NewCognitoClient(),
-			db,
-			passGen,
-		)
+		userCreated, err := userService.CreateUser(&req)
 
-		userCreated, err := userService.CreateUser(req)
+		if err != nil {
+			return models.CreateResponseFromError(err)
+		}
 
 		return models.CreateResponse(
 			http.StatusCreated,
 			models.CreateUserResponse{
 				UserID: userCreated,
-			}), err
+			})
 
 	}
 

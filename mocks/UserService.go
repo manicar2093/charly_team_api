@@ -13,18 +13,18 @@ type UserService struct {
 }
 
 // CreateUser provides a mock function with given fields: user
-func (_m *UserService) CreateUser(user models.CreateUserRequest) (int32, error) {
+func (_m *UserService) CreateUser(user *models.CreateUserRequest) (int32, error) {
 	ret := _m.Called(user)
 
 	var r0 int32
-	if rf, ok := ret.Get(0).(func(models.CreateUserRequest) int32); ok {
+	if rf, ok := ret.Get(0).(func(*models.CreateUserRequest) int32); ok {
 		r0 = rf(user)
 	} else {
 		r0 = ret.Get(0).(int32)
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(models.CreateUserRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(*models.CreateUserRequest) error); ok {
 		r1 = rf(user)
 	} else {
 		r1 = ret.Error(1)

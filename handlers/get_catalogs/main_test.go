@@ -55,12 +55,12 @@ func (c *MainTests) TestGetCatalogsNotExists() {
 
 	res := CreateLambdaHandlerWDependencies(&c.catalogRepo, &c.validator)(catalogs)
 
-	c.Equal(res.Code, http.StatusNotFound, "http error is not correct")
+	c.Equal(res.StatusCode, http.StatusNotFound, "http error is not correct")
 	c.Equal(res.Status, http.StatusText(http.StatusNotFound), "http error is not correct")
 
 	bodyAsMap := res.Body.(map[string]interface{})
 
-	errMessage, ok := bodyAsMap["errors"].(string)
+	errMessage, ok := bodyAsMap["error"].(string)
 	c.True(ok, "error parsing error message")
 	c.NotEmpty(errMessage, "error message should not be empty")
 
@@ -78,7 +78,7 @@ func (c *MainTests) TestGetCatalogs() {
 
 	res := CreateLambdaHandlerWDependencies(&c.catalogRepo, &c.validator)(catalogs)
 
-	c.Equal(res.Code, http.StatusOK, "http status is not correct")
+	c.Equal(res.StatusCode, http.StatusOK, "http status is not correct")
 	c.Equal(res.Status, http.StatusText(http.StatusOK), "http status is not correct")
 
 	bodyAsMap := res.Body.(map[string]interface{})
@@ -109,12 +109,12 @@ func (c *MainTests) TestGetCatalogsValidationError() {
 
 	res := CreateLambdaHandlerWDependencies(&c.catalogRepo, &c.validator)(catalogs)
 
-	c.Equal(res.Code, http.StatusBadRequest, "http status is not correct")
+	c.Equal(res.StatusCode, http.StatusBadRequest, "http status is not correct")
 	c.Equal(res.Status, http.StatusText(http.StatusBadRequest), "http status is not correct")
 
 	bodyAsMap := res.Body.(map[string]interface{})
 
-	errMessage, ok := bodyAsMap["errors"].(apperrors.ValidationErrors)
+	errMessage, ok := bodyAsMap["error"].(apperrors.ValidationErrors)
 	c.True(ok, "error parsing error message")
 	c.Equal(len(errMessage), 1, "error message should not be empty")
 
