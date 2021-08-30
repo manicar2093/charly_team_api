@@ -1,3 +1,9 @@
+## v0.13.0 (2021-08-30)
+
+### Feat
+
+- errors handling and implementation (#35)
+
 ## v0.12.0 (2021-08-29)
 
 ### Feat
