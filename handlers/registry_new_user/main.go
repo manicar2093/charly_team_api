@@ -14,41 +14,41 @@ import (
 
 func main() {
 	lambda.Start(CreateLambdaHandlerWDependencies(
-		repositories.NewUserRepositoryGorm(
-			connections.PostgressConnection(),
+		services.NewUserServiceCognito(
+			aws.NewCognitoClient(),
+			repositories.NewUserRepositoryGorm(
+				connections.PostgressConnection(),
+			),
+			services.PasswordGenerator{},
 		),
-		services.PasswordGenerator{},
 		validators.NewStructValidator(),
 	))
 }
 
 func CreateLambdaHandlerWDependencies(
-	repository repositories.UserRepository,
-	passGen services.PassGen,
+	userService services.UserService,
 	validator validators.ValidatorService,
-) interface{} {
+) func(req models.CreateUserRequest) *models.Response {
 
-	return func(req models.CreateUserRequest) (*models.Response, error) {
+	return func(req models.CreateUserRequest) *models.Response {
 
 		isValid, response := validators.CheckValidationErrors(validator.Validate(req))
 
 		if !isValid {
-			return response, nil
+			return response
 		}
 
-		userService := services.NewUserServiceCognito(
-			aws.NewCognitoClient(),
-			repository,
-			passGen,
-		)
+		userCreated, err := userService.CreateUser(&req)
 
-		userCreated, err := userService.CreateUser(req)
+		if err != nil {
+			return models.CreateResponseFromError(err)
+		}
 
 		return models.CreateResponse(
 			http.StatusCreated,
 			models.CreateUserResponse{
 				UserID: userCreated,
-			}), err
+			})
 
 	}
 
