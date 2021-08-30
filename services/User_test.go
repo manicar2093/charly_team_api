@@ -26,6 +26,7 @@ type UserServiceTest struct {
 	idUserCreated         int32
 	birthday              time.Time
 	userRequest           models.CreateUserRequest
+	anError               error
 }
 
 func (u *UserServiceTest) SetupTest() {
@@ -34,6 +35,7 @@ func (u *UserServiceTest) SetupTest() {
 	u.passGenMock = &mocks.PassGen{}
 	u.username = "testing"
 	u.temporaryPass = "12345678"
+	u.anError = errors.New("An error")
 
 	u.name = "testing"
 	u.lastName = "testing"
@@ -106,7 +108,7 @@ func (u *UserServiceTest) TestCreateUser() {
 
 }
 
-func (u *UserServiceTest) TestCreateUserRepoErr() {
+func (u *UserServiceTest) TestCreateUserRepoSaveErr() {
 
 	userDBReq := entities.User{
 		Name:     u.userRequest.Name,
@@ -124,7 +126,8 @@ func (u *UserServiceTest) TestCreateUserRepoErr() {
 		userDBReq.IsCreated = true
 	}
 
-	u.repoMock.On("Save", &userDBReq).Run(saveFuncMock).Return(errors.New("An error")).Once()
+	u.passGenMock.On("Generate").Return(u.temporaryPass, nil)
+	u.repoMock.On("Save", &userDBReq).Run(saveFuncMock).Return(u.anError).Once()
 
 	userService := NewUserServiceCognito(u.providerMock, u.repoMock, u.passGenMock)
 
@@ -133,6 +136,18 @@ func (u *UserServiceTest) TestCreateUserRepoErr() {
 	u.NotNil(err, "should return an error")
 	u.Equal(userCreated, int32(0), "user id is not correct")
 
+}
+
+func (u *UserServiceTest) TestCreateUserPassGenError() {
+
+	u.passGenMock.On("Generate").Return("", u.anError).Once()
+
+	userService := NewUserServiceCognito(u.providerMock, u.repoMock, u.passGenMock)
+
+	userGot, err := userService.CreateUser(u.userRequest)
+
+	u.NotNil(err)
+	u.Empty(userGot, "user should not be created")
 }
 
 func TestUserService(t *testing.T) {

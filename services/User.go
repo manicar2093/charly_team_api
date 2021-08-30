@@ -16,7 +16,10 @@ import (
 type RoleType int32
 
 var (
-	emailAttributeName string = "email"
+	emailAttributeName          string = "email"
+	errorGeneratePass                  = errors.New("error generating temporary password")
+	errorSavingUser                    = errors.New("error saving user into de db")
+	errorConfirmingUserCreation        = errors.New("error confirming user creation")
 )
 
 const (
@@ -52,25 +55,10 @@ func (u UserServiceCognito) CreateUser(
 	user models.CreateUserRequest,
 ) (int32, error) {
 
-	userEntity := entities.User{
-		Name:     user.Name,
-		LastName: user.LastName,
-		RoleID:   int32(user.RoleID),
-		Email:    user.Email,
-		Birthday: user.Birthday,
-	}
-
-	err := u.repository.Save(&userEntity)
-
-	if err != nil {
-		log.Println(err)
-		return 0, errors.New("error saving user into de db")
-	}
-
 	pass, err := u.passGen.Generate()
 	if err != nil {
 		log.Println(err)
-		return 0, errors.New("error generating temporary password")
+		return 0, errorGeneratePass
 	}
 
 	requestData := cognitoidentityprovider.AdminCreateUserInput{
@@ -85,8 +73,22 @@ func (u UserServiceCognito) CreateUser(
 		},
 	}
 
+	userEntity := entities.User{
+		Name:     user.Name,
+		LastName: user.LastName,
+		RoleID:   int32(user.RoleID),
+		Email:    user.Email,
+		Birthday: user.Birthday,
+	}
+
+	err = u.repository.Save(&userEntity)
+
+	if err != nil {
+		log.Println(err)
+		return 0, errorSavingUser
+	}
+
 	_, err = u.provider.AdminCreateUser(&requestData)
-	// TODO: Add aws error handling
 	if err != nil {
 		return 0, err
 	}
@@ -96,7 +98,7 @@ func (u UserServiceCognito) CreateUser(
 	err = u.repository.Save(&userEntity)
 	if err != nil {
 		log.Println(err)
-		return 0, errors.New("error confirming user creation")
+		return 0, errorConfirmingUserCreation
 	}
 
 	return userEntity.ID, nil
