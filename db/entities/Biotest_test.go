@@ -1,6 +1,7 @@
 package entities
 
 import (
+	"context"
 	"testing"
 	"time"
 
@@ -33,7 +34,7 @@ func TestBiotestEntity(t *testing.T) {
 			LowerAbdomen:         106.0,
 		}
 
-		DB.Create(&higherMuscleDensity)
+		DB.Insert(context.Background(), &higherMuscleDensity)
 		assert.NotEmpty(t, higherMuscleDensity.ID, "ID should not be empty")
 	})
 
@@ -46,7 +47,7 @@ func TestBiotestEntity(t *testing.T) {
 			LeftCalf:  15.0,
 		}
 
-		DB.Create(&lowerMuscleDensity)
+		DB.Insert(context.Background(), &lowerMuscleDensity)
 		assert.NotEmpty(t, lowerMuscleDensity.ID, "ID should not be empty")
 	})
 
@@ -58,7 +59,7 @@ func TestBiotestEntity(t *testing.T) {
 			Tricipital:  200,
 		}
 
-		DB.Create(&skinFolds)
+		DB.Insert(context.Background(), &skinFolds)
 		assert.NotEmpty(t, skinFolds.ID, "ID should not be empty")
 	})
 
@@ -73,7 +74,7 @@ func TestBiotestEntity(t *testing.T) {
 			Birthday:    time.Now(),
 		}
 
-		DB.Create(&customer)
+		DB.Insert(context.Background(), &customer)
 		assert.NotEmpty(t, customer.ID, "ID should not be empty")
 	})
 
@@ -88,7 +89,7 @@ func TestBiotestEntity(t *testing.T) {
 			Birthday:    time.Now(),
 		}
 
-		DB.Create(&creator)
+		DB.Insert(context.Background(), &creator)
 		assert.NotEmpty(t, creator.ID, "ID should not be empty")
 
 	})
@@ -121,16 +122,17 @@ func TestBiotestEntity(t *testing.T) {
 			NextEvaluation:          time.Now(),
 		}
 
-		DB.Create(&biotest)
+		DB.Insert(context.Background(), &biotest)
 		assert.NotEmpty(t, biotest.ID, "ID should not be empty")
 	})
 
 	t.Cleanup(func() {
-		DB.Delete(&biotest)
-		DB.Delete(&higherMuscleDensity)
-		DB.Delete(&lowerMuscleDensity)
-		DB.Delete(&skinFolds)
-		DB.Delete(&customer)
-		DB.Delete(&creator)
+		ctx := context.Background()
+		DB.Delete(ctx, &biotest)
+		DB.Delete(ctx, &higherMuscleDensity)
+		DB.Delete(ctx, &lowerMuscleDensity)
+		DB.Delete(ctx, &skinFolds)
+		DB.Delete(ctx, &customer)
+		DB.Delete(ctx, &creator)
 	})
 }

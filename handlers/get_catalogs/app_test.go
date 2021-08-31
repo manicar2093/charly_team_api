@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"testing"
 	"time"
 
@@ -15,12 +16,14 @@ import (
 type AppTests struct {
 	suite.Suite
 	catalogRepo    mocks.CatalogRepository
+	ctx            context.Context
 	biotypesReturn []entities.Biotype
 	rolesReturn    []entities.Role
 }
 
 func (c *AppTests) SetupTest() {
 	c.catalogRepo = mocks.CatalogRepository{}
+	c.ctx = context.Background()
 	c.biotypesReturn = []entities.Biotype{
 		{ID: 1, Description: "biotype1", CreatedAt: time.Now()},
 		{ID: 2, Description: "biotype2", CreatedAt: time.Now()},
@@ -45,9 +48,9 @@ func (c *AppTests) TestCatalogFactoryLoopNoCatalog() {
 		CatalogNames: []string{"biotype", "no_exists"},
 	}
 
-	c.catalogRepo.On("FindAllCatalogItems", mock.Anything).Return(c.biotypesReturn, nil).Once()
+	c.catalogRepo.On("FindAllCatalogItems", c.ctx, mock.Anything).Return(c.biotypesReturn, nil).Once()
 
-	_, err := CatalogFactoryLoop(catalogs, &c.catalogRepo)
+	_, err := CatalogFactoryLoop(catalogs, &c.catalogRepo, c.ctx)
 
 	c.NotNil(err, "should not be error")
 
@@ -62,10 +65,10 @@ func (c *AppTests) TestCatalogFactoryLoop() {
 		CatalogNames: []string{"biotype", "roles"},
 	}
 
-	c.catalogRepo.On("FindAllCatalogItems", mock.Anything).Return(c.biotypesReturn, nil).Once()
-	c.catalogRepo.On("FindAllCatalogItems", mock.Anything).Return(c.rolesReturn, nil).Once()
+	c.catalogRepo.On("FindAllCatalogItems", c.ctx, mock.Anything).Return(c.biotypesReturn, nil).Once()
+	c.catalogRepo.On("FindAllCatalogItems", c.ctx, mock.Anything).Return(c.rolesReturn, nil).Once()
 
-	got, err := CatalogFactoryLoop(catalogs, &c.catalogRepo)
+	got, err := CatalogFactoryLoop(catalogs, &c.catalogRepo, c.ctx)
 
 	c.Nil(err, "should not be error")
 

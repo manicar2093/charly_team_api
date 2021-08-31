@@ -4,12 +4,11 @@ import (
 	"os"
 	"testing"
 
+	"github.com/go-rel/rel"
 	"github.com/manicar2093/charly_team_api/db/connections"
-
-	"gorm.io/gorm"
 )
 
-var DB *gorm.DB
+var DB rel.Repository
 
 func TestMain(m *testing.M) {
 

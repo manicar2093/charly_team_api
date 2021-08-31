@@ -1,6 +1,8 @@
 package main
 
 import (
+	"context"
+
 	"github.com/manicar2093/charly_team_api/apperrors"
 	"github.com/manicar2093/charly_team_api/db/entities"
 	"github.com/manicar2093/charly_team_api/db/repositories"
@@ -19,6 +21,7 @@ var catalogs = map[string]interface{}{
 func CatalogFactory(
 	catalog string,
 	catalogsRepository repositories.CatalogRepository,
+	ctx context.Context,
 ) (interface{}, error) {
 
 	handler, isRegistred := catalogs[catalog]
@@ -26,7 +29,7 @@ func CatalogFactory(
 		return []interface{}{}, apperrors.NoCatalogFound{CatalogName: catalog}
 	}
 
-	return catalogsRepository.FindAllCatalogItems(&handler)
+	return catalogsRepository.FindAllCatalogItems(ctx, &handler)
 
 }
 
@@ -34,11 +37,12 @@ func CatalogFactory(
 func CatalogFactoryLoop(
 	catalogs models.GetCatalogsRequest,
 	catalogsRepository repositories.CatalogRepository,
+	ctx context.Context,
 ) (map[string]interface{}, error) {
 	gotCatalogs := make(map[string]interface{})
 
 	for _, catalog := range catalogs.CatalogNames {
-		foundCatalog, err := CatalogFactory(catalog, catalogsRepository)
+		foundCatalog, err := CatalogFactory(catalog, catalogsRepository, ctx)
 		if err != nil {
 			return gotCatalogs, err
 		}

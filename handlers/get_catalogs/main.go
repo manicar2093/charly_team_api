@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/aws/aws-lambda-go/lambda"
@@ -13,7 +14,7 @@ import (
 func main() {
 	lambda.Start(
 		CreateLambdaHandlerWDependencies(
-			repositories.NewCatalogRepositoryGorm(
+			repositories.NewCatalogRepositoryImpl(
 				connections.PostgressConnection(),
 			),
 			validators.NewStructValidator(),
@@ -25,16 +26,16 @@ func main() {
 func CreateLambdaHandlerWDependencies(
 	catalogsRepository repositories.CatalogRepository,
 	validator validators.ValidatorService,
-) func(catalogs models.GetCatalogsRequest) *models.Response {
+) func(ctx context.Context, catalogs models.GetCatalogsRequest) *models.Response {
 
-	return func(catalogs models.GetCatalogsRequest) *models.Response {
+	return func(ctx context.Context, catalogs models.GetCatalogsRequest) *models.Response {
 
 		isValid, response := validators.CheckValidationErrors(validator.Validate(catalogs))
 		if !isValid {
 			return response
 		}
 
-		gotCatalogs, err := CatalogFactoryLoop(catalogs, catalogsRepository)
+		gotCatalogs, err := CatalogFactoryLoop(catalogs, catalogsRepository, ctx)
 
 		if err != nil {
 			return models.CreateResponseFromError(err)

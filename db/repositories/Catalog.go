@@ -1,25 +1,29 @@
 package repositories
 
-import "gorm.io/gorm"
+import (
+	"context"
+
+	"github.com/go-rel/rel"
+)
 
 type CatalogRepository interface {
 	// FindAllCatalogItems find any catalog from DB.
-	FindAllCatalogItems(holderEntity interface{}) (interface{}, error)
+	FindAllCatalogItems(context.Context, interface{}) (interface{}, error)
 }
 
-type CatalogRepositoryGorm struct {
-	provider *gorm.DB
+type CatalogRepositoryImpl struct {
+	provider rel.Repository
 }
 
-func NewCatalogRepositoryGorm(db *gorm.DB) CatalogRepository {
-	return &CatalogRepositoryGorm{db}
+func NewCatalogRepositoryImpl(db rel.Repository) CatalogRepository {
+	return &CatalogRepositoryImpl{db}
 }
 
 // FindCatalogByName find any catalog from DB
-func (c CatalogRepositoryGorm) FindAllCatalogItems(holderEntity interface{}) (interface{}, error) {
-	dataSlice := c.provider.Find(holderEntity)
-	if dataSlice.Error != nil {
-		return holderEntity, dataSlice.Error
+func (c CatalogRepositoryImpl) FindAllCatalogItems(ctx context.Context, holderEntity interface{}) (interface{}, error) {
+	err := c.provider.FindAll(ctx, holderEntity)
+	if err != nil {
+		return holderEntity, err
 	}
 	return holderEntity, nil
 }

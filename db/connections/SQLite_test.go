@@ -1,6 +1,7 @@
 package connections
 
 import (
+	"context"
 	"os"
 	"testing"
 
@@ -13,13 +14,8 @@ func TestSQLiteConnection(t *testing.T) {
 	conn := SQLiteConnection()
 
 	assert.NotNil(t, conn, "connection should not be nil")
-	db, err := conn.DB()
 
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	err = db.Ping()
+	err := conn.Ping(context.Background())
 	if err != nil {
 		t.Fatal(err)
 	}

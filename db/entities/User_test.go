@@ -1,6 +1,7 @@
 package entities
 
 import (
+	"context"
 	"testing"
 	"time"
 
@@ -19,10 +20,12 @@ func TestCustomerEntity(t *testing.T) {
 		Birthday:    time.Now(),
 	}
 
-	DB.Create(&user)
+	ctx := context.Background()
+
+	DB.Insert(ctx, &user)
 
 	assert.NotEmpty(t, user.ID, "ID should not be empty. Customer was not created")
 
-	DB.Delete(&user)
+	DB.Delete(ctx, &user)
 
 }

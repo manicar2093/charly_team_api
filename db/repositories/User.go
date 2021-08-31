@@ -1,28 +1,30 @@
 package repositories
 
 import (
+	"context"
+
+	"github.com/go-rel/rel"
 	"github.com/manicar2093/charly_team_api/db/entities"
-	"gorm.io/gorm"
 )
 
 type UserRepository interface {
-	Save(user *entities.User) error
+	Save(context.Context, *entities.User) error
 }
 
-type UserRepositoryGorm struct {
-	provider *gorm.DB
+type UserRepositoryImpl struct {
+	provider rel.Repository
 }
 
-func NewUserRepositoryGorm(provider *gorm.DB) UserRepository {
-	return UserRepositoryGorm{provider: provider}
+func NewUserRepositoryImpl(provider rel.Repository) UserRepository {
+	return UserRepositoryImpl{provider: provider}
 }
 
-func (c UserRepositoryGorm) Save(user *entities.User) error {
+func (c UserRepositoryImpl) Save(ctx context.Context, user *entities.User) error {
 
-	err := c.provider.Save(user)
+	err := c.provider.Insert(ctx, user)
 
-	if err.Error != nil {
-		return err.Error
+	if err != nil {
+		return err
 	}
 
 	return nil

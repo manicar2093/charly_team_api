@@ -1,6 +1,7 @@
 package entities
 
 import (
+	"context"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -14,7 +15,9 @@ func TestSkinFoldsEntity(t *testing.T) {
 		Tricipital:  10,
 	}
 
-	DB.Create(&skinFold)
+	ctx := context.Background()
+
+	DB.Insert(ctx, &skinFold)
 	assert.NotEmpty(t, skinFold.ID, "ID should not be empty")
-	DB.Delete(&skinFold)
+	DB.Delete(ctx, &skinFold)
 }
