@@ -1,7 +1,7 @@
 package entities
 
 type HigherMuscleDensity struct {
-	ID                   int32 `gorm:"primaryKey"`
+	ID                   int32 `db:",primary"`
 	Neck                 float32
 	Shoulders            float32
 	Back                 float32
@@ -18,6 +18,6 @@ type HigherMuscleDensity struct {
 	LowerAbdomen         float32
 }
 
-func (h HigherMuscleDensity) TableName() string {
+func (h HigherMuscleDensity) Table() string {
 	return "HigherMuscleDensity"
 }

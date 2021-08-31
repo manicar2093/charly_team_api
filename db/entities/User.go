@@ -6,12 +6,12 @@ import (
 )
 
 type User struct {
-	ID            int32   `gorm:"primaryKey"`
-	Biotype       Biotype `gorm:"foreignKey:BiotypeID"`
+	ID            int32   `db:",primary"`
+	Biotype       Biotype `ref:"biotype_id" fk:"id"`
 	BiotypeID     sql.NullInt32
-	BoneDensity   BoneDensity `gorm:"foreignKey:BoneDensityID"`
+	BoneDensity   BoneDensity `ref:"bone_density_id" fk:"id"`
 	BoneDensityID sql.NullInt32
-	Role          Role `gorm:"foreignKey:RoleID"`
+	Role          Role `ref:"role_id" fk:"id"`
 	RoleID        int32
 	Name          string
 	LastName      string
@@ -22,6 +22,6 @@ type User struct {
 	UpdatedAt     time.Time
 }
 
-func (c User) TableName() string {
+func (c User) Table() string {
 	return "User"
 }

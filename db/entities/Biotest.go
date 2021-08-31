@@ -3,20 +3,20 @@ package entities
 import "time"
 
 type Biotest struct {
-	ID                      int32               `gorm:"primaryKey"`
-	HigherMuscleDensity     HigherMuscleDensity `gorm:"foreignKey:HigherMuscleDensityID"`
+	ID                      int32               `db:",primary"`
+	HigherMuscleDensity     HigherMuscleDensity `ref:"higher_muscle_density_id" fk:"id"`
 	HigherMuscleDensityID   int32
-	LowerMuscleDensity      LowerMuscleDensity `gorm:"foreignKey:LowerMuscleDensityID"`
+	LowerMuscleDensity      LowerMuscleDensity `ref:"lower_muscle_density_id" fk:"id"`
 	LowerMuscleDensityID    int32
-	SkinFolds               SkinFolds `gorm:"foreignKey:SkinFoldsID"`
+	SkinFolds               SkinFolds `ref:"skin_folds_id" fk:"id"`
 	SkinFoldsID             int32
-	WeightClasification     WeightClasification `gorm:"foreignKey:WeightClasificationID"`
+	WeightClasification     WeightClasification `ref:"weight_clasification_id" fk:"id"`
 	WeightClasificationID   int32
-	HeartHealth             HeartHealth `gorm:"foreignKey:HeartHealthID"`
+	HeartHealth             HeartHealth `ref:"weight_clasification_id" fk:"id"`
 	HeartHealthID           int32
-	Customer                User `gorm:"foreignKey:CustomerID"`
+	Customer                User `ref:"customer_id" fk:"id"`
 	CustomerID              int32
-	Creator                 User `gorm:"foreignKey:CreatorID"`
+	Creator                 User `ref:"creator_id" fk:"id"`
 	CreatorID               int32
 	Weight                  float32
 	Height                  int32
@@ -37,6 +37,6 @@ type Biotest struct {
 	CreatedAt               time.Time
 }
 
-func (b Biotest) TableName() string {
+func (b Biotest) Table() string {
 	return "Biotest"
 }

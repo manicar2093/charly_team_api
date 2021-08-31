@@ -1,6 +1,7 @@
 package entities
 
 import (
+	"context"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -8,10 +9,10 @@ import (
 
 func TestBiotype(t *testing.T) {
 	var data []Biotype
-	result := DB.Find(&data)
+	err := DB.FindAll(context.Background(), &data)
 
-	if result.Error != nil {
-		t.Fatal(result.Error)
+	if err != nil {
+		t.Fatal(err)
 	}
 
 	assert.LessOrEqual(t, 1, len(data), "no biotypes found")

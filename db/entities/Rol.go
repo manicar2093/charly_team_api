@@ -5,11 +5,11 @@ import (
 )
 
 type Role struct {
-	ID          int32 `gorm:"primaryKey"`
+	ID          int32 `db:",primary"`
 	Description string
 	CreatedAt   time.Time
 }
 
-func (r Role) TableName() string {
+func (r Role) Table() string {
 	return "Role"
 }

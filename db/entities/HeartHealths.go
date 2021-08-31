@@ -3,11 +3,11 @@ package entities
 import "time"
 
 type HeartHealth struct {
-	ID          int32 `gorm:"primaryKey"`
+	ID          int32 `db:",primary"`
 	Description string
 	CreatedAt   time.Time
 }
 
-func (h HeartHealth) TableName() string {
+func (h HeartHealth) Table() string {
 	return "HeartHealths"
 }
