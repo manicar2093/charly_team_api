@@ -28,7 +28,6 @@ exports.up = function(knex) {
         t.string('last_name').notNullable();
         t.string('email').unique().notNullable();
         t.date('birthday').nullable();
-        t.bool('is_created').defaultTo(false);
         t.timestamps(true);
     });
 

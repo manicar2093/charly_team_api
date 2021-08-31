@@ -17,7 +17,6 @@ type User struct {
 	LastName      string
 	Email         string
 	Birthday      time.Time
-	IsCreated     bool
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 }
