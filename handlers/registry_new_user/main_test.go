@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"errors"
 	"net/http"
 	"testing"
@@ -17,12 +18,14 @@ type MainTests struct {
 	suite.Suite
 	userService   mocks.UserService
 	validator     mocks.ValidatorService
+	ctx           context.Context
 	idUserCreated int32
 }
 
 func (c *MainTests) SetupTest() {
 	c.userService = mocks.UserService{}
 	c.validator = mocks.ValidatorService{}
+	c.ctx = context.Background()
 	c.idUserCreated = int32(1)
 
 }
@@ -42,9 +45,9 @@ func (c *MainTests) TestRegistryNewUser() {
 	}
 
 	c.validator.On("Validate", userRequest).Return(validators.ValidateOutput{IsValid: true, Err: nil})
-	c.userService.On("CreateUser", &userRequest).Return(c.idUserCreated, nil)
+	c.userService.On("CreateUser", c.ctx, &userRequest).Return(c.idUserCreated, nil)
 
-	res := CreateLambdaHandlerWDependencies(&c.userService, &c.validator)(userRequest)
+	res := CreateLambdaHandlerWDependencies(&c.userService, &c.validator)(c.ctx, userRequest)
 
 	c.Equal(res.StatusCode, http.StatusCreated, "http status is not correct")
 	c.Equal(res.Status, http.StatusText(http.StatusCreated), "http status is not correct")
@@ -68,9 +71,9 @@ func (c *MainTests) TestRegistryNewUserError() {
 	errorText := "an error"
 
 	c.validator.On("Validate", userRequest).Return(validators.ValidateOutput{IsValid: true, Err: nil})
-	c.userService.On("CreateUser", &userRequest).Return(int32(0), errors.New(errorText))
+	c.userService.On("CreateUser", c.ctx, &userRequest).Return(int32(0), errors.New(errorText))
 
-	res := CreateLambdaHandlerWDependencies(&c.userService, &c.validator)(userRequest)
+	res := CreateLambdaHandlerWDependencies(&c.userService, &c.validator)(c.ctx, userRequest)
 
 	c.Equal(res.StatusCode, http.StatusInternalServerError, "http status is not correct")
 	c.Equal(res.Status, http.StatusText(http.StatusInternalServerError), "http status is not correct")
@@ -100,7 +103,7 @@ func (c *MainTests) TestRegistryNewUserNoValidReq() {
 
 	c.validator.On("Validate", userRequest).Return(validators.ValidateOutput{IsValid: false, Err: validationErrors})
 
-	res := CreateLambdaHandlerWDependencies(&c.userService, &c.validator)(userRequest)
+	res := CreateLambdaHandlerWDependencies(&c.userService, &c.validator)(c.ctx, userRequest)
 
 	c.Equal(res.StatusCode, http.StatusBadRequest, "http status is not correct")
 	c.Equal(res.Status, http.StatusText(http.StatusBadRequest), "http status is not correct")

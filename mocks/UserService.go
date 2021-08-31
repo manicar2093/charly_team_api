@@ -3,6 +3,8 @@
 package mocks
 
 import (
+	context "context"
+
 	models "github.com/manicar2093/charly_team_api/models"
 	mock "github.com/stretchr/testify/mock"
 )
@@ -12,20 +14,20 @@ type UserService struct {
 	mock.Mock
 }
 
-// CreateUser provides a mock function with given fields: user
-func (_m *UserService) CreateUser(user *models.CreateUserRequest) (int32, error) {
-	ret := _m.Called(user)
+// CreateUser provides a mock function with given fields: ctx, user
+func (_m *UserService) CreateUser(ctx context.Context, user *models.CreateUserRequest) (int32, error) {
+	ret := _m.Called(ctx, user)
 
 	var r0 int32
-	if rf, ok := ret.Get(0).(func(*models.CreateUserRequest) int32); ok {
-		r0 = rf(user)
+	if rf, ok := ret.Get(0).(func(context.Context, *models.CreateUserRequest) int32); ok {
+		r0 = rf(ctx, user)
 	} else {
 		r0 = ret.Get(0).(int32)
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(*models.CreateUserRequest) error); ok {
-		r1 = rf(user)
+	if rf, ok := ret.Get(1).(func(context.Context, *models.CreateUserRequest) error); ok {
+		r1 = rf(ctx, user)
 	} else {
 		r1 = ret.Error(1)
 	}
