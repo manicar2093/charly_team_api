@@ -1,12 +1,14 @@
 package services
 
 import (
+	"context"
 	"errors"
 	"strings"
 	"testing"
 	"time"
 
 	"github.com/aws/aws-sdk-go/service/cognitoidentityprovider"
+	"github.com/go-rel/rel/reltest"
 	"github.com/manicar2093/charly_team_api/config"
 	"github.com/manicar2093/charly_team_api/db/entities"
 	"github.com/manicar2093/charly_team_api/mocks"
@@ -18,8 +20,8 @@ import (
 type UserServiceTest struct {
 	suite.Suite
 	providerMock          *mocks.CongitoClient
-	repoMock              *mocks.UserRepository
 	passGenMock           *mocks.PassGen
+	repoMock              *reltest.Repository
 	username              string
 	temporaryPass         string
 	name, lastName, email string
@@ -32,7 +34,7 @@ type UserServiceTest struct {
 
 func (u *UserServiceTest) SetupTest() {
 	u.providerMock = &mocks.CongitoClient{}
-	u.repoMock = &mocks.UserRepository{}
+	u.repoMock = reltest.New()
 	u.passGenMock = &mocks.PassGen{}
 	u.username = "testing"
 	u.temporaryPass = "12345678"
@@ -41,10 +43,8 @@ func (u *UserServiceTest) SetupTest() {
 		return func(args mock.Arguments) {
 			user := args[0].(*entities.User)
 			user.ID = u.idUserCreated
-			user.IsCreated = true
 
 			userDBReq.ID = u.idUserCreated
-			userDBReq.IsCreated = true
 		}
 	}
 
@@ -98,13 +98,14 @@ func (u *UserServiceTest) TestCreateUser() {
 		&cognitoidentityprovider.AdminCreateUserOutput{},
 		nil,
 	)
-	u.passGenMock.On("Generate").Return(u.temporaryPass, nil)
-	u.repoMock.On("Save", &userDBReq).Run(u.saveFuncMock(&userDBReq)).Return(nil)
-	u.repoMock.On("Save", &userDBReq).Return(nil)
+	u.repoMock.ExpectTransaction(func(r *reltest.Repository) {
+		u.passGenMock.On("Generate").Return(u.temporaryPass, nil)
+		r.ExpectInsert().For(&userDBReq)
+	})
 
-	userService := NewUserServiceCognito(u.providerMock, u.repoMock, u.passGenMock)
+	userService := NewUserServiceCognito(u.providerMock, u.passGenMock, u.repoMock)
 
-	userCreated, err := userService.CreateUser(&u.userRequest)
+	userCreated, err := userService.CreateUser(context.Background(), &u.userRequest)
 
 	u.Nil(err)
 	u.Equal(u.idUserCreated, userCreated, "user id is not correct")
@@ -121,25 +122,28 @@ func (u *UserServiceTest) TestCreateUserRepoSaveErr() {
 		Birthday: u.userRequest.Birthday,
 	}
 
-	u.passGenMock.On("Generate").Return(u.temporaryPass, nil)
-	u.repoMock.On("Save", &userDBReq).Run(u.saveFuncMock(&userDBReq)).Return(u.anError).Once()
+	u.repoMock.ExpectTransaction(func(r *reltest.Repository) {
+		u.passGenMock.On("Generate").Return(u.temporaryPass, nil)
+		r.ExpectInsert().For(&userDBReq).Return(u.anError)
+	})
+	userService := NewUserServiceCognito(u.providerMock, u.passGenMock, u.repoMock)
 
-	userService := NewUserServiceCognito(u.providerMock, u.repoMock, u.passGenMock)
-
-	userCreated, err := userService.CreateUser(&u.userRequest)
+	userCreated, err := userService.CreateUser(context.Background(), &u.userRequest)
 
 	u.NotNil(err, "should return an error")
-	u.Equal(userCreated, int32(0), "user id is not correct")
+	u.Empty(userCreated, "user was created")
 
 }
 
 func (u *UserServiceTest) TestCreateUserPassGenError() {
 
-	u.passGenMock.On("Generate").Return("", u.anError).Once()
+	u.repoMock.ExpectTransaction(func(r *reltest.Repository) {
+		u.passGenMock.On("Generate").Return("", u.anError).Once()
+	})
 
-	userService := NewUserServiceCognito(u.providerMock, u.repoMock, u.passGenMock)
+	userService := NewUserServiceCognito(u.providerMock, u.passGenMock, u.repoMock)
 
-	userGot, err := userService.CreateUser(&u.userRequest)
+	userGot, err := userService.CreateUser(context.Background(), &u.userRequest)
 
 	u.NotNil(err)
 	u.Empty(userGot, "user should not be created")

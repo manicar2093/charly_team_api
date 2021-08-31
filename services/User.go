@@ -1,25 +1,25 @@
 package services
 
 import (
+	"context"
 	"errors"
 	"log"
 	"strings"
 
 	"github.com/aws/aws-sdk-go/service/cognitoidentityprovider"
+	"github.com/go-rel/rel"
 	"github.com/manicar2093/charly_team_api/aws"
 	"github.com/manicar2093/charly_team_api/config"
 	"github.com/manicar2093/charly_team_api/db/entities"
-	"github.com/manicar2093/charly_team_api/db/repositories"
 	"github.com/manicar2093/charly_team_api/models"
 )
 
 type RoleType int32
 
 var (
-	emailAttributeName          string = "email"
-	errorGeneratePass                  = errors.New("error generating temporary password")
-	errorSavingUser                    = errors.New("error saving user into de db")
-	errorConfirmingUserCreation        = errors.New("error confirming user creation")
+	emailAttributeName string = "email"
+	errorGeneratePass         = errors.New("error generating temporary password")
+	errorSavingUser           = errors.New("error saving user into de db")
 )
 
 const (
@@ -34,44 +34,27 @@ type UserService interface {
 
 // UserServiceCognito is a middleware to Cognito Services. PoolID is taken from config package.
 type UserServiceCognito struct {
-	provider   aws.CongitoClient
-	repository repositories.UserRepository
-	passGen    PassGen
+	provider aws.CongitoClient
+	passGen  PassGen
+	repo     rel.Repository
 }
 
 func NewUserServiceCognito(
 	provider aws.CongitoClient,
-	repository repositories.UserRepository,
 	passGen PassGen,
+	repo rel.Repository,
 ) *UserServiceCognito {
 	return &UserServiceCognito{
-		provider:   provider,
-		repository: repository,
-		passGen:    passGen,
+		provider: provider,
+		passGen:  passGen,
+		repo:     repo,
 	}
 }
 
 func (u UserServiceCognito) CreateUser(
+	ctx context.Context,
 	user *models.CreateUserRequest,
 ) (int32, error) {
-
-	pass, err := u.passGen.Generate()
-	if err != nil {
-		log.Println(err)
-		return 0, errorGeneratePass
-	}
-
-	requestData := cognitoidentityprovider.AdminCreateUserInput{
-		UserPoolId:        &config.CognitoPoolID,
-		Username:          u.getUserUsername(&user.Email),
-		TemporaryPassword: &pass,
-		UserAttributes: []*cognitoidentityprovider.AttributeType{
-			{
-				Name:  &emailAttributeName,
-				Value: &user.Email,
-			},
-		},
-	}
 
 	userEntity := entities.User{
 		Name:     user.Name,
@@ -81,27 +64,46 @@ func (u UserServiceCognito) CreateUser(
 		Birthday: user.Birthday,
 	}
 
-	err = u.repository.Save(&userEntity)
+	err := u.repo.Transaction(ctx, func(ctx context.Context) error {
 
-	if err != nil {
-		log.Println(err)
-		return 0, errorSavingUser
-	}
+		pass, err := u.passGen.Generate()
+		if err != nil {
+			log.Println(err)
+			return errorGeneratePass
+		}
 
-	_, err = u.provider.AdminCreateUser(&requestData)
+		requestData := cognitoidentityprovider.AdminCreateUserInput{
+			UserPoolId:        &config.CognitoPoolID,
+			Username:          u.getUserUsername(&user.Email),
+			TemporaryPassword: &pass,
+			UserAttributes: []*cognitoidentityprovider.AttributeType{
+				{
+					Name:  &emailAttributeName,
+					Value: &user.Email,
+				},
+			},
+		}
+
+		err = u.repo.Insert(ctx, &userEntity)
+
+		if err != nil {
+			log.Println(err)
+			return errorSavingUser
+		}
+
+		_, err = u.provider.AdminCreateUser(&requestData)
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
+
 	if err != nil {
 		return 0, err
 	}
 
-	userEntity.IsCreated = true
-
-	err = u.repository.Save(&userEntity)
-	if err != nil {
-		log.Println(err)
-		return 0, errorConfirmingUserCreation
-	}
-
-	return userEntity.ID, nil
+	return userEntity.ID, err
 
 }
 
