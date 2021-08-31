@@ -8,7 +8,7 @@ import (
 
 type CatalogRepository interface {
 	// FindAllCatalogItems find any catalog from DB.
-	FindAllCatalogItems(context.Context, interface{}) error
+	FindAllCatalogItems(context.Context, interface{}) (interface{}, error)
 }
 
 type CatalogRepositoryImpl struct {
@@ -20,10 +20,10 @@ func NewCatalogRepositoryImpl(db rel.Repository) CatalogRepository {
 }
 
 // FindCatalogByName find any catalog from DB
-func (c CatalogRepositoryImpl) FindAllCatalogItems(ctx context.Context, holderEntity interface{}) error {
+func (c CatalogRepositoryImpl) FindAllCatalogItems(ctx context.Context, holderEntity interface{}) (interface{}, error) {
 	err := c.provider.FindAll(ctx, holderEntity)
 	if err != nil {
-		return err
+		return holderEntity, err
 	}
-	return nil
+	return holderEntity, nil
 }
