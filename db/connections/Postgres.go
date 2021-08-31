@@ -1,18 +1,20 @@
 package connections
 
 import (
+	"github.com/go-rel/rel"
+	"github.com/go-rel/rel/adapter/postgres"
+	_ "github.com/lib/pq"
 	"github.com/manicar2093/charly_team_api/config"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 )
 
-func PostgressConnection() *gorm.DB {
+func PostgressConnection() rel.Repository {
 
-	db, err := gorm.Open(postgres.Open(config.DBConnectionURL()))
+	adapter, err := postgres.Open(config.DBConnectionURL())
+
 	if err != nil {
 		panic(err)
 	}
 
-	return db
+	return rel.New(adapter)
 
 }

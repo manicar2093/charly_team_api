@@ -7,9 +7,12 @@ require (
 	github.com/aws/aws-sdk-go v1.27.0
 	github.com/go-playground/universal-translator v0.18.0 // indirect
 	github.com/go-playground/validator v9.31.0+incompatible
+	github.com/go-rel/rel v0.21.0 // indirect
 	github.com/joho/godotenv v1.3.0
 	github.com/kr/pretty v0.3.0 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
+	github.com/lib/pq v1.10.2 // indirect
+	github.com/mattn/go-sqlite3 v1.14.8 // indirect
 	github.com/rogpeppe/go-internal v1.8.0 // indirect
 	github.com/sethvargo/go-password v0.2.0
 	github.com/stretchr/testify v1.7.0

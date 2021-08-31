@@ -1,17 +1,18 @@
 package connections
 
 import (
-	"gorm.io/driver/sqlite"
-	"gorm.io/gorm"
+	"github.com/go-rel/rel"
+	"github.com/go-rel/rel/adapter/sqlite3"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 var sqliteFile = "../../testing.db"
 
-func SQLiteConnection() *gorm.DB {
-	db, err := gorm.Open(sqlite.Open(sqliteFile))
+func SQLiteConnection() rel.Repository {
+	adapter, err := sqlite3.Open(sqliteFile)
 	if err != nil {
 		panic(err)
 	}
 
-	return db
+	return rel.New(adapter)
 }
