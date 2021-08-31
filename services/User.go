@@ -29,7 +29,10 @@ const (
 )
 
 type UserService interface {
-	CreateUser(user *models.CreateUserRequest) (int32, error)
+	CreateUser(
+		ctx context.Context,
+		user *models.CreateUserRequest,
+	) (int32, error)
 }
 
 // UserServiceCognito is a middleware to Cognito Services. PoolID is taken from config package.
@@ -43,7 +46,7 @@ func NewUserServiceCognito(
 	provider aws.CongitoClient,
 	passGen PassGen,
 	repo rel.Repository,
-) *UserServiceCognito {
+) UserService {
 	return &UserServiceCognito{
 		provider: provider,
 		passGen:  passGen,

@@ -149,6 +149,48 @@ func (u *UserServiceTest) TestCreateUserPassGenError() {
 	u.Empty(userGot, "user should not be created")
 }
 
+func (u *UserServiceTest) TestCreateUserAdminCreateUserError() {
+
+	adminCreateUserReq := cognitoidentityprovider.AdminCreateUserInput{
+		UserPoolId:        &config.CognitoPoolID,
+		Username:          &u.username,
+		TemporaryPassword: &u.temporaryPass,
+		UserAttributes: []*cognitoidentityprovider.AttributeType{
+			{
+				Name:  &emailAttributeName,
+				Value: &u.userRequest.Email,
+			},
+		},
+	}
+	userDBReq := entities.User{
+		Name:     u.userRequest.Name,
+		LastName: u.userRequest.LastName,
+		RoleID:   int32(u.userRequest.RoleID),
+		Email:    u.userRequest.Email,
+		Birthday: u.userRequest.Birthday,
+	}
+
+	u.providerMock.On(
+		"AdminCreateUser",
+		&adminCreateUserReq,
+	).Return(
+		&cognitoidentityprovider.AdminCreateUserOutput{},
+		u.anError,
+	)
+	u.repoMock.ExpectTransaction(func(r *reltest.Repository) {
+		u.passGenMock.On("Generate").Return(u.temporaryPass, nil)
+		r.ExpectInsert().For(&userDBReq)
+	})
+
+	userService := NewUserServiceCognito(u.providerMock, u.passGenMock, u.repoMock)
+
+	userCreated, err := userService.CreateUser(context.Background(), &u.userRequest)
+
+	u.NotNil(err)
+	u.Empty(userCreated, "user id is not correct")
+
+}
+
 func TestUserService(t *testing.T) {
 	suite.Run(t, new(UserServiceTest))
 }
