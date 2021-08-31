@@ -11,24 +11,24 @@ type NotAnEntity struct{}
 
 func TestFindAllCatalogItems(t *testing.T) {
 
-	repository := NewCatalogRepositoryGorm(DB)
+	var data []entities.Biotype
+	repository := NewCatalogRepositoryImpl(DB)
 
-	data, err := repository.FindAllCatalogItems(&[]entities.Biotype{})
+	err := repository.FindAllCatalogItems(Ctx, &data)
 
 	assert.Nil(t, err, "should not present error")
 
-	dataList, ok := data.(*[]entities.Biotype)
-	assert.True(t, ok, "error parsing data to list")
-
-	assert.Greater(t, len(*dataList), 1, "no items in data list")
+	assert.Greater(t, len(data), 1, "no items in data list")
 
 }
 
 func TestFindAllCatalogItemsError(t *testing.T) {
 
-	repository := NewCatalogRepositoryGorm(DB)
+	repository := NewCatalogRepositoryImpl(DB)
 
-	_, err := repository.FindAllCatalogItems(&[]NotAnEntity{})
+	var wrongData []NotAnEntity
+
+	err := repository.FindAllCatalogItems(Ctx, &wrongData)
 
 	assert.NotNil(t, err, "should present error")
 
