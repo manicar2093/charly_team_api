@@ -14,6 +14,8 @@ type User struct {
 	BoneDensityID null.Int
 	Role          Role `ref:"role_id" fk:"id"`
 	RoleID        int32
+	Gender        Gender `ref:"gender_id" fk:"id"`
+	GenderID      int32
 	Name          string
 	LastName      string
 	Email         string

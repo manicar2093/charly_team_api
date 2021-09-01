@@ -42,6 +42,7 @@ func (c *MainTests) TestRegistryNewUser() {
 		Email:    "testing@main-func.com",
 		Birthday: time.Now(),
 		RoleID:   3,
+		GenderID: 1,
 	}
 
 	c.validator.On("Validate", userRequest).Return(validators.ValidateOutput{IsValid: true, Err: nil})

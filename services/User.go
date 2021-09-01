@@ -63,6 +63,7 @@ func (u UserServiceCognito) CreateUser(
 		Name:     user.Name,
 		LastName: user.LastName,
 		RoleID:   int32(user.RoleID),
+		GenderID: int32(user.GenderID),
 		Email:    user.Email,
 		Birthday: user.Birthday,
 	}
