@@ -2,6 +2,7 @@ package entities
 
 import (
 	"context"
+	"database/sql"
 	"testing"
 	"time"
 
@@ -11,13 +12,13 @@ import (
 func TestCustomerEntity(t *testing.T) {
 
 	user := User{
-		Biotype:     Biotype{ID: 1},
-		BoneDensity: BoneDensity{ID: 1},
-		Role:        Role{ID: 1},
-		Name:        "Test",
-		LastName:    "Test",
-		Email:       "test@test.com",
-		Birthday:    time.Now(),
+		BiotypeID:     sql.NullInt32{Valid: true, Int32: 1},
+		BoneDensityID: sql.NullInt32{Valid: true, Int32: 1},
+		RoleID:        1,
+		Name:          "Test",
+		LastName:      "Test",
+		Email:         "test@test.com",
+		Birthday:      time.Now(),
 	}
 
 	ctx := context.Background()

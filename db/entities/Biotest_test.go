@@ -2,6 +2,7 @@ package entities
 
 import (
 	"context"
+	"database/sql"
 	"testing"
 	"time"
 
@@ -65,13 +66,13 @@ func TestBiotestEntity(t *testing.T) {
 
 	t.Run("Customer creation for test", func(t *testing.T) {
 		customer = User{
-			Biotype:     Biotype{ID: 1},
-			BoneDensity: BoneDensity{ID: 1},
-			Role:        Role{ID: 1},
-			Name:        "Test",
-			LastName:    "Test",
-			Email:       "test1@test.com",
-			Birthday:    time.Now(),
+			BiotypeID:     sql.NullInt32{Int32: 1, Valid: true},
+			BoneDensityID: sql.NullInt32{Int32: 1, Valid: true},
+			RoleID:        1,
+			Name:          "Test",
+			LastName:      "Test",
+			Email:         "test1@test.com",
+			Birthday:      time.Now(),
 		}
 
 		DB.Insert(context.Background(), &customer)
@@ -80,13 +81,13 @@ func TestBiotestEntity(t *testing.T) {
 
 	t.Run("Creator creation for test", func(t *testing.T) {
 		creator = User{
-			Biotype:     Biotype{ID: 1},
-			BoneDensity: BoneDensity{ID: 1},
-			Role:        Role{ID: 1},
-			Name:        "Test",
-			LastName:    "Test",
-			Email:       "creator_test_1@test.com",
-			Birthday:    time.Now(),
+			BiotypeID:     sql.NullInt32{Int32: 1, Valid: true},
+			BoneDensityID: sql.NullInt32{Int32: 1, Valid: true},
+			RoleID:        1,
+			Name:          "Test",
+			LastName:      "Test",
+			Email:         "creator_test_1@test.com",
+			Birthday:      time.Now(),
 		}
 
 		DB.Insert(context.Background(), &creator)
@@ -100,7 +101,7 @@ func TestBiotestEntity(t *testing.T) {
 			LowerMuscleDensity:      lowerMuscleDensity,
 			SkinFolds:               skinFolds,
 			HigherMuscleDensity:     higherMuscleDensity,
-			WeightClasification:     WeightClasification{ID: 4},
+			WeightClasificationID:   4,
 			Customer:                customer,
 			Creator:                 creator,
 			Weight:                  250.1,
@@ -112,7 +113,7 @@ func TestBiotestEntity(t *testing.T) {
 			Glucose:                 77,
 			RestingHeartRate:        70.0,
 			MaximumHeartRate:        70.0,
-			HeartHealth:             HeartHealth{ID: 1},
+			HeartHealthID:           1,
 			Observations:            "testing observations",
 			Recommendations:         "Testing recomentations",
 			FrontPicture:            "/path/to/file",
