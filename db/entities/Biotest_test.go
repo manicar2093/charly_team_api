@@ -2,11 +2,11 @@ package entities
 
 import (
 	"context"
-	"database/sql"
 	"testing"
 	"time"
 
 	"github.com/stretchr/testify/assert"
+	"gopkg.in/guregu/null.v4"
 )
 
 func TestBiotestEntity(t *testing.T) {
@@ -66,8 +66,8 @@ func TestBiotestEntity(t *testing.T) {
 
 	t.Run("Customer creation for test", func(t *testing.T) {
 		customer = User{
-			BiotypeID:     sql.NullInt32{Int32: 1, Valid: true},
-			BoneDensityID: sql.NullInt32{Int32: 1, Valid: true},
+			BiotypeID:     null.IntFrom(1),
+			BoneDensityID: null.IntFrom(1),
 			RoleID:        1,
 			Name:          "Test",
 			LastName:      "Test",
@@ -81,8 +81,8 @@ func TestBiotestEntity(t *testing.T) {
 
 	t.Run("Creator creation for test", func(t *testing.T) {
 		creator = User{
-			BiotypeID:     sql.NullInt32{Int32: 1, Valid: true},
-			BoneDensityID: sql.NullInt32{Int32: 1, Valid: true},
+			BiotypeID:     null.IntFrom(1),
+			BoneDensityID: null.IntFrom(1),
 			RoleID:        1,
 			Name:          "Test",
 			LastName:      "Test",
@@ -98,29 +98,29 @@ func TestBiotestEntity(t *testing.T) {
 	t.Run("Test creation of Biotest instance", func(t *testing.T) {
 
 		biotest = Biotest{
-			LowerMuscleDensity:      lowerMuscleDensity,
-			SkinFolds:               skinFolds,
-			HigherMuscleDensity:     higherMuscleDensity,
+			LowerMuscleDensityID:    lowerMuscleDensity.ID,
+			SkinFoldsID:             skinFolds.ID,
+			HigherMuscleDensityID:   higherMuscleDensity.ID,
 			WeightClasificationID:   4,
-			Customer:                customer,
-			Creator:                 creator,
+			HeartHealthID:           1,
+			CustomerID:              customer.ID,
+			CreatorID:               creator.ID,
 			Weight:                  250.1,
 			Height:                  195,
 			BodyFatPercentage:       12.5,
 			TotalBodyWater:          100.0,
 			BodyMassIndex:           32.66,
 			OxygenSaturationInBlood: 91.0,
-			Glucose:                 77,
-			RestingHeartRate:        70.0,
-			MaximumHeartRate:        70.0,
-			HeartHealthID:           1,
-			Observations:            "testing observations",
-			Recommendations:         "Testing recomentations",
-			FrontPicture:            "/path/to/file",
-			BackPicture:             "/path/to/file",
-			RightSidePicture:        "/path/to/file",
-			LeftSidePicture:         "/path/to/file",
-			NextEvaluation:          time.Now(),
+			Glucose:                 null.FloatFrom(77.0),
+			RestingHeartRate:        null.FloatFrom(70.0),
+			MaximumHeartRate:        null.FloatFrom(70.0),
+			Observations:            null.StringFrom("testing observations"),
+			Recommendations:         null.StringFrom("Testing recomentations"),
+			FrontPicture:            null.StringFrom("/path/to/file"),
+			BackPicture:             null.StringFrom("/path/to/file"),
+			RightSidePicture:        null.StringFrom("/path/to/file"),
+			LeftSidePicture:         null.StringFrom("/path/to/file"),
+			NextEvaluation:          null.TimeFrom(time.Now()),
 		}
 
 		DB.Insert(context.Background(), &biotest)

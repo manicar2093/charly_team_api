@@ -1,6 +1,10 @@
 package entities
 
-import "time"
+import (
+	"time"
+
+	"gopkg.in/guregu/null.v4"
+)
 
 type Biotest struct {
 	ID                      int32               `db:",primary"`
@@ -24,16 +28,16 @@ type Biotest struct {
 	TotalBodyWater          float32
 	BodyMassIndex           float32
 	OxygenSaturationInBlood float32
-	Glucose                 float32
-	RestingHeartRate        float32
-	MaximumHeartRate        float32
-	Observations            string
-	Recommendations         string
-	FrontPicture            string
-	BackPicture             string
-	RightSidePicture        string
-	LeftSidePicture         string
-	NextEvaluation          time.Time
+	Glucose                 null.Float
+	RestingHeartRate        null.Float
+	MaximumHeartRate        null.Float
+	Observations            null.String
+	Recommendations         null.String
+	FrontPicture            null.String
+	BackPicture             null.String
+	RightSidePicture        null.String
+	LeftSidePicture         null.String
+	NextEvaluation          null.Time
 	CreatedAt               time.Time
 }
 

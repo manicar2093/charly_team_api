@@ -2,18 +2,18 @@ package entities
 
 import (
 	"context"
-	"database/sql"
 	"testing"
 	"time"
 
 	"github.com/stretchr/testify/assert"
+	"gopkg.in/guregu/null.v4"
 )
 
 func TestCustomerEntity(t *testing.T) {
 
 	user := User{
-		BiotypeID:     sql.NullInt32{Valid: true, Int32: 1},
-		BoneDensityID: sql.NullInt32{Valid: true, Int32: 1},
+		BiotypeID:     null.IntFrom(1),
+		BoneDensityID: null.IntFrom(1),
 		RoleID:        1,
 		Name:          "Test",
 		LastName:      "Test",
