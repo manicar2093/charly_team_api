@@ -1,3 +1,9 @@
+## v0.15.0 (2021-09-02)
+
+### Feat
+
+- registry bio test feature (#40)
+
 ## v0.14.0 (2021-08-31)
 
 ### Feat
