@@ -1,3 +1,9 @@
+## v0.16.0 (2021-09-02)
+
+### Feat
+
+- Change user gender to nullable (#44)
+
 ## v0.15.0 (2021-09-02)
 
 ### Feat
