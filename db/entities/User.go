@@ -15,7 +15,7 @@ type User struct {
 	Role          Role `ref:"role_id" fk:"id"`
 	RoleID        int32
 	Gender        Gender `ref:"gender_id" fk:"id"`
-	GenderID      int32
+	GenderID      null.Int
 	Name          string
 	LastName      string
 	Email         string

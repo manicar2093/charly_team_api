@@ -12,6 +12,7 @@ import (
 	"github.com/manicar2093/charly_team_api/config"
 	"github.com/manicar2093/charly_team_api/db/entities"
 	"github.com/manicar2093/charly_team_api/models"
+	"gopkg.in/guregu/null.v4"
 )
 
 type RoleType int32
@@ -63,7 +64,7 @@ func (u UserServiceCognito) CreateUser(
 		Name:     user.Name,
 		LastName: user.LastName,
 		RoleID:   int32(user.RoleID),
-		GenderID: int32(user.GenderID),
+		GenderID: null.IntFrom(int64(user.GenderID)),
 		Email:    user.Email,
 		Birthday: user.Birthday,
 	}
