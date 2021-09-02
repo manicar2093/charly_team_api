@@ -2,10 +2,8 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"net/http"
-	"os"
 	"testing"
 
 	"github.com/go-rel/rel/reltest"
@@ -87,8 +85,6 @@ func (c *MainTests) TestRegistryNewUserNoValidReq() {
 	c.validator.On("Validate", biotestRequest).Return(validators.ValidateOutput{IsValid: false, Err: validationErrors})
 
 	res := CreateLambdaHandlerWDependencies(c.repo, &c.validator)(c.ctx, biotestRequest)
-
-	json.NewEncoder(os.Stdout).Encode(res)
 
 	c.Equal(res.StatusCode, http.StatusBadRequest, "http status is not correct")
 	c.Equal(res.Status, http.StatusText(http.StatusBadRequest), "http status is not correct")
