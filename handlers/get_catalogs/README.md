@@ -1,3 +1,12 @@
+## Registred catalogs
+
+- _biotype_
+- _bone_density_
+- _heart_healths_
+- _roles_
+- _weight_classifications_
+- _genders_
+
 ## BadRequest Validation errors
 
 ```

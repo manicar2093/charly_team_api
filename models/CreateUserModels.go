@@ -7,7 +7,8 @@ type CreateUserRequest struct {
 	LastName string    `json:"last_name,omitempty" validate:"required"`
 	Email    string    `json:"email,omitempty" validate:"required,email"`
 	Birthday time.Time `json:"birthday,omitempty" validate:"required"`
-	RoleID   int       `json:"role_id,omitempty" validate:"required, gt=0"`
+	RoleID   int       `json:"role_id,omitempty" validate:"required,gt=0"`
+	GenderID int       `json:"gender_id,omitempty" validate:"required,gt=0"`
 }
 
 type CreateUserResponse struct {

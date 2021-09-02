@@ -60,6 +60,7 @@ func (u *UserServiceTest) SetupTest() {
 		Email:    u.email,
 		Birthday: u.birthday,
 		RoleID:   3,
+		GenderID: 1,
 	}
 }
 
@@ -89,6 +90,7 @@ func (u *UserServiceTest) TestCreateUser() {
 		RoleID:   int32(u.userRequest.RoleID),
 		Email:    u.userRequest.Email,
 		Birthday: u.userRequest.Birthday,
+		GenderID: int32(1),
 	}
 
 	u.providerMock.On(
@@ -120,6 +122,7 @@ func (u *UserServiceTest) TestCreateUserRepoSaveErr() {
 		RoleID:   int32(u.userRequest.RoleID),
 		Email:    u.userRequest.Email,
 		Birthday: u.userRequest.Birthday,
+		GenderID: int32(1),
 	}
 
 	u.repoMock.ExpectTransaction(func(r *reltest.Repository) {
@@ -168,6 +171,7 @@ func (u *UserServiceTest) TestCreateUserAdminCreateUserError() {
 		RoleID:   int32(u.userRequest.RoleID),
 		Email:    u.userRequest.Email,
 		Birthday: u.userRequest.Birthday,
+		GenderID: int32(1),
 	}
 
 	u.providerMock.On(

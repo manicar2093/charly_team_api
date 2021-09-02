@@ -2,13 +2,12 @@ package entities
 
 import "time"
 
-// HeartHealth is a catalog
-type HeartHealth struct {
+type Gender struct {
 	ID          int32 `db:",primary"`
 	Description string
 	CreatedAt   time.Time
 }
 
-func (h HeartHealth) Table() string {
-	return "HeartHealths"
+func (c Gender) Table() string {
+	return "Gender"
 }

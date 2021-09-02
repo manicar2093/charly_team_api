@@ -6,18 +6,20 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/assert"
+	"gopkg.in/guregu/null.v4"
 )
 
 func TestCustomerEntity(t *testing.T) {
 
 	user := User{
-		Biotype:     Biotype{ID: 1},
-		BoneDensity: BoneDensity{ID: 1},
-		Role:        Role{ID: 1},
-		Name:        "Test",
-		LastName:    "Test",
-		Email:       "test@test.com",
-		Birthday:    time.Now(),
+		BiotypeID:     null.IntFrom(1),
+		BoneDensityID: null.IntFrom(1),
+		RoleID:        1,
+		GenderID:      1,
+		Name:          "Test",
+		LastName:      "Test",
+		Email:         "test@test.com",
+		Birthday:      time.Now(),
 	}
 
 	ctx := context.Background()

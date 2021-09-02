@@ -1,12 +1,15 @@
 package entities
 
+import "gopkg.in/guregu/null.v4"
+
+// LowerMuscleDensity is an info wrapper
 type LowerMuscleDensity struct {
-	ID        int32 `db:",primary"`
-	Hips      float32
-	RightLeg  float32
-	LeftLeg   float32
-	RightCalf float32
-	LeftCalf  float32
+	ID        int32      `db:",primary" json:"id,omitempty"`
+	Hips      null.Float `json:"hips,omitempty"`
+	RightLeg  null.Float `json:"right_leg,omitempty"`
+	LeftLeg   null.Float `json:"left_leg,omitempty"`
+	RightCalf null.Float `json:"right_calf,omitempty"`
+	LeftCalf  null.Float `json:"left_calf,omitempty"`
 }
 
 func (l LowerMuscleDensity) Table() string {

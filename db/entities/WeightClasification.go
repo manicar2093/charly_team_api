@@ -2,6 +2,7 @@ package entities
 
 import "time"
 
+// WeightClasification is a catalog
 type WeightClasification struct {
 	ID          int32 `db:",primary"`
 	Description string

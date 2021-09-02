@@ -1,18 +1,21 @@
 package entities
 
 import (
-	"database/sql"
 	"time"
+
+	"gopkg.in/guregu/null.v4"
 )
 
 type User struct {
 	ID            int32   `db:",primary"`
 	Biotype       Biotype `ref:"biotype_id" fk:"id"`
-	BiotypeID     sql.NullInt32
+	BiotypeID     null.Int
 	BoneDensity   BoneDensity `ref:"bone_density_id" fk:"id"`
-	BoneDensityID sql.NullInt32
+	BoneDensityID null.Int
 	Role          Role `ref:"role_id" fk:"id"`
 	RoleID        int32
+	Gender        Gender `ref:"gender_id" fk:"id"`
+	GenderID      int32
 	Name          string
 	LastName      string
 	Email         string

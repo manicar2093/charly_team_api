@@ -15,6 +15,7 @@ var catalogs = map[string]interface{}{
 	"heart_healths":          []entities.HeartHealth{},
 	"roles":                  []entities.Role{},
 	"weight_classifications": []entities.WeightClasification{},
+	"genders":                []entities.Gender{},
 }
 
 // CatalogFactory creates the need catalog response
