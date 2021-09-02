@@ -5,14 +5,15 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"gopkg.in/guregu/null.v4"
 )
 
 func TestSkinFoldsEntity(t *testing.T) {
 	skinFold := SkinFolds{
-		Subscapular: 12,
-		Suprailiac:  12,
-		Bicipital:   12,
-		Tricipital:  10,
+		Subscapular: null.IntFrom(12),
+		Suprailiac:  null.IntFrom(12),
+		Bicipital:   null.IntFrom(12),
+		Tricipital:  null.IntFrom(10),
 	}
 
 	ctx := context.Background()

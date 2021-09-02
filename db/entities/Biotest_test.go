@@ -19,20 +19,20 @@ func TestBiotestEntity(t *testing.T) {
 
 	t.Run("Test creation of HigherMuscleDensity instance", func(t *testing.T) {
 		higherMuscleDensity = HigherMuscleDensity{
-			Neck:                 10.0,
-			Shoulders:            42.5,
-			Back:                 25.0,
-			Chest:                20.0,
-			BackChest:            46.3,
-			RightRelaxedBicep:    15.3,
-			RightContractedBicep: 14.2,
-			LeftRelaxedBicep:     12.2,
-			LeftContractedBicep:  11.6,
-			RightForearm:         12.5,
-			LeftForearm:          12.6,
-			Wrists:               18.5,
-			HighAbdomen:          106.5,
-			LowerAbdomen:         106.0,
+			Neck:                 null.FloatFrom(10.0),
+			Shoulders:            null.FloatFrom(42.5),
+			Back:                 null.FloatFrom(25.0),
+			Chest:                null.FloatFrom(20.0),
+			BackChest:            null.FloatFrom(46.3),
+			RightRelaxedBicep:    null.FloatFrom(15.3),
+			RightContractedBicep: null.FloatFrom(14.2),
+			LeftRelaxedBicep:     null.FloatFrom(12.2),
+			LeftContractedBicep:  null.FloatFrom(11.6),
+			RightForearm:         null.FloatFrom(12.5),
+			LeftForearm:          null.FloatFrom(12.6),
+			Wrists:               null.FloatFrom(18.5),
+			HighAbdomen:          null.FloatFrom(106.5),
+			LowerAbdomen:         null.FloatFrom(106.0),
 		}
 
 		DB.Insert(context.Background(), &higherMuscleDensity)
@@ -41,11 +41,11 @@ func TestBiotestEntity(t *testing.T) {
 
 	t.Run("Test creation of LowerMuscleDensity instance", func(t *testing.T) {
 		lowerMuscleDensity = LowerMuscleDensity{
-			Hips:      45.0,
-			RightLeg:  24.6,
-			LeftLeg:   24.1,
-			RightCalf: 15.3,
-			LeftCalf:  15.0,
+			Hips:      null.FloatFrom(45.0),
+			RightLeg:  null.FloatFrom(24.6),
+			LeftLeg:   null.FloatFrom(24.1),
+			RightCalf: null.FloatFrom(15.3),
+			LeftCalf:  null.FloatFrom(15.0),
 		}
 
 		DB.Insert(context.Background(), &lowerMuscleDensity)
@@ -54,10 +54,10 @@ func TestBiotestEntity(t *testing.T) {
 
 	t.Run("Test creation of SkinFolds instance", func(t *testing.T) {
 		skinFolds = SkinFolds{
-			Subscapular: 32,
-			Suprailiac:  100,
-			Bicipital:   150,
-			Tricipital:  200,
+			Subscapular: null.IntFrom(32),
+			Suprailiac:  null.IntFrom(100),
+			Bicipital:   null.IntFrom(150),
+			Tricipital:  null.IntFrom(200),
 		}
 
 		DB.Insert(context.Background(), &skinFolds)
