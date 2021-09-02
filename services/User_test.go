@@ -15,6 +15,7 @@ import (
 	"github.com/manicar2093/charly_team_api/models"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
+	"gopkg.in/guregu/null.v4"
 )
 
 type UserServiceTest struct {
@@ -90,7 +91,7 @@ func (u *UserServiceTest) TestCreateUser() {
 		RoleID:   int32(u.userRequest.RoleID),
 		Email:    u.userRequest.Email,
 		Birthday: u.userRequest.Birthday,
-		GenderID: int32(1),
+		GenderID: null.IntFrom(1),
 	}
 
 	u.providerMock.On(
@@ -122,7 +123,7 @@ func (u *UserServiceTest) TestCreateUserRepoSaveErr() {
 		RoleID:   int32(u.userRequest.RoleID),
 		Email:    u.userRequest.Email,
 		Birthday: u.userRequest.Birthday,
-		GenderID: int32(1),
+		GenderID: null.IntFrom(1),
 	}
 
 	u.repoMock.ExpectTransaction(func(r *reltest.Repository) {
@@ -171,7 +172,7 @@ func (u *UserServiceTest) TestCreateUserAdminCreateUserError() {
 		RoleID:   int32(u.userRequest.RoleID),
 		Email:    u.userRequest.Email,
 		Birthday: u.userRequest.Birthday,
-		GenderID: int32(1),
+		GenderID: null.IntFrom(1),
 	}
 
 	u.providerMock.On(
