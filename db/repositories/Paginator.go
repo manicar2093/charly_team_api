@@ -13,6 +13,7 @@ type Paginable interface {
 		ctx context.Context,
 		tableName string,
 		holder interface{},
+		pageNumber int,
 		queries ...rel.Querier,
 	) (*models.Paginator, error)
 }
@@ -29,6 +30,7 @@ func (c PaginableImpl) CreatePaginator(
 	ctx context.Context,
 	tableName string,
 	holder interface{},
+	pageNumber int,
 	queries ...rel.Querier,
 ) (*models.Paginator, error) {
 	totalEntries, err := c.repo.Count(ctx, tableName)
@@ -36,7 +38,12 @@ func (c PaginableImpl) CreatePaginator(
 		return nil, err
 	}
 
-	err = c.repo.Find(ctx, &holder, queries...)
+	pageLimitQuery := rel.Limit(config.PageSize)
+	pageOffsetQuery := rel.Offset(config.PageSize * (pageNumber - 1))
+
+	queries = append(queries, pageLimitQuery, pageOffsetQuery)
+
+	err = c.repo.FindAll(ctx, &holder, queries...)
 	if err != nil {
 		return nil, err
 	}
