@@ -10,6 +10,7 @@ import (
 	"github.com/manicar2093/charly_team_api/apperrors"
 	"github.com/manicar2093/charly_team_api/db/entities"
 	"github.com/manicar2093/charly_team_api/mocks"
+	"github.com/manicar2093/charly_team_api/models"
 	"github.com/manicar2093/charly_team_api/validators"
 	"github.com/stretchr/testify/suite"
 )
@@ -65,11 +66,8 @@ func (c *MainTests) TestCreateNewBiotestError() {
 	c.Equal(res.StatusCode, http.StatusInternalServerError, "http status is not correct")
 	c.Equal(res.Status, http.StatusText(http.StatusInternalServerError), "http status is not correct")
 
-	bodyAsMap := res.Body.(map[string]interface{})
-
-	errorGot, ok := bodyAsMap["error"].(string)
-	c.True(ok, "error parsing error message")
-	c.Equal(errorGot, c.ordinaryError.Error(), "error message should not be empty")
+	bodyError := res.Body.(models.ErrorReponse)
+	c.Equal(bodyError.Error, c.ordinaryError.Error(), "error message should not be empty")
 
 }
 

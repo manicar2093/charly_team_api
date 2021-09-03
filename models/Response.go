@@ -38,8 +38,8 @@ func CreateResponseFromError(err error) *Response {
 
 	return CreateResponse(
 		statusCode,
-		map[string]interface{}{
-			"error": errorMessage,
+		ErrorReponse{
+			Error: errorMessage,
 		},
 	)
 }

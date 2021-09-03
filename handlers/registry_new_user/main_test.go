@@ -79,12 +79,9 @@ func (c *MainTests) TestRegistryNewUserError() {
 	c.Equal(res.StatusCode, http.StatusInternalServerError, "http status is not correct")
 	c.Equal(res.Status, http.StatusText(http.StatusInternalServerError), "http status is not correct")
 
-	bodyAsMap := res.Body.(map[string]interface{})
+	bodyError := res.Body.(models.ErrorReponse)
 
-	errorGot, ok := bodyAsMap["error"].(string)
-	c.True(ok, "error parsing error data")
-
-	c.Equal(errorGot, errorText, "error does not correspond")
+	c.Equal(bodyError.Error, errorText, "error does not correspond")
 
 }
 

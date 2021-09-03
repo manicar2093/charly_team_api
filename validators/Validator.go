@@ -97,6 +97,7 @@ func CheckValidationErrors(validateOutput ValidateOutput) (bool, *models.Respons
 		return false, models.CreateResponseFromError(ErrorUnexpectedValidation)
 	}
 
+	// TODO: Considerar usar el models.ErrorReponse
 	return false, models.CreateResponse(
 		http.StatusBadRequest,
 		map[string]interface{}{

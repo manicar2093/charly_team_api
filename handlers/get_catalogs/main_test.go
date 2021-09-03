@@ -61,11 +61,9 @@ func (c *MainTests) TestGetCatalogsNotExists() {
 	c.Equal(res.StatusCode, http.StatusNotFound, "http error is not correct")
 	c.Equal(res.Status, http.StatusText(http.StatusNotFound), "http error is not correct")
 
-	bodyAsMap := res.Body.(map[string]interface{})
+	bodyError := res.Body.(models.ErrorReponse)
 
-	errMessage, ok := bodyAsMap["error"].(string)
-	c.True(ok, "error parsing error message")
-	c.NotEmpty(errMessage, "error message should not be empty")
+	c.NotEmpty(bodyError.Error, "error message should not be empty")
 
 }
 
