@@ -29,6 +29,11 @@ func TestGetDBConnectionURL(t *testing.T) {
 
 	t.Run("if DB_URL is not set should return generated ULR", func(t *testing.T) {
 		expected_content := "localhost"
+		err := os.Unsetenv("DB_URL")
+		if err != nil {
+			t.Fatal(err)
+		}
+		StartConfig()
 		got := DBConnectionURL()
 
 		assert.Contains(t, got, expected_content, "incorrect generated URL")

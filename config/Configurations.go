@@ -3,10 +3,12 @@ package config
 import (
 	"fmt"
 	"os"
+	"strconv"
 )
 
 var (
 	DBHost, DBPort, DBName, DBUser, DBPassword, dbUrl, AWSRegion, AWSAccessKeyID, AWSSecretAccessKey, CognitoPoolID string
+	PageSize                                                                                                        int
 )
 
 const (
@@ -37,6 +39,15 @@ func DBConnectionURL() string {
 	return dbUrl
 }
 
+func getPageSize() int {
+	pageSizeConverted, err := strconv.Atoi(os.Getenv("PAGE_SIZE"))
+
+	if err != nil {
+		panic("wrong page size paramenter. should be an int")
+	}
+	return pageSizeConverted
+}
+
 func StartConfig() {
 	DBHost = GetEnvOrPanic("DB_HOST")
 	DBPort = GetEnvOrPanic("DB_PORT")
@@ -48,4 +59,5 @@ func StartConfig() {
 	AWSSecretAccessKey = GetEnvOrPanic("AWS_SECRET_ACCESS_KEY")
 	CognitoPoolID = GetEnvOrPanic("COGNITO_POOL_ID")
 	dbUrl = os.Getenv("DB_URL")
+	PageSize = getPageSize()
 }
