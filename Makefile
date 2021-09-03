@@ -44,4 +44,5 @@ coverage_html:
 	@ make db_testing_rollback
 
 clean:
-	@ rm -r ./dist
+	@ - rm -r ./dist
+	@ - rm -r coverage.out

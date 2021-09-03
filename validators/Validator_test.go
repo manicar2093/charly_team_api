@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/manicar2093/charly_team_api/apperrors"
+	"github.com/manicar2093/charly_team_api/models"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -96,7 +97,7 @@ func TestCheckValidationErrors(t *testing.T) {
 		assert.Equal(t, http.StatusInternalServerError, responseGot.StatusCode, "response code incorrect")
 		assert.Equal(t, http.StatusText(http.StatusInternalServerError), responseGot.Status)
 
-		body, _ := responseGot.Body.(map[string]interface{})
+		body, _ := responseGot.Body.(models.ErrorReponse)
 
 		assert.NotEmpty(t, body, "reponse body should not be empty")
 	})
