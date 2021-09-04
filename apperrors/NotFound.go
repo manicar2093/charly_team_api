@@ -13,3 +13,15 @@ func (c NotFoundError) Error() string {
 func (c NotFoundError) StatusCode() int {
 	return http.StatusNotFound
 }
+
+type BadStatusError struct {
+	Message string
+}
+
+func (c BadStatusError) Error() string {
+	return c.Message
+}
+
+func (c BadStatusError) StatusCode() int {
+	return http.StatusNotFound
+}

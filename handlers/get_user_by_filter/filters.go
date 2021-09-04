@@ -10,7 +10,6 @@ import (
 )
 
 type UserFilterService struct {
-	isFound   bool
 	filters   map[string]filters.FilterFunc
 	repo      rel.Repository
 	paginator paginator.Paginable
@@ -25,16 +24,16 @@ func NewUserFilterService(
 		repo:      repo,
 		paginator: paginator,
 	}
-	userService.filters["finde_user_by_id"] = FindUserByID
+	userService.filters["find_user_by_id"] = FindUserByID
 	userService.filters["find_all_users"] = FindAllUsers
 	userService.filters["find_user_by_email"] = FindUserByEmail
 	return &userService
 }
 
-func (c UserFilterService) GetUserFilter(filterName string) filters.FilterRunner {
+func (c UserFilterService) GetUserFilter(filterName string) filters.FilterRunable {
 
 	filterFound, isFound := c.filters[filterName]
-	return filters.FilterRunner{Filter: filterFound, IsFound: isFound}
+	return filters.FilterRunner{Filter: filterFound, Found: isFound}
 
 }
 

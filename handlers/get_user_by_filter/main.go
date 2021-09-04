@@ -7,6 +7,7 @@ import (
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/go-rel/rel"
 	"github.com/manicar2093/charly_team_api/db/connections"
+	"github.com/manicar2093/charly_team_api/db/filters"
 	"github.com/manicar2093/charly_team_api/db/paginator"
 	"github.com/manicar2093/charly_team_api/models"
 	"github.com/manicar2093/charly_team_api/validators"
@@ -14,12 +15,13 @@ import (
 
 func main() {
 	repo := connections.PostgressConnection()
+	paginator := paginator.NewPaginable(repo)
 	lambda.Start(
 		CreateLambdaHandlerWDependencies(
 			repo,
 			validators.NewStructValidator(),
-			paginator.NewPaginable(repo),
-			NewUserFilterService(),
+			paginator,
+			NewUserFilterService(repo, paginator),
 		),
 	)
 }
@@ -28,7 +30,7 @@ func CreateLambdaHandlerWDependencies(
 	repo rel.Repository,
 	validator validators.ValidatorService,
 	paginator paginator.Paginable,
-	userFilters UserFilterService,
+	userFilters filters.FilterService,
 ) func(ctx context.Context, req UserFilter) *models.Response {
 
 	return func(ctx context.Context, req UserFilter) *models.Response {
@@ -38,12 +40,19 @@ func CreateLambdaHandlerWDependencies(
 			return response
 		}
 
-		filter, isFilterExists := userFilters.GetUserFilter(req.FilterName)
-		if !isFilterExists {
+		filterRunner := userFilters.GetUserFilter(req.FilterName)
+		if !filterRunner.IsFound() {
 			return models.CreateResponse(http.StatusBadRequest, models.ErrorReponse{Error: "requested filter does not exists"})
 		}
 
-		items, err := filter(ctx, repo, req.Values, paginator)
+		filterParams := filters.FilterParameters{
+			Ctx:       ctx,
+			Repo:      repo,
+			Values:    req,
+			Paginator: paginator,
+		}
+
+		items, err := filterRunner.Run(&filterParams)
 		if err != nil {
 			return models.CreateResponseFromError(err)
 		}

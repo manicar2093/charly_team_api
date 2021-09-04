@@ -1,6 +1,7 @@
 package testfunc
 
 import (
+	"encoding/json"
 	"log"
 	"os"
 
@@ -22,4 +23,10 @@ func LoadEnvFileOrPanic(envFilePath string) {
 	}
 
 	config.StartConfig()
+}
+
+func PrintJsonIndented(data interface{}) {
+	encoder := json.NewEncoder(os.Stdout)
+	encoder.SetIndent(" ", " ")
+	encoder.Encode(data)
 }

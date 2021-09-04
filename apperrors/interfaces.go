@@ -1,6 +1,6 @@
 package apperrors
 
 type HandableErrors interface {
-	Error() string
+	error
 	StatusCode() int
 }
