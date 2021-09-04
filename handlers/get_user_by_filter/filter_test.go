@@ -10,6 +10,7 @@ import (
 	"github.com/go-rel/rel/where"
 	"github.com/manicar2093/charly_team_api/apperrors"
 	"github.com/manicar2093/charly_team_api/db/entities"
+	"github.com/manicar2093/charly_team_api/db/filters"
 	"github.com/manicar2093/charly_team_api/mocks"
 	"github.com/manicar2093/charly_team_api/models"
 	"github.com/stretchr/testify/mock"
@@ -21,6 +22,7 @@ type UserFilterTest struct {
 	repo                         *reltest.Repository
 	paginator                    *mocks.Paginable
 	ctx                          context.Context
+	filterParams                 filters.FilterParameters
 	notFoundError, ordinaryError error
 }
 
@@ -28,8 +30,13 @@ func (c *UserFilterTest) SetupTest() {
 	c.repo = reltest.New()
 	c.ctx = context.Background()
 	c.ordinaryError = errors.New("An ordinary error :O")
-	c.notFoundError = rel.NotFoundError{}
 	c.paginator = &mocks.Paginable{}
+	c.filterParams = filters.FilterParameters{
+		Ctx:       c.ctx,
+		Repo:      c.repo,
+		Paginator: c.paginator,
+	}
+	c.notFoundError = rel.NotFoundError{}
 
 }
 
@@ -54,7 +61,9 @@ func (c *UserFilterTest) TestFilterUserByID() {
 		},
 	)
 
-	got, err := FindUserByID(c.ctx, c.repo, request, c.paginator)
+	c.filterParams.Values = request
+
+	got, err := FindUserByID(&c.filterParams)
 
 	c.Nil(err, "FindUserByID return an error")
 
@@ -68,7 +77,9 @@ func (c *UserFilterTest) TestFilterUserByIDValidatioError() {
 
 	request := map[string]interface{}{}
 
-	_, err := FindUserByID(c.ctx, c.repo, request, c.paginator)
+	c.filterParams.Values = request
+
+	_, err := FindUserByID(&c.filterParams)
 
 	validationError, isValidationError := err.(apperrors.ValidationError)
 
@@ -91,7 +102,9 @@ func (c *UserFilterTest) TestFilterUserByIDNotFound() {
 		where.Eq("id", userIDRequested),
 	).Return(c.notFoundError)
 
-	_, err := FindUserByID(c.ctx, c.repo, request, c.paginator)
+	c.filterParams.Values = request
+
+	_, err := FindUserByID(&c.filterParams)
 
 	_, isHandableNotFoundError := err.(apperrors.UserNotFound)
 
@@ -111,7 +124,9 @@ func (c *UserFilterTest) TestFilterUserByIDUnhandledError() {
 		where.Eq("id", userIDRequested),
 	).Return(c.ordinaryError)
 
-	_, err := FindUserByID(c.ctx, c.repo, request, c.paginator)
+	c.filterParams.Values = request
+
+	_, err := FindUserByID(&c.filterParams)
 
 	c.NotNil(err, "should return error")
 
@@ -133,7 +148,9 @@ func (c *UserFilterTest) TestFindUserByEmail() {
 		},
 	)
 
-	got, err := FindUserByEmail(c.ctx, c.repo, request, c.paginator)
+	c.filterParams.Values = request
+
+	got, err := FindUserByEmail(&c.filterParams)
 
 	c.Nil(err, "FindUserByID return an error")
 
@@ -147,7 +164,9 @@ func (c *UserFilterTest) TestFindUserByEmailValidationError() {
 
 	request := map[string]interface{}{}
 
-	_, err := FindUserByEmail(c.ctx, c.repo, request, c.paginator)
+	c.filterParams.Values = request
+
+	_, err := FindUserByEmail(&c.filterParams)
 
 	_, isValidationError := err.(apperrors.ValidationError)
 	c.True(isValidationError, "unexpected error type")
@@ -166,7 +185,9 @@ func (c *UserFilterTest) TestFindUserByEmailNotFoundError() {
 		where.Like("email", "%"+userEmailRequested+"%"),
 	).Return(c.notFoundError)
 
-	_, err := FindUserByEmail(c.ctx, c.repo, request, c.paginator)
+	c.filterParams.Values = request
+
+	_, err := FindUserByEmail(&c.filterParams)
 
 	_, isHandableNotFoundError := err.(apperrors.UserNotFound)
 
@@ -186,7 +207,9 @@ func (c *UserFilterTest) TestFindUserByEmailUnhandledError() {
 		where.Like("email", "%"+userEmailRequested+"%"),
 	).Return(c.ordinaryError)
 
-	_, err := FindUserByEmail(c.ctx, c.repo, request, c.paginator)
+	c.filterParams.Values = request
+
+	_, err := FindUserByEmail(&c.filterParams)
 
 	c.NotNil(err, "should not return error")
 
@@ -208,7 +231,9 @@ func (c *UserFilterTest) TestFindAllUsers() {
 		userPageRequested,
 	).Return(&models.Paginator{}, nil)
 
-	got, err := FindAllUsers(c.ctx, c.repo, request, c.paginator)
+	c.filterParams.Values = request
+
+	got, err := FindAllUsers(&c.filterParams)
 
 	c.Nil(err, "FindUserByID return an error")
 
@@ -221,7 +246,9 @@ func (c *UserFilterTest) TestFindAllUsersValidationError() {
 
 	request := map[string]interface{}{}
 
-	_, err := FindAllUsers(c.ctx, c.repo, request, c.paginator)
+	c.filterParams.Values = request
+
+	_, err := FindAllUsers(&c.filterParams)
 
 	_, isValidationError := err.(apperrors.ValidationError)
 	c.True(isValidationError, "unexpected error type")

@@ -1,52 +1,48 @@
 package main
 
 import (
-	"context"
-
 	"github.com/go-rel/rel"
 	"github.com/go-rel/rel/where"
 	"github.com/manicar2093/charly_team_api/apperrors"
 	"github.com/manicar2093/charly_team_api/db/entities"
+	"github.com/manicar2093/charly_team_api/db/filters"
 	"github.com/manicar2093/charly_team_api/db/paginator"
 )
 
-// FilterFunc represents a result getter
-type FilterFunc func(
-	ctx context.Context,
+type UserFilterService struct {
+	isFound   bool
+	filters   map[string]filters.FilterFunc
+	repo      rel.Repository
+	paginator paginator.Paginable
+}
+
+func NewUserFilterService(
 	repo rel.Repository,
-	values interface{},
 	paginator paginator.Paginable,
-) (interface{}, error)
-
-type UserFilterService interface {
-	GetUserFilter(string) (FilterFunc, bool)
-}
-type UserFilterServicevImpl struct {
-	filters map[string]FilterFunc
-}
-
-func NewUserFilterService() UserFilterService {
-	userService := UserFilterServicevImpl{filters: make(map[string]FilterFunc)}
+) filters.FilterService {
+	userService := UserFilterService{
+		filters:   make(map[string]filters.FilterFunc),
+		repo:      repo,
+		paginator: paginator,
+	}
+	userService.filters["finde_user_by_id"] = FindUserByID
 	userService.filters["find_all_users"] = FindAllUsers
 	userService.filters["find_user_by_email"] = FindUserByEmail
-	userService.filters["finde_user_by_id"] = FindUserByID
 	return &userService
 }
 
-func (c UserFilterServicevImpl) GetUserFilter(filterName string) (FilterFunc, bool) {
+func (c UserFilterService) GetUserFilter(filterName string) filters.FilterRunner {
 
-	filter, ok := c.filters[filterName]
-	return filter, ok
+	filterFound, isFound := c.filters[filterName]
+	return filters.FilterRunner{Filter: filterFound, IsFound: isFound}
+
 }
 
 func FindUserByID(
-	ctx context.Context,
-	repo rel.Repository,
-	values interface{},
-	paginator paginator.Paginable,
+	params *filters.FilterParameters,
 ) (interface{}, error) {
 
-	valuesAsMap := values.(map[string]interface{})
+	valuesAsMap := params.Values.(map[string]interface{})
 
 	userID, ok := valuesAsMap["user_id"].(int)
 	if !ok {
@@ -55,7 +51,7 @@ func FindUserByID(
 
 	var userFound entities.User
 
-	err := repo.Find(ctx, &userFound, where.Eq("id", userID))
+	err := params.Repo.Find(params.Ctx, &userFound, where.Eq("id", userID))
 	if err != nil {
 		if _, ok := err.(rel.NotFoundError); ok {
 			return nil, apperrors.UserNotFound{}
@@ -66,13 +62,10 @@ func FindUserByID(
 }
 
 func FindUserByEmail(
-	ctx context.Context,
-	repo rel.Repository,
-	values interface{},
-	paginator paginator.Paginable,
+	params *filters.FilterParameters,
 ) (interface{}, error) {
 
-	valuesAsMap := values.(map[string]interface{})
+	valuesAsMap := params.Values.(map[string]interface{})
 
 	userEmail, ok := valuesAsMap["email"].(string)
 	if !ok {
@@ -81,7 +74,7 @@ func FindUserByEmail(
 
 	var userFound entities.User
 
-	err := repo.Find(ctx, &userFound, where.Like("email", "%"+userEmail+"%"))
+	err := params.Repo.Find(params.Ctx, &userFound, where.Like("email", "%"+userEmail+"%"))
 
 	if err != nil {
 		if _, ok := err.(rel.NotFoundError); ok {
@@ -95,13 +88,10 @@ func FindUserByEmail(
 }
 
 func FindAllUsers(
-	ctx context.Context,
-	repo rel.Repository,
-	values interface{},
-	paginator paginator.Paginable,
+	params *filters.FilterParameters,
 ) (interface{}, error) {
 
-	valuesAsMap := values.(map[string]interface{})
+	valuesAsMap := params.Values.(map[string]interface{})
 
 	pageNumber, ok := valuesAsMap["page_number"].(int)
 	if !ok {
@@ -110,8 +100,8 @@ func FindAllUsers(
 
 	var usersFound []entities.User
 
-	return paginator.CreatePaginator(
-		ctx,
+	return params.Paginator.CreatePaginator(
+		params.Ctx,
 		entities.User{}.Table(),
 		&usersFound,
 		pageNumber,
