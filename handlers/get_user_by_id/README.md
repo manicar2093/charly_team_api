@@ -1,6 +1,8 @@
+# UserFilters
+
 ## OK
 
-```
+```JSON
 {
     "code": 200,
     "status": "OK",
@@ -21,7 +23,7 @@
 
 ## Not Found
 
-```
+```JSON
 {
     "code": 404,
     "status": "Not Found",
@@ -33,7 +35,7 @@
 
 ## Internal server error
 
-```
+```JSON
 {
     "code": 500,
     "status": "Internal Server Error",
@@ -44,7 +46,8 @@
 ```
 
 ## Validation error
-```
+
+```JSON
 {
     "code": 400,
     "status": "Bad Request",

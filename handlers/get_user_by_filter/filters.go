@@ -18,12 +18,25 @@ type FilterFunc func(
 	paginator paginator.Paginable,
 ) (interface{}, error)
 
-var userFilterRegistered = make(map[string]FilterFunc)
+type UserFilterService interface {
+	GetUserFilter(string) (FilterFunc, bool)
+}
+type UserFilterServicevImpl struct {
+	filters map[string]FilterFunc
+}
 
-func init() {
-	userFilterRegistered["find_all_users"] = FindAllUsers
-	userFilterRegistered["find_user_by_email"] = FindUserByEmail
-	userFilterRegistered["finde_user_by_id"] = FindUserByID
+func NewUserFilterService() UserFilterService {
+	userService := UserFilterServicevImpl{filters: make(map[string]FilterFunc)}
+	userService.filters["find_all_users"] = FindAllUsers
+	userService.filters["find_user_by_email"] = FindUserByEmail
+	userService.filters["finde_user_by_id"] = FindUserByID
+	return &userService
+}
+
+func (c UserFilterServicevImpl) GetUserFilter(filterName string) (FilterFunc, bool) {
+
+	filter, ok := c.filters[filterName]
+	return filter, ok
 }
 
 func FindUserByID(
