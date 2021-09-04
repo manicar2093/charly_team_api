@@ -17,7 +17,6 @@ type Paginable interface {
 		queries ...rel.Querier,
 	) (*models.Paginator, error)
 }
-
 type PaginableImpl struct {
 	repo rel.Repository
 }

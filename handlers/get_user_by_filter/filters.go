@@ -44,6 +44,9 @@ func FindUserByID(
 
 	err := repo.Find(ctx, &userFound, where.Eq("id", userID))
 	if err != nil {
+		if _, ok := err.(rel.NotFoundError); ok {
+			return nil, apperrors.UserNotFound{}
+		}
 		return nil, err
 	}
 	return userFound, nil
@@ -69,7 +72,7 @@ func FindUserByEmail(
 
 	if err != nil {
 		if _, ok := err.(rel.NotFoundError); ok {
-			return nil, &apperrors.UserNotFound{}
+			return nil, apperrors.UserNotFound{}
 		}
 		return nil, err
 	}
