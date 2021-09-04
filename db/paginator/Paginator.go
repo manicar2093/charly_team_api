@@ -1,4 +1,4 @@
-package repositories
+package paginator
 
 import (
 	"context"
@@ -39,17 +39,24 @@ func (c PaginableImpl) CreatePaginator(
 	}
 
 	pageLimitQuery := rel.Limit(config.PageSize)
-	pageOffsetQuery := rel.Offset(config.PageSize * (pageNumber - 1))
+	pageOffsetQuery := rel.Offset(createOffsetValue(config.PageSize, pageNumber))
 
 	queries = append(queries, pageLimitQuery, pageOffsetQuery)
 
-	err = c.repo.FindAll(ctx, &holder, queries...)
+	err = c.repo.FindAll(ctx, holder, queries...)
 	if err != nil {
 		return nil, err
 	}
 
 	return &models.Paginator{
-		TotalPages: totalEntries / config.PageSize,
-		Data:       holder,
+		TotalPages:   totalEntries / config.PageSize,
+		CurrendPage:  pageNumber,
+		PreviousPage: pageNumber - 1,
+		NextPage:     pageNumber + 1,
+		Data:         holder,
 	}, nil
+}
+
+func createOffsetValue(pageSize, pageNumber int) int {
+	return config.PageSize * (pageNumber - 1)
 }

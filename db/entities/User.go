@@ -6,6 +6,8 @@ import (
 	"gopkg.in/guregu/null.v4"
 )
 
+const UserTable = "User"
+
 type User struct {
 	ID            int32       `db:",primary" json:"id,omitempty"`
 	Biotype       Biotype     `ref:"biotype_id" fk:"id" json:"-"`
@@ -25,5 +27,5 @@ type User struct {
 }
 
 func (c User) Table() string {
-	return "User"
+	return UserTable
 }
