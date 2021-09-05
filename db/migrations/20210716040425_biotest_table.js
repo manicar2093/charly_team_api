@@ -22,6 +22,7 @@ exports.up = function(knex) {
         t.integer('heart_health_id').nullable().references('HeartHealths.id');
         t.integer('customer_id').notNullable().references('User.id').comment('It refers to whom is this biotest');
         t.integer('creator_id').notNullable().references('User.id').comment('It refers to the person who creates this biotest');
+        t.uuid('biotest_uuid').unique().notNullable();
         t.decimal('weight').notNullable();
         t.integer('height').notNullable();
         t.decimal('body_fat_percentage').notNullable();
