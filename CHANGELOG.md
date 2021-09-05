@@ -1,3 +1,9 @@
+## v0.19.0 (2021-09-05)
+
+### Feat
+
+- Add UUID user biotest table (#52)
+
 ## v0.18.0 (2021-09-05)
 
 ### Feat
