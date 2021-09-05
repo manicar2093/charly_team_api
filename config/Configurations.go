@@ -16,6 +16,7 @@ const (
 	PassNumDigits = 2
 	// PassNumSymbols indicates how many symbols a password will contain
 	PassNumSymbols = 1
+	PageSize       = 10
 )
 
 func GetEnvOrPanic(envName string) string {
