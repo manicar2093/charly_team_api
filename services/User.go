@@ -8,6 +8,7 @@ import (
 
 	"github.com/aws/aws-sdk-go/service/cognitoidentityprovider"
 	"github.com/go-rel/rel"
+	"github.com/google/uuid"
 	"github.com/manicar2093/charly_team_api/aws"
 	"github.com/manicar2093/charly_team_api/config"
 	"github.com/manicar2093/charly_team_api/db/entities"
@@ -65,6 +66,7 @@ func (u UserServiceCognito) CreateUser(
 		LastName: user.LastName,
 		RoleID:   int32(user.RoleID),
 		GenderID: null.IntFrom(int64(user.GenderID)),
+		UserUUID: uuid.New().String(),
 		Email:    user.Email,
 		Birthday: user.Birthday,
 	}

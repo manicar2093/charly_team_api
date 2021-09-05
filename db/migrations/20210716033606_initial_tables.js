@@ -31,6 +31,7 @@ exports.up = function(knex) {
         t.integer('bone_density_id').nullable().references('BoneDensity.id');
         t.integer('role_id').notNullable().references('Role.id');
         t.integer('gender_id').nullable().references('Gender.id');
+        t.uuid('user_uuid').unique().notNullable();
         t.string('name').notNullable();
         t.string('last_name').notNullable();
         t.string('email').unique().notNullable();
