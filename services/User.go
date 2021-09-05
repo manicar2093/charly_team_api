@@ -8,7 +8,6 @@ import (
 
 	"github.com/aws/aws-sdk-go/service/cognitoidentityprovider"
 	"github.com/go-rel/rel"
-	"github.com/google/uuid"
 	"github.com/manicar2093/charly_team_api/aws"
 	"github.com/manicar2093/charly_team_api/config"
 	"github.com/manicar2093/charly_team_api/db/entities"
@@ -42,17 +41,20 @@ type UserServiceCognito struct {
 	provider aws.CongitoClient
 	passGen  PassGen
 	repo     rel.Repository
+	uuidGen  UUIDGenerator
 }
 
 func NewUserServiceCognito(
 	provider aws.CongitoClient,
 	passGen PassGen,
 	repo rel.Repository,
+	uuidGen UUIDGenerator,
 ) UserService {
 	return &UserServiceCognito{
 		provider: provider,
 		passGen:  passGen,
 		repo:     repo,
+		uuidGen:  uuidGen,
 	}
 }
 
@@ -66,7 +68,7 @@ func (u UserServiceCognito) CreateUser(
 		LastName: user.LastName,
 		RoleID:   int32(user.RoleID),
 		GenderID: null.IntFrom(int64(user.GenderID)),
-		UserUUID: uuid.New().String(),
+		UserUUID: u.uuidGen.New(),
 		Email:    user.Email,
 		Birthday: user.Birthday,
 	}

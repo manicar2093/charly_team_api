@@ -20,23 +20,27 @@ import (
 
 type UserServiceTest struct {
 	suite.Suite
-	providerMock          *mocks.CongitoClient
-	passGenMock           *mocks.PassGen
-	repoMock              *reltest.Repository
-	username              string
-	temporaryPass         string
-	name, lastName, email string
-	idUserCreated         int32
-	birthday              time.Time
-	userRequest           models.CreateUserRequest
-	anError               error
-	saveFuncMock          func(*entities.User) func(args mock.Arguments)
+	providerMock                        *mocks.CongitoClient
+	passGenMock                         *mocks.PassGen
+	uuidGen                             *mocks.UUIDGenerator
+	repoMock                            *reltest.Repository
+	username                            string
+	temporaryPass                       string
+	name, lastName, email, uuidReturned string
+	idUserCreated                       int32
+	birthday                            time.Time
+	userRequest                         models.CreateUserRequest
+	anError                             error
+	saveFuncMock                        func(*entities.User) func(args mock.Arguments)
 }
 
 func (u *UserServiceTest) SetupTest() {
 	u.providerMock = &mocks.CongitoClient{}
 	u.repoMock = reltest.New()
 	u.passGenMock = &mocks.PassGen{}
+	u.uuidGen = &mocks.UUIDGenerator{}
+	u.uuidReturned = "an uuid"
+	u.uuidGen.On("New").Return(u.uuidReturned)
 	u.username = "testing"
 	u.temporaryPass = "12345678"
 	u.anError = errors.New("An error")
@@ -70,6 +74,7 @@ func (u *UserServiceTest) TearDownTest() {
 	u.repoMock.AssertExpectations(t)
 	u.passGenMock.AssertExpectations(t)
 	u.providerMock.AssertExpectations(t)
+	u.uuidGen.AssertExpectations(t)
 }
 
 func (u *UserServiceTest) TestCreateUser() {
@@ -92,6 +97,7 @@ func (u *UserServiceTest) TestCreateUser() {
 		Email:    u.userRequest.Email,
 		Birthday: u.userRequest.Birthday,
 		GenderID: null.IntFrom(1),
+		UserUUID: u.uuidReturned,
 	}
 
 	u.providerMock.On(
@@ -106,7 +112,12 @@ func (u *UserServiceTest) TestCreateUser() {
 		r.ExpectInsert().For(&userDBReq)
 	})
 
-	userService := NewUserServiceCognito(u.providerMock, u.passGenMock, u.repoMock)
+	userService := NewUserServiceCognito(
+		u.providerMock,
+		u.passGenMock,
+		u.repoMock,
+		u.uuidGen,
+	)
 
 	userCreated, err := userService.CreateUser(context.Background(), &u.userRequest)
 
@@ -124,13 +135,19 @@ func (u *UserServiceTest) TestCreateUserRepoSaveErr() {
 		Email:    u.userRequest.Email,
 		Birthday: u.userRequest.Birthday,
 		GenderID: null.IntFrom(1),
+		UserUUID: u.uuidReturned,
 	}
 
 	u.repoMock.ExpectTransaction(func(r *reltest.Repository) {
 		u.passGenMock.On("Generate").Return(u.temporaryPass, nil)
 		r.ExpectInsert().For(&userDBReq).Return(u.anError)
 	})
-	userService := NewUserServiceCognito(u.providerMock, u.passGenMock, u.repoMock)
+	userService := NewUserServiceCognito(
+		u.providerMock,
+		u.passGenMock,
+		u.repoMock,
+		u.uuidGen,
+	)
 
 	userCreated, err := userService.CreateUser(context.Background(), &u.userRequest)
 
@@ -145,7 +162,12 @@ func (u *UserServiceTest) TestCreateUserPassGenError() {
 		u.passGenMock.On("Generate").Return("", u.anError).Once()
 	})
 
-	userService := NewUserServiceCognito(u.providerMock, u.passGenMock, u.repoMock)
+	userService := NewUserServiceCognito(
+		u.providerMock,
+		u.passGenMock,
+		u.repoMock,
+		u.uuidGen,
+	)
 
 	userGot, err := userService.CreateUser(context.Background(), &u.userRequest)
 
@@ -173,6 +195,7 @@ func (u *UserServiceTest) TestCreateUserAdminCreateUserError() {
 		Email:    u.userRequest.Email,
 		Birthday: u.userRequest.Birthday,
 		GenderID: null.IntFrom(1),
+		UserUUID: u.uuidReturned,
 	}
 
 	u.providerMock.On(
@@ -187,7 +210,12 @@ func (u *UserServiceTest) TestCreateUserAdminCreateUserError() {
 		r.ExpectInsert().For(&userDBReq)
 	})
 
-	userService := NewUserServiceCognito(u.providerMock, u.passGenMock, u.repoMock)
+	userService := NewUserServiceCognito(
+		u.providerMock,
+		u.passGenMock,
+		u.repoMock,
+		u.uuidGen,
+	)
 
 	userCreated, err := userService.CreateUser(context.Background(), &u.userRequest)
 
