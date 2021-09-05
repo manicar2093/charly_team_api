@@ -7,21 +7,22 @@ require (
 	github.com/aws/aws-sdk-go v1.27.0
 	github.com/go-playground/universal-translator v0.18.0 // indirect
 	github.com/go-playground/validator v9.31.0+incompatible
-	github.com/go-rel/rel v0.21.0 // indirect
+	github.com/go-rel/rel v0.21.0
+	github.com/google/uuid v1.0.0
 	github.com/joho/godotenv v1.3.0
 	github.com/kr/pretty v0.3.0 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
-	github.com/lib/pq v1.10.2 // indirect
-	github.com/mattn/go-sqlite3 v1.14.8 // indirect
+	github.com/lib/pq v1.10.2
+	github.com/mattn/go-sqlite3 v1.14.8
 	github.com/rogpeppe/go-internal v1.8.0 // indirect
 	github.com/sethvargo/go-password v0.2.0
+	github.com/stretchr/objx v0.2.0 // indirect
 	github.com/stretchr/testify v1.7.0
-	golang.org/x/crypto v0.0.0-20210711020723-a769d52b0f97 // indirect
+	golang.org/x/net v0.0.0-20210226172049-e18ecbb05110 // indirect
+	golang.org/x/sys v0.0.0-20210615035016-665e8c7367d1 // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
-	gopkg.in/guregu/null.v4 v4.0.0 // indirect
+	gopkg.in/guregu/null.v4 v4.0.0
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
-	gorm.io/driver/postgres v1.1.0
-	gorm.io/driver/sqlite v1.1.4
 	gorm.io/gorm v1.21.12
 )

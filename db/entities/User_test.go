@@ -16,6 +16,7 @@ func TestCustomerEntity(t *testing.T) {
 		BoneDensityID: null.IntFrom(1),
 		RoleID:        1,
 		GenderID:      null.IntFrom(1),
+		UserUUID:      "an_uuid_testing",
 		Name:          "Test",
 		LastName:      "Test",
 		Email:         "test@test.com",

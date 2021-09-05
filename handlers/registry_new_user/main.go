@@ -18,6 +18,7 @@ func main() {
 			aws.NewCognitoClient(),
 			services.PasswordGenerator{},
 			connections.PostgressConnection(),
+			services.UUIDGeneratorImpl{},
 		),
 		validators.NewStructValidator(),
 	))

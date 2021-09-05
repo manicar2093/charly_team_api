@@ -7,7 +7,7 @@ import (
 )
 
 type Biotest struct {
-	ID                      int32               `db:",primary" json:"id,omitempty"`
+	ID                      int32               `db:",primary" json:"-"`
 	HigherMuscleDensity     HigherMuscleDensity `ref:"higher_muscle_density_id" fk:"id" validate:"required,dive,required" json:"higher_muscle_density,omitempty"`
 	HigherMuscleDensityID   int32               `json:"-"`
 	LowerMuscleDensity      LowerMuscleDensity  `ref:"lower_muscle_density_id" fk:"id" validate:"required,dive,required" json:"lower_muscle_density,omitempty"`
@@ -22,6 +22,7 @@ type Biotest struct {
 	CustomerID              int32               `validate:"required,gt=0" json:"customer_id,omitempty"`
 	Creator                 User                `ref:"creator_id" fk:"id" json:"-"`
 	CreatorID               int32               `validate:"required,gt=0" json:"creator_id,omitempty"`
+	BiotestUUID             string              `json:"biotest_uuid"`
 	Weight                  float32             `validate:"required" json:"weight,omitempty"`
 	Height                  int32               `validate:"required" json:"height,omitempty"`
 	BodyFatPercentage       float32             `validate:"required" json:"body_fat_percentage,omitempty"`
