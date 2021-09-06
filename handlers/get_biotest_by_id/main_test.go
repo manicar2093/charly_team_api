@@ -48,7 +48,7 @@ func (c *MainTests) TestGetBiotstByID() {
 	c.validator.On("Validate", biotestID).Return(validators.ValidateOutput{IsValid: true, Err: nil})
 	c.repo.ExpectFind(rel.Eq("id", 1)).Result(biotestFindResult)
 
-	res := CreateLambdaHandlerWDependencies(c.repo, &c.validator)(c.ctx, biotestID)
+	res, _ := CreateLambdaHandlerWDependencies(c.repo, &c.validator)(c.ctx, biotestID)
 
 	c.Equal(res.StatusCode, http.StatusOK, "http status is not correct")
 	c.Equal(res.Status, http.StatusText(http.StatusOK), "http status is not correct")
@@ -66,7 +66,7 @@ func (c *MainTests) TestGetBiotstByIDNotFound() {
 	c.validator.On("Validate", biotestID).Return(validators.ValidateOutput{IsValid: true, Err: nil})
 	c.repo.ExpectFind(rel.Eq("id", 1)).Return(c.notFoundError)
 
-	res := CreateLambdaHandlerWDependencies(c.repo, &c.validator)(c.ctx, biotestID)
+	res, _ := CreateLambdaHandlerWDependencies(c.repo, &c.validator)(c.ctx, biotestID)
 
 	c.Equal(res.StatusCode, http.StatusNotFound, "http status is not correct")
 	c.Equal(res.Status, http.StatusText(http.StatusNotFound), "http status is not correct")
@@ -84,7 +84,7 @@ func (c *MainTests) TestGetBiotestByIDError() {
 	c.validator.On("Validate", biotestID).Return(validators.ValidateOutput{IsValid: true, Err: nil})
 	c.repo.ExpectFind(rel.Eq("id", 1)).Return(c.ordinaryError)
 
-	res := CreateLambdaHandlerWDependencies(c.repo, &c.validator)(c.ctx, biotestID)
+	res, _ := CreateLambdaHandlerWDependencies(c.repo, &c.validator)(c.ctx, biotestID)
 
 	c.Equal(res.StatusCode, http.StatusInternalServerError, "http status is not correct")
 	c.Equal(res.Status, http.StatusText(http.StatusInternalServerError), "http status is not correct")
@@ -105,7 +105,7 @@ func (c *MainTests) TestRegistryNewUserNoValidReq() {
 
 	c.validator.On("Validate", biotestID).Return(validators.ValidateOutput{IsValid: false, Err: validationErrors})
 
-	res := CreateLambdaHandlerWDependencies(c.repo, &c.validator)(c.ctx, biotestID)
+	res, _ := CreateLambdaHandlerWDependencies(c.repo, &c.validator)(c.ctx, biotestID)
 
 	c.Equal(res.StatusCode, http.StatusBadRequest, "http status is not correct")
 	c.Equal(res.Status, http.StatusText(http.StatusBadRequest), "http status is not correct")

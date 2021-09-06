@@ -86,7 +86,7 @@ func (c *MainTests) TestGetUserByFilter() {
 
 	c.userRunable.On("Run", &expectedRunnerParams).Return(userRunnerReturn, nil)
 
-	res := CreateLambdaHandlerWDependencies(c.repo, c.validator, c.paginator, c.userFilter)(c.ctx, userFilter)
+	res, _ := CreateLambdaHandlerWDependencies(c.repo, c.validator, c.paginator, c.userFilter)(c.ctx, userFilter)
 
 	c.Equal(res.StatusCode, http.StatusOK, "http status is not correct")
 	c.Equal(res.Status, http.StatusText(http.StatusOK), "http status is not correct")
@@ -113,7 +113,7 @@ func (c *MainTests) TestGetUserByFilter_NoFilter() {
 	c.userFilter.On("GetUserFilter", userFilter.FilterName).Return(c.userRunable)
 	c.userRunable.On("IsFound").Return(false)
 
-	res := CreateLambdaHandlerWDependencies(c.repo, c.validator, c.paginator, c.userFilter)(c.ctx, userFilter)
+	res, _ := CreateLambdaHandlerWDependencies(c.repo, c.validator, c.paginator, c.userFilter)(c.ctx, userFilter)
 
 	c.Equal(res.StatusCode, http.StatusBadRequest, "http status is not correct")
 	c.Equal(res.Status, http.StatusText(http.StatusBadRequest), "http status is not correct")
@@ -148,7 +148,7 @@ func (c *MainTests) TestGetUserByFilter_RunError() {
 
 	c.userRunable.On("Run", &expectedRunnerParams).Return(nil, c.ordinaryError)
 
-	res := CreateLambdaHandlerWDependencies(c.repo, c.validator, c.paginator, c.userFilter)(c.ctx, userFilter)
+	res, _ := CreateLambdaHandlerWDependencies(c.repo, c.validator, c.paginator, c.userFilter)(c.ctx, userFilter)
 
 	c.Equal(res.StatusCode, http.StatusInternalServerError, "http status is not correct")
 	c.Equal(res.Status, http.StatusText(http.StatusInternalServerError), "http status is not correct")
@@ -177,7 +177,7 @@ func (c *MainTests) TestGetUserByFilter_ValidationError() {
 		},
 	)
 
-	res := CreateLambdaHandlerWDependencies(c.repo, c.validator, c.paginator, c.userFilter)(c.ctx, userFilter)
+	res, _ := CreateLambdaHandlerWDependencies(c.repo, c.validator, c.paginator, c.userFilter)(c.ctx, userFilter)
 
 	c.Equal(res.StatusCode, http.StatusBadRequest, "http status is not correct")
 	c.Equal(res.Status, http.StatusText(http.StatusBadRequest), "http status is not correct")

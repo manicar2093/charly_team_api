@@ -56,7 +56,7 @@ func (c *MainTests) TestGetCatalogsNotExists() {
 	c.validator.On("Validate", catalogs).Return(validators.ValidateOutput{IsValid: true, Err: nil}).Once()
 	c.catalogRepo.On("FindAllCatalogItems", c.ctx, mock.Anything).Return(nil, nil).Once()
 
-	res := CreateLambdaHandlerWDependencies(&c.catalogRepo, &c.validator)(c.ctx, catalogs)
+	res, _ := CreateLambdaHandlerWDependencies(&c.catalogRepo, &c.validator)(c.ctx, catalogs)
 
 	c.Equal(res.StatusCode, http.StatusNotFound, "http error is not correct")
 	c.Equal(res.Status, http.StatusText(http.StatusNotFound), "http error is not correct")
@@ -77,7 +77,7 @@ func (c *MainTests) TestGetCatalogs() {
 	c.catalogRepo.On("FindAllCatalogItems", c.ctx, mock.Anything).Return(c.biotypesReturn, nil).Once()
 	c.catalogRepo.On("FindAllCatalogItems", c.ctx, mock.Anything).Return(c.rolesReturn, nil).Once()
 
-	res := CreateLambdaHandlerWDependencies(&c.catalogRepo, &c.validator)(c.ctx, catalogs)
+	res, _ := CreateLambdaHandlerWDependencies(&c.catalogRepo, &c.validator)(c.ctx, catalogs)
 
 	c.Equal(res.StatusCode, http.StatusOK, "http status is not correct")
 	c.Equal(res.Status, http.StatusText(http.StatusOK), "http status is not correct")
@@ -108,7 +108,7 @@ func (c *MainTests) TestGetCatalogsValidationError() {
 		},
 	).Once()
 
-	res := CreateLambdaHandlerWDependencies(&c.catalogRepo, &c.validator)(c.ctx, catalogs)
+	res, _ := CreateLambdaHandlerWDependencies(&c.catalogRepo, &c.validator)(c.ctx, catalogs)
 
 	c.Equal(res.StatusCode, http.StatusBadRequest, "http status is not correct")
 	c.Equal(res.Status, http.StatusText(http.StatusBadRequest), "http status is not correct")
