@@ -1,3 +1,9 @@
+## v0.20.0 (2021-09-09)
+
+### Feat
+
+- Add serverless config test (#59)
+
 ## v0.19.0 (2021-09-05)
 
 ### Feat
