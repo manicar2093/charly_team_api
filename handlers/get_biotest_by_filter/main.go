@@ -20,19 +20,20 @@ func main() {
 	paginator := paginator.NewPaginable(repo)
 	lambda.Start(
 		CreateLambdaHandlerWDependencies(
-			repo,
+			connections.PostgressConnection(),
 			validators.NewStructValidator(),
+			NewBiotestFilterService(repo, paginator),
 			paginator,
-			NewUserFilterService(repo, paginator),
 		),
 	)
+
 }
 
 func CreateLambdaHandlerWDependencies(
 	repo rel.Repository,
 	validator validators.ValidatorService,
+	biotestFilters filters.FilterService,
 	paginator paginator.Paginable,
-	userFilters filters.FilterService,
 ) func(ctx context.Context, req models.FilterRequest) (*models.Response, error) {
 
 	return func(ctx context.Context, req models.FilterRequest) (*models.Response, error) {
@@ -42,7 +43,7 @@ func CreateLambdaHandlerWDependencies(
 			return response, nil
 		}
 
-		filterRunner := userFilters.GetFilter(req.FilterName)
+		filterRunner := biotestFilters.GetFilter(req.FilterName)
 		if !filterRunner.IsFound() {
 			return models.CreateResponse(http.StatusBadRequest, models.ErrorReponse{Error: "requested filter does not exists"}), nil
 		}
@@ -61,4 +62,5 @@ func CreateLambdaHandlerWDependencies(
 
 		return models.CreateResponse(http.StatusOK, items), nil
 	}
+
 }

@@ -12,8 +12,8 @@ type FilterService struct {
 	mock.Mock
 }
 
-// GetUserFilter provides a mock function with given fields: _a0
-func (_m *FilterService) GetUserFilter(_a0 string) filters.FilterRunable {
+// GetFilter provides a mock function with given fields: _a0
+func (_m *FilterService) GetFilter(_a0 string) filters.FilterRunable {
 	ret := _m.Called(_a0)
 
 	var r0 filters.FilterRunable

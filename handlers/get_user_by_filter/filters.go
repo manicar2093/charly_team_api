@@ -30,7 +30,7 @@ func NewUserFilterService(
 	return &userService
 }
 
-func (c UserFilterService) GetUserFilter(filterName string) filters.FilterRunable {
+func (c UserFilterService) GetFilter(filterName string) filters.FilterRunable {
 
 	filterFound, isFound := c.filters[filterName]
 	return filters.FilterRunner{Filter: filterFound, Found: isFound}
