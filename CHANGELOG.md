@@ -1,3 +1,9 @@
+## v0.21.0 (2021-09-09)
+
+### Feat
+
+- Add biotest search to filters (#60)
+
 ## v0.20.0 (2021-09-09)
 
 ### Feat
