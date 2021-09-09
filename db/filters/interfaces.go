@@ -3,7 +3,7 @@ package filters
 type FilterService interface {
 	// GetUserFilter looks up if the requested filter exists. If exists
 	// Run method will be
-	GetUserFilter(string) FilterRunable
+	GetFilter(string) FilterRunable
 }
 
 type FilterRunable interface {

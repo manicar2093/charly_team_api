@@ -1,6 +1,12 @@
+# BiotestFilters
+
+## Registered filters
+
+- _get_biotest_by_uuid_
+
 ## OK
 
-```
+```JSON
 {
     "code": 200,
     "status": "OK",
@@ -52,7 +58,7 @@
 
 ## Not Found
 
-```
+```JSON
 {
     "code": 404,
     "status": "Not Found",
@@ -64,7 +70,7 @@
 
 ## Internal server error
 
-```
+```JSON
 {
     "code": 500,
     "status": "Internal Server Error",
@@ -75,7 +81,8 @@
 ```
 
 ## Validation error
-```
+
+```JSON
 {
     "code": 400,
     "status": "Bad Request",
