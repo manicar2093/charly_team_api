@@ -1,3 +1,7 @@
+build_deploy:
+	./compiler.sh
+	serverless deploy --aws-profile charly_team_api_dev
+
 init_dev_env:
 	@ echo "Installing all NPM packages need"
 	@ npm install

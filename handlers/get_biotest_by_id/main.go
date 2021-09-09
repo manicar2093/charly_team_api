@@ -7,6 +7,7 @@ import (
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/go-rel/rel"
 	"github.com/go-rel/rel/where"
+	"github.com/manicar2093/charly_team_api/config"
 	"github.com/manicar2093/charly_team_api/db/connections"
 	"github.com/manicar2093/charly_team_api/db/entities"
 	"github.com/manicar2093/charly_team_api/models"
@@ -14,6 +15,7 @@ import (
 )
 
 func main() {
+	config.StartConfig()
 	lambda.Start(
 		CreateLambdaHandlerWDependencies(
 			connections.PostgressConnection(),
@@ -26,13 +28,13 @@ func main() {
 func CreateLambdaHandlerWDependencies(
 	repo rel.Repository,
 	validator validators.ValidatorService,
-) func(ctx context.Context, req GetBiotestByID) *models.Response {
+) func(ctx context.Context, req GetBiotestByID) (*models.Response, error) {
 
-	return func(ctx context.Context, req GetBiotestByID) *models.Response {
+	return func(ctx context.Context, req GetBiotestByID) (*models.Response, error) {
 
 		isValid, response := validators.CheckValidationErrors(validator.Validate(req))
 		if !isValid {
-			return response
+			return response, nil
 		}
 
 		var biotest entities.Biotest
@@ -40,12 +42,12 @@ func CreateLambdaHandlerWDependencies(
 		err := repo.Find(ctx, &biotest, where.Eq("id", req.BiotestID))
 		if err != nil {
 			if _, ok := err.(rel.NotFoundError); ok {
-				return models.CreateResponse(http.StatusNotFound, models.ErrorReponse{Error: err.Error()})
+				return models.CreateResponse(http.StatusNotFound, models.ErrorReponse{Error: err.Error()}), nil
 			}
-			return models.CreateResponseFromError(err)
+			return models.CreateResponseFromError(err), nil
 		}
 
-		return models.CreateResponse(http.StatusOK, biotest)
+		return models.CreateResponse(http.StatusOK, biotest), nil
 
 	}
 

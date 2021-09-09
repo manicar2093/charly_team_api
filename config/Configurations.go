@@ -19,17 +19,6 @@ const (
 	PageSize       = 10
 )
 
-func GetEnvOrPanic(envName string) string {
-
-	value, exists := os.LookupEnv(envName)
-
-	if !exists || value == "" {
-		panic(fmt.Sprintf("env varialbe '%s' is empty or not set and is a must", envName))
-	}
-
-	return value
-}
-
 func DBConnectionURL() string {
 	if dbUrl == "" {
 		return fmt.Sprintf("postgres://%s:%s@%s:%s/%s", DBUser, DBPassword, DBHost, DBPort, DBName)
@@ -39,14 +28,14 @@ func DBConnectionURL() string {
 }
 
 func StartConfig() {
-	DBHost = GetEnvOrPanic("DB_HOST")
-	DBPort = GetEnvOrPanic("DB_PORT")
-	DBName = GetEnvOrPanic("DB_NAME")
-	DBUser = GetEnvOrPanic("DB_USER")
-	DBPassword = GetEnvOrPanic("DB_PASSWORD")
-	AWSRegion = GetEnvOrPanic("AWS_REGION")
-	AWSAccessKeyID = GetEnvOrPanic("AWS_ACCESS_KEY_ID")
-	AWSSecretAccessKey = GetEnvOrPanic("AWS_SECRET_ACCESS_KEY")
-	CognitoPoolID = GetEnvOrPanic("COGNITO_POOL_ID")
+	DBHost = os.Getenv("DB_HOST")
+	DBPort = os.Getenv("DB_PORT")
+	DBName = os.Getenv("DB_NAME")
+	DBUser = os.Getenv("DB_USER")
+	DBPassword = os.Getenv("DB_PASSWORD")
+	AWSRegion = os.Getenv("AWS_REGION")
+	AWSAccessKeyID = os.Getenv("AWS_ACCESS_KEY_ID")
+	AWSSecretAccessKey = os.Getenv("AWS_SECRET_ACCESS_KEY")
+	CognitoPoolID = os.Getenv("COGNITO_POOL_ID")
 	dbUrl = os.Getenv("DB_URL")
 }

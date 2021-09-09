@@ -48,7 +48,7 @@ func (c *MainTests) TestRegistryNewUser() {
 	c.validator.On("Validate", userRequest).Return(validators.ValidateOutput{IsValid: true, Err: nil})
 	c.userService.On("CreateUser", c.ctx, &userRequest).Return(c.idUserCreated, nil)
 
-	res := CreateLambdaHandlerWDependencies(&c.userService, &c.validator)(c.ctx, userRequest)
+	res, _ := CreateLambdaHandlerWDependencies(&c.userService, &c.validator)(c.ctx, userRequest)
 
 	c.Equal(res.StatusCode, http.StatusCreated, "http status is not correct")
 	c.Equal(res.Status, http.StatusText(http.StatusCreated), "http status is not correct")
@@ -74,7 +74,7 @@ func (c *MainTests) TestRegistryNewUserError() {
 	c.validator.On("Validate", userRequest).Return(validators.ValidateOutput{IsValid: true, Err: nil})
 	c.userService.On("CreateUser", c.ctx, &userRequest).Return(int32(0), errors.New(errorText))
 
-	res := CreateLambdaHandlerWDependencies(&c.userService, &c.validator)(c.ctx, userRequest)
+	res, _ := CreateLambdaHandlerWDependencies(&c.userService, &c.validator)(c.ctx, userRequest)
 
 	c.Equal(res.StatusCode, http.StatusInternalServerError, "http status is not correct")
 	c.Equal(res.Status, http.StatusText(http.StatusInternalServerError), "http status is not correct")
@@ -101,7 +101,7 @@ func (c *MainTests) TestRegistryNewUserNoValidReq() {
 
 	c.validator.On("Validate", userRequest).Return(validators.ValidateOutput{IsValid: false, Err: validationErrors})
 
-	res := CreateLambdaHandlerWDependencies(&c.userService, &c.validator)(c.ctx, userRequest)
+	res, _ := CreateLambdaHandlerWDependencies(&c.userService, &c.validator)(c.ctx, userRequest)
 
 	c.Equal(res.StatusCode, http.StatusBadRequest, "http status is not correct")
 	c.Equal(res.Status, http.StatusText(http.StatusBadRequest), "http status is not correct")
