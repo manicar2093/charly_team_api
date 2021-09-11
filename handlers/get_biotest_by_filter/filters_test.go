@@ -55,7 +55,8 @@ func (c *BiotestFilterTest) TestFindBiotestByUUID() {
 		where.Eq("biotest_uuid", biotestUUIDRequested),
 	).Result(
 		entities.Biotest{
-			ID: int32(1),
+			ID:          int32(1),
+			BiotestUUID: biotestUUIDRequested,
 		},
 	)
 
