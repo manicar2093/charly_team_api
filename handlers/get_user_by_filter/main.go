@@ -50,7 +50,7 @@ func CreateLambdaHandlerWDependencies(
 		filterParams := filters.FilterParameters{
 			Ctx:       ctx,
 			Repo:      repo,
-			Values:    req,
+			Values:    req.Values,
 			Paginator: paginator,
 		}
 

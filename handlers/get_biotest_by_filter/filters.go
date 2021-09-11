@@ -52,7 +52,7 @@ func FindBiotestByUUID(params *filters.FilterParameters) (interface{}, error) {
 	if err != nil {
 		if _, ok := err.(rel.NotFoundError); ok {
 			return nil, apperrors.NotFoundError{
-				Message: fmt.Sprintf("biotest with uuid '%s' was not found", biotest.BiotestUUID),
+				Message: fmt.Sprintf("biotest with uuid '%s' was not found", biotestUUID),
 			}
 		}
 		return nil, err

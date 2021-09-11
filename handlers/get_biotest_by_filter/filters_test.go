@@ -55,8 +55,7 @@ func (c *BiotestFilterTest) TestFindBiotestByUUID() {
 		where.Eq("biotest_uuid", biotestUUIDRequested),
 	).Result(
 		entities.Biotest{
-			ID:          int32(1),
-			BiotestUUID: biotestUUIDRequested,
+			ID: int32(1),
 		},
 	)
 
@@ -112,7 +111,7 @@ func (c *BiotestFilterTest) TestFindBiotestByUUID_NotFound() {
 	_, ok := err.(apperrors.NotFoundError)
 	c.True(ok, "unexpected answare type")
 
-	c.Contains(err.Error(), "was not found", "error is not representative")
+	c.Contains(err.Error(), biotestUUIDRequested, "error is not representative")
 
 }
 
