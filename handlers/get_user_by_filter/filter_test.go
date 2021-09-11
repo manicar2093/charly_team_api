@@ -45,66 +45,67 @@ func (c *UserFilterTest) TearDownTest() {
 	c.paginator.AssertExpectations(c.T())
 }
 
-func (c *UserFilterTest) TestFilterUserByID() {
+func (c *UserFilterTest) TestFilterUserByUUID() {
 
-	userIDRequested := 1
+	userUUIDRequested := "an-uuid"
 
 	request := map[string]interface{}{
-		"user_id": userIDRequested,
+		"user_uuid": userUUIDRequested,
 	}
 
 	c.repo.ExpectFind(
-		where.Eq("id", userIDRequested),
+		where.Eq("user_uuid", userUUIDRequested),
 	).Result(
 		entities.User{
-			ID: int32(userIDRequested),
+			ID:       1,
+			UserUUID: userUUIDRequested,
 		},
 	)
 
 	c.filterParams.Values = request
 
-	got, err := FindUserByID(&c.filterParams)
+	got, err := FindUserByUUID(&c.filterParams)
 
 	c.Nil(err, "FindUserByID return an error")
 
 	userGot, ok := got.(entities.User)
 	c.True(ok, "unexpected answare type")
-	c.Equal(userGot.ID, int32(userIDRequested), "unexpected user id")
+	c.Equal(userGot.UserUUID, userUUIDRequested, "unexpected user uuid")
 
 }
 
-func (c *UserFilterTest) TestFilterUserByIDValidatioError() {
+func (c *UserFilterTest) TestFilterUserByUUID_ValidatioError() {
 
 	request := map[string]interface{}{}
 
 	c.filterParams.Values = request
 
-	_, err := FindUserByID(&c.filterParams)
+	_, err := FindUserByUUID(&c.filterParams)
 
 	validationError, isValidationError := err.(apperrors.ValidationError)
 
 	c.True(isValidationError, "bad type of error ")
 
 	c.Equal(validationError.Validation, "required")
-	c.Equal(validationError.Field, "user_id")
+	c.Equal(validationError.Field, "user_uuid")
 
 }
 
-func (c *UserFilterTest) TestFilterUserByIDNotFound() {
+func (c *UserFilterTest) TestFilterUserByUUID_NotFound() {
 
-	userIDRequested := 1
+	userUUIDRequested := "an-uud"
 
 	request := map[string]interface{}{
-		"user_id": userIDRequested,
+		"user_uuid": userUUIDRequested,
 	}
 
 	c.repo.ExpectFind(
-		where.Eq("id", userIDRequested),
+		where.Eq("user_uuid", userUUIDRequested),
 	).Return(c.notFoundError)
 
 	c.filterParams.Values = request
 
-	_, err := FindUserByID(&c.filterParams)
+	_, err := FindUserByUUID(&c.filterParams)
 
 	_, isHandableNotFoundError := err.(apperrors.UserNotFound)
 
@@ -112,21 +113,21 @@ func (c *UserFilterTest) TestFilterUserByIDNotFound() {
 
 }
 
-func (c *UserFilterTest) TestFilterUserByIDUnhandledError() {
+func (c *UserFilterTest) TestFilterUserByUUID_UnhandledError() {
 
-	userIDRequested := 1
+	userUUIDRequested := "an-uud"
 
 	request := map[string]interface{}{
-		"user_id": userIDRequested,
+		"user_uuid": userUUIDRequested,
 	}
 
 	c.repo.ExpectFind(
-		where.Eq("id", userIDRequested),
+		where.Eq("user_uuid", userUUIDRequested),
 	).Return(c.ordinaryError)
 
 	c.filterParams.Values = request
 
-	_, err := FindUserByID(&c.filterParams)
+	_, err := FindUserByUUID(&c.filterParams)
 
 	c.NotNil(err, "should return error")
 
@@ -260,7 +261,7 @@ func (c *UserFilterTest) TestNewUserFilterService() {
 	userFilter := NewUserFilterService(c.repo, c.paginator)
 	c.NotNil(userFilter, "user filter should not be nil")
 
-	userFilterRunner := userFilter.GetFilter("find_user_by_id")
+	userFilterRunner := userFilter.GetFilter("find_user_by_uuid")
 
 	c.True(userFilterRunner.IsFound(), "filter should be found")
 

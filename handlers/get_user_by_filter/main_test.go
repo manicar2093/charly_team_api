@@ -14,6 +14,7 @@ import (
 	"github.com/manicar2093/charly_team_api/db/filters"
 	"github.com/manicar2093/charly_team_api/mocks"
 	"github.com/manicar2093/charly_team_api/models"
+	"github.com/manicar2093/charly_team_api/testfunc"
 	"github.com/manicar2093/charly_team_api/validators"
 	"github.com/stretchr/testify/suite"
 	"gopkg.in/guregu/null.v4"
@@ -50,7 +51,7 @@ func (c *MainTests) TearDownTest() {
 }
 
 func (c *MainTests) TestGetUserByFilter() {
-	filterName := "get_user_by_id"
+	filterName := "get_user_by_uuid"
 	userFilter := models.FilterRequest{FilterName: filterName, Values: "values"}
 	expectedRunnerParams := filters.FilterParameters{
 		Ctx:       c.ctx,
@@ -64,6 +65,7 @@ func (c *MainTests) TestGetUserByFilter() {
 		BoneDensityID: null.IntFrom(1),
 		RoleID:        1,
 		GenderID:      null.IntFrom(1),
+		UserUUID:      "an-uuid",
 		Name:          "testing",
 		LastName:      "testing",
 		Email:         "testing@email.com",
@@ -94,11 +96,11 @@ func (c *MainTests) TestGetUserByFilter() {
 	userResponse := res.Body.(entities.User)
 
 	c.NotEmpty(userResponse.ID, "unexpected user id response")
-
+	testfunc.PrintJsonIndented(res)
 }
 
 func (c *MainTests) TestGetUserByFilter_NoFilter() {
-	filterName := "get_user_by_id"
+	filterName := "get_user_by_uuid"
 	userFilter := models.FilterRequest{FilterName: filterName, Values: "values"}
 
 	c.validator.On(
@@ -125,7 +127,7 @@ func (c *MainTests) TestGetUserByFilter_NoFilter() {
 }
 
 func (c *MainTests) TestGetUserByFilter_RunError() {
-	filterName := "get_user_by_id"
+	filterName := "get_user_by_uuid"
 	userFilter := models.FilterRequest{FilterName: filterName, Values: "values"}
 	expectedRunnerParams := filters.FilterParameters{
 		Ctx:       c.ctx,
@@ -160,7 +162,7 @@ func (c *MainTests) TestGetUserByFilter_RunError() {
 }
 
 func (c *MainTests) TestGetUserByFilter_ValidationError() {
-	filterName := "get_user_by_id"
+	filterName := "get_user_by_uuid"
 	userFilter := models.FilterRequest{FilterName: filterName, Values: "values"}
 
 	validationErrors := apperrors.ValidationErrors{

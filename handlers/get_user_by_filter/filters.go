@@ -24,7 +24,7 @@ func NewUserFilterService(
 		repo:      repo,
 		paginator: paginator,
 	}
-	userService.filters["find_user_by_id"] = FindUserByID
+	userService.filters["find_user_by_uuid"] = FindUserByUUID
 	userService.filters["find_all_users"] = FindAllUsers
 	userService.filters["find_user_by_email"] = FindUserByEmail
 	return &userService
@@ -37,20 +37,20 @@ func (c UserFilterService) GetFilter(filterName string) filters.FilterRunable {
 
 }
 
-func FindUserByID(
+func FindUserByUUID(
 	params *filters.FilterParameters,
 ) (interface{}, error) {
 
 	valuesAsMap := params.Values.(map[string]interface{})
 
-	userID, ok := valuesAsMap["user_id"].(int)
+	userUUID, ok := valuesAsMap["user_uuid"].(string)
 	if !ok {
-		return nil, apperrors.ValidationError{Field: "user_id", Validation: "required"}
+		return nil, apperrors.ValidationError{Field: "user_uuid", Validation: "required"}
 	}
 
 	var userFound entities.User
 
-	err := params.Repo.Find(params.Ctx, &userFound, where.Eq("id", userID))
+	err := params.Repo.Find(params.Ctx, &userFound, where.Eq("user_uuid", userUUID))
 	if err != nil {
 		if _, ok := err.(rel.NotFoundError); ok {
 			return nil, apperrors.UserNotFound{}

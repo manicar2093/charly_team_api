@@ -10,13 +10,15 @@
         "id": 1,
         "biotype_id": 1,
         "bone_density": 1,
+        "role_id": 1,
         "gender_id": 1,
+        "user_uuid": "an-uuid",
         "name": "testing",
         "last_name": "testing",
-        "email": "email@email.com",
-        "birthday": "2021-09-02T19:52:00.618373968-05:00",
-        "created_at": "2021-09-02T19:52:00.618374028-05:00",
-        "updated_at": "0001-01-01T00:00:00Z"
+        "email": "testing@email.com",
+        "birthday": "2021-09-11T14:43:05.415894617-05:00",
+        "created_at": "2021-09-11T14:43:05.415894888-05:00",
+        "updated_at": "2021-09-11T14:43:05.415894938-05:00",
     }
 }
 ```
@@ -54,7 +56,7 @@
     "body": {
         "error": [
             {
-                "tag": "user_id",
+                "tag": "user_uuid",
                 "validation": "required"
             }
         ]
