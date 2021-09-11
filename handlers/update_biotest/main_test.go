@@ -10,7 +10,6 @@ import (
 	"github.com/manicar2093/charly_team_api/apperrors"
 	"github.com/manicar2093/charly_team_api/db/entities"
 	"github.com/manicar2093/charly_team_api/mocks"
-	"github.com/manicar2093/charly_team_api/models"
 	"github.com/manicar2093/charly_team_api/validators"
 	"github.com/stretchr/testify/suite"
 )
@@ -19,7 +18,6 @@ type MainTests struct {
 	suite.Suite
 	repo          *reltest.Repository
 	validator     mocks.ValidatorService
-	uuidGen       mocks.UUIDGenerator
 	ctx           context.Context
 	ordinaryError error
 }
@@ -27,8 +25,6 @@ type MainTests struct {
 func (c *MainTests) SetupTest() {
 	c.repo = reltest.New()
 	c.validator = mocks.ValidatorService{}
-	c.uuidGen = mocks.UUIDGenerator{}
-	c.uuidGen.On("New").Return("an generated uuid")
 	c.ctx = context.Background()
 	c.ordinaryError = errors.New("An ordinary error :O")
 
@@ -39,44 +35,56 @@ func (c *MainTests) TearDownTest() {
 	c.repo.AssertExpectations(c.T())
 }
 
-func (c *MainTests) TestCreateNewBiotest() {
+func (c *MainTests) TestUpdateBiotest_UpdateError() {
 
-	biotestRequest := entities.Biotest{}
-
-	c.validator.On("Validate", biotestRequest).Return(validators.ValidateOutput{IsValid: true, Err: nil})
-	c.repo.ExpectInsert().ForType("entities.Biotest").Return(nil)
-
-	res, _ := CreateLambdaHandlerWDependencies(c.repo, &c.validator, &c.uuidGen)(c.ctx, biotestRequest)
-
-	c.Equal(res.StatusCode, http.StatusCreated, "http status is not correct")
-	c.Equal(res.Status, http.StatusText(http.StatusCreated), "http status is not correct")
-
-	createBiotestResponse := res.Body.(CreateBiotestResponse)
-
-	c.NotEmpty(createBiotestResponse.BiotestID, "unexpected id biotest response")
-
-}
-
-func (c *MainTests) TestCreateNewBiotest_InsertError() {
-
-	biotestRequest := entities.Biotest{}
+	biotestRequest := entities.Biotest{
+		ID: 1,
+	}
 
 	c.validator.On("Validate", biotestRequest).Return(validators.ValidateOutput{IsValid: true, Err: nil})
-	c.repo.ExpectInsert().ForType("entities.Biotest").Return(c.ordinaryError)
+	c.repo.ExpectUpdate().ForType("entities.Biotest").Return(c.ordinaryError)
 
-	res, _ := CreateLambdaHandlerWDependencies(c.repo, &c.validator, &c.uuidGen)(c.ctx, biotestRequest)
+	res, _ := CreateLambdaHandlerWDependencies(c.repo, &c.validator)(c.ctx, biotestRequest)
 
 	c.Equal(res.StatusCode, http.StatusInternalServerError, "http status is not correct")
 	c.Equal(res.Status, http.StatusText(http.StatusInternalServerError), "http status is not correct")
 
-	bodyError := res.Body.(models.ErrorReponse)
-	c.Equal(bodyError.Error, c.ordinaryError.Error(), "error message should not be empty")
+}
+
+func (c *MainTests) TestUpdateBiotest() {
+
+	biotestRequest := entities.Biotest{
+		ID: 1,
+	}
+
+	c.validator.On("Validate", biotestRequest).Return(validators.ValidateOutput{IsValid: true, Err: nil})
+	c.repo.ExpectUpdate().ForType("entities.Biotest").Return(nil)
+
+	res, _ := CreateLambdaHandlerWDependencies(c.repo, &c.validator)(c.ctx, biotestRequest)
+
+	c.Equal(res.StatusCode, http.StatusOK, "http status is not correct")
+	c.Equal(res.Status, http.StatusText(http.StatusOK), "http status is not correct")
 
 }
 
-func (c *MainTests) TestCreateNewBiotest_NoValidReq() {
+func (c *MainTests) TestUpdateBiotest_NoBiotestID() {
 
 	biotestRequest := entities.Biotest{}
+
+	res, _ := CreateLambdaHandlerWDependencies(c.repo, &c.validator)(c.ctx, biotestRequest)
+
+	c.Equal(res.StatusCode, http.StatusBadRequest, "http status is not correct")
+	c.Equal(res.Status, http.StatusText(http.StatusBadRequest), "http status is not correct")
+
+	bodyError := res.Body.(apperrors.ValidationErrors)
+	c.Equal("id", bodyError[0].Field, "validation error is not correct")
+	c.Equal("required", bodyError[0].Validation, "validation error is not correct")
+
+}
+
+func (c *MainTests) TestUpdateBiotest_NoValidRequest() {
+
+	biotestRequest := entities.Biotest{ID: 1}
 
 	validationErrors := apperrors.ValidationErrors{
 		{Field: "weight", Validation: "required"},
@@ -85,7 +93,7 @@ func (c *MainTests) TestCreateNewBiotest_NoValidReq() {
 
 	c.validator.On("Validate", biotestRequest).Return(validators.ValidateOutput{IsValid: false, Err: validationErrors})
 
-	res, _ := CreateLambdaHandlerWDependencies(c.repo, &c.validator, &c.uuidGen)(c.ctx, biotestRequest)
+	res, _ := CreateLambdaHandlerWDependencies(c.repo, &c.validator)(c.ctx, biotestRequest)
 
 	c.Equal(res.StatusCode, http.StatusBadRequest, "http status is not correct")
 	c.Equal(res.Status, http.StatusText(http.StatusBadRequest), "http status is not correct")
