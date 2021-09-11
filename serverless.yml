@@ -62,8 +62,8 @@ functions:
   create_new_biotest:
     handler: bin/create_new_biotest
 
-  get_biotest_by_id:
-    handler: bin/get_biotest_by_id
+  get_biotest_by_filter:
+    handler: bin/get_biotest_by_filter
 
   get_catalogs:
     handler: bin/get_catalogs
