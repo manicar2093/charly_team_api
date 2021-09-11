@@ -57,7 +57,7 @@ func (c *MainTests) TestCreateNewBiotest() {
 
 }
 
-func (c *MainTests) TestCreateNewBiotestError() {
+func (c *MainTests) TestCreateNewBiotest_InsertError() {
 
 	biotestRequest := entities.Biotest{}
 
@@ -74,7 +74,7 @@ func (c *MainTests) TestCreateNewBiotestError() {
 
 }
 
-func (c *MainTests) TestRegistryNewUserNoValidReq() {
+func (c *MainTests) TestCreateNewBiotest_NoValidReq() {
 
 	biotestRequest := entities.Biotest{}
 
