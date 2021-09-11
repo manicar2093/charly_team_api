@@ -1,3 +1,9 @@
+## v0.23.0 (2021-09-11)
+
+### Feat
+
+- Add update user function. (#68)
+
 ## v0.22.0 (2021-09-11)
 
 ### Feat
