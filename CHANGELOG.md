@@ -1,3 +1,9 @@
+## v0.24.0 (2021-09-11)
+
+### Feat
+
+- Change search by user_id to user_uuid (#69)
+
 ## v0.23.0 (2021-09-11)
 
 ### Feat
