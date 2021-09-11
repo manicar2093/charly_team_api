@@ -1,3 +1,9 @@
+## v0.22.0 (2021-09-11)
+
+### Feat
+
+- Create update biotest function (#67)
+
 ## v0.21.1 (2021-09-11)
 
 ### Fix
