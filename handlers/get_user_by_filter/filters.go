@@ -6,36 +6,7 @@ import (
 	"github.com/manicar2093/charly_team_api/apperrors"
 	"github.com/manicar2093/charly_team_api/db/entities"
 	"github.com/manicar2093/charly_team_api/db/filters"
-	"github.com/manicar2093/charly_team_api/db/paginator"
 )
-
-type UserFilterService struct {
-	filters   map[string]filters.FilterFunc
-	repo      rel.Repository
-	paginator paginator.Paginable
-}
-
-func NewUserFilterService(
-	repo rel.Repository,
-	paginator paginator.Paginable,
-) filters.FilterService {
-	userService := UserFilterService{
-		filters:   make(map[string]filters.FilterFunc),
-		repo:      repo,
-		paginator: paginator,
-	}
-	userService.filters["find_user_by_uuid"] = FindUserByUUID
-	userService.filters["find_all_users"] = FindAllUsers
-	userService.filters["find_user_by_email"] = FindUserByEmail
-	return &userService
-}
-
-func (c UserFilterService) GetFilter(filterName string) filters.FilterRunable {
-
-	filterFound, isFound := c.filters[filterName]
-	return filters.FilterRunner{Filter: filterFound, Found: isFound}
-
-}
 
 func FindUserByUUID(
 	params *filters.FilterParameters,

@@ -7,34 +7,65 @@ import (
 	"github.com/go-rel/rel"
 	"github.com/manicar2093/charly_team_api/apperrors"
 	"github.com/manicar2093/charly_team_api/db/paginator"
+	"github.com/manicar2093/charly_team_api/validators"
 )
 
 type FilterFunc func(filterParameters *FilterParameters) (interface{}, error)
 
 type FilterParameters struct {
+	// Ctx can be pass throug SetCtx after instantation
 	Ctx       context.Context
 	Repo      rel.Repository
-	Values    interface{}
 	Paginator paginator.Paginable
+	Validator validators.ValidatorService
+	// Values can be anything but must be handled in the filter to get
+	// data from it
+	Values interface{}
 }
 
-type FilterRunner struct {
-	FilterName string
-	Filter     FilterFunc
-	Found      bool
+type FilterRegistrationData struct {
+	Name string
+	Func FilterFunc
 }
 
-func (c FilterRunner) Run(filterParameters *FilterParameters) (interface{}, error) {
-	if !c.IsFound() {
-		return nil, apperrors.BadStatusError{
+// Filter is an implementation of Filterable
+type Filter struct {
+	registeredFilters map[string]FilterFunc
+	filterToRun       FilterFunc
+	filterParams      FilterParameters
+}
+
+func NewFilter(params *FilterParameters, filters ...FilterRegistrationData) Filterable {
+	registered := make(map[string]FilterFunc)
+	for _, item := range filters {
+		registered[item.Name] = item.Func
+	}
+	return &Filter{registeredFilters: registered, filterParams: *params}
+}
+
+// GetUserFilter looks up if the requested filter exists. If exists
+// Run method will be
+func (c *Filter) GetFilter(filterName string) error {
+	filterFound, isFound := c.registeredFilters[filterName]
+	if !isFound {
+		return apperrors.BadRequestError{
 			Message: fmt.Sprintf("'%s' filter does not exists",
-				c.FilterName,
+				filterName,
 			),
 		}
 	}
-	return c.Filter(filterParameters)
+	c.filterToRun = filterFound
+	return nil
 }
 
-func (c FilterRunner) IsFound() bool {
-	return c.Found
+func (c *Filter) Run() (interface{}, error) {
+	return c.filterToRun(&c.filterParams)
+}
+
+func (c *Filter) SetContext(ctx context.Context) {
+	c.filterParams.Ctx = ctx
+}
+
+func (c *Filter) SetValues(values interface{}) {
+	c.filterParams.Values = values
 }

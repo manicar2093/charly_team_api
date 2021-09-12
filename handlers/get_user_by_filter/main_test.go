@@ -7,14 +7,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/go-rel/rel"
-	"github.com/go-rel/rel/reltest"
 	"github.com/manicar2093/charly_team_api/apperrors"
 	"github.com/manicar2093/charly_team_api/db/entities"
-	"github.com/manicar2093/charly_team_api/db/filters"
 	"github.com/manicar2093/charly_team_api/mocks"
 	"github.com/manicar2093/charly_team_api/models"
-	"github.com/manicar2093/charly_team_api/testfunc"
 	"github.com/manicar2093/charly_team_api/validators"
 	"github.com/stretchr/testify/suite"
 	"gopkg.in/guregu/null.v4"
@@ -22,43 +18,29 @@ import (
 
 type MainTests struct {
 	suite.Suite
-	repo                         *reltest.Repository
-	validator                    *mocks.ValidatorService
-	paginator                    *mocks.Paginable
-	userFilter                   *mocks.FilterService
-	userRunable                  *mocks.FilterRunable
-	ctx                          context.Context
-	ordinaryError, notFoundError error
+	userFilter                         *mocks.Filterable
+	validator                          *mocks.ValidatorService
+	ctx                                context.Context
+	ordinaryError, filterNotFoundError error
 }
 
 func (c *MainTests) SetupTest() {
-	c.repo = reltest.New()
+	c.userFilter = &mocks.Filterable{}
 	c.validator = &mocks.ValidatorService{}
-	c.paginator = &mocks.Paginable{}
-	c.userFilter = &mocks.FilterService{}
-	c.userRunable = &mocks.FilterRunable{}
 	c.ctx = context.Background()
 	c.ordinaryError = errors.New("An ordinary error :O")
-	c.notFoundError = rel.NotFoundError{}
+	c.filterNotFoundError = apperrors.BadRequestError{Message: "not exists"}
 
 }
 
 func (c *MainTests) TearDownTest() {
-	c.repo.AssertExpectations(c.T())
-	c.validator.AssertExpectations(c.T())
-	c.paginator.AssertExpectations(c.T())
 	c.userFilter.AssertExpectations(c.T())
 }
 
 func (c *MainTests) TestGetUserByFilter() {
 	filterName := "get_user_by_uuid"
 	userFilter := models.FilterRequest{FilterName: filterName, Values: "values"}
-	expectedRunnerParams := filters.FilterParameters{
-		Ctx:       c.ctx,
-		Repo:      c.repo,
-		Values:    userFilter,
-		Paginator: c.paginator,
-	}
+
 	userRunnerReturn := entities.User{
 		ID:            1,
 		BiotypeID:     null.IntFrom(1),
@@ -83,12 +65,12 @@ func (c *MainTests) TestGetUserByFilter() {
 			Err:     nil,
 		},
 	)
-	c.userFilter.On("GetFilter", userFilter.FilterName).Return(c.userRunable)
-	c.userRunable.On("IsFound").Return(true)
+	c.userFilter.On("GetFilter", userFilter.FilterName).Return(nil)
+	c.userFilter.On("SetContext", c.ctx)
+	c.userFilter.On("SetValues", userFilter.Values)
+	c.userFilter.On("Run").Return(userRunnerReturn, nil)
 
-	c.userRunable.On("Run", &expectedRunnerParams).Return(userRunnerReturn, nil)
-
-	res, _ := CreateLambdaHandlerWDependencies(c.repo, c.validator, c.paginator, c.userFilter)(c.ctx, userFilter)
+	res, _ := CreateLambdaHandlerWDependencies(c.validator, c.userFilter)(c.ctx, userFilter)
 
 	c.Equal(res.StatusCode, http.StatusOK, "http status is not correct")
 	c.Equal(res.Status, http.StatusText(http.StatusOK), "http status is not correct")
@@ -96,7 +78,6 @@ func (c *MainTests) TestGetUserByFilter() {
 	userResponse := res.Body.(entities.User)
 
 	c.NotEmpty(userResponse.ID, "unexpected user id response")
-	testfunc.PrintJsonIndented(res)
 }
 
 func (c *MainTests) TestGetUserByFilter_NoFilter() {
@@ -112,10 +93,9 @@ func (c *MainTests) TestGetUserByFilter_NoFilter() {
 			Err:     nil,
 		},
 	)
-	c.userFilter.On("GetFilter", userFilter.FilterName).Return(c.userRunable)
-	c.userRunable.On("IsFound").Return(false)
+	c.userFilter.On("GetFilter", userFilter.FilterName).Return(c.filterNotFoundError)
 
-	res, _ := CreateLambdaHandlerWDependencies(c.repo, c.validator, c.paginator, c.userFilter)(c.ctx, userFilter)
+	res, _ := CreateLambdaHandlerWDependencies(c.validator, c.userFilter)(c.ctx, userFilter)
 
 	c.Equal(res.StatusCode, http.StatusBadRequest, "http status is not correct")
 	c.Equal(res.Status, http.StatusText(http.StatusBadRequest), "http status is not correct")
@@ -129,12 +109,6 @@ func (c *MainTests) TestGetUserByFilter_NoFilter() {
 func (c *MainTests) TestGetUserByFilter_RunError() {
 	filterName := "get_user_by_uuid"
 	userFilter := models.FilterRequest{FilterName: filterName, Values: "values"}
-	expectedRunnerParams := filters.FilterParameters{
-		Ctx:       c.ctx,
-		Repo:      c.repo,
-		Values:    userFilter,
-		Paginator: c.paginator,
-	}
 
 	c.validator.On(
 		"Validate",
@@ -145,12 +119,13 @@ func (c *MainTests) TestGetUserByFilter_RunError() {
 			Err:     nil,
 		},
 	)
-	c.userFilter.On("GetFilter", userFilter.FilterName).Return(c.userRunable)
-	c.userRunable.On("IsFound").Return(true)
+	c.userFilter.On("GetFilter", userFilter.FilterName).Return(nil)
+	c.userFilter.On("SetContext", c.ctx)
+	c.userFilter.On("SetValues", userFilter.Values)
 
-	c.userRunable.On("Run", &expectedRunnerParams).Return(nil, c.ordinaryError)
+	c.userFilter.On("Run").Return(nil, c.ordinaryError)
 
-	res, _ := CreateLambdaHandlerWDependencies(c.repo, c.validator, c.paginator, c.userFilter)(c.ctx, userFilter)
+	res, _ := CreateLambdaHandlerWDependencies(c.validator, c.userFilter)(c.ctx, userFilter)
 
 	c.Equal(res.StatusCode, http.StatusInternalServerError, "http status is not correct")
 	c.Equal(res.Status, http.StatusText(http.StatusInternalServerError), "http status is not correct")
@@ -179,7 +154,7 @@ func (c *MainTests) TestGetUserByFilter_ValidationError() {
 		},
 	)
 
-	res, _ := CreateLambdaHandlerWDependencies(c.repo, c.validator, c.paginator, c.userFilter)(c.ctx, userFilter)
+	res, _ := CreateLambdaHandlerWDependencies(c.validator, c.userFilter)(c.ctx, userFilter)
 
 	c.Equal(res.StatusCode, http.StatusBadRequest, "http status is not correct")
 	c.Equal(res.Status, http.StatusText(http.StatusBadRequest), "http status is not correct")

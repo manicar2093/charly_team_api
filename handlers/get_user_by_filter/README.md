@@ -23,14 +23,14 @@
 }
 ```
 
-## Not Found
+## Filter Not Found
 
 ```JSON
 {
-    "code": 404,
-    "status": "Not Found",
+    "code": 400,
+    "status": "Bad Request",
     "body": {
-        "error": "Record not found"
+        "error": "'filter_name' filter does not exists"
     }
 }
 ```

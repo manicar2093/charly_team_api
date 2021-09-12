@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"github.com/aws/aws-lambda-go/lambda"
-	"github.com/go-rel/rel"
 	"github.com/manicar2093/charly_team_api/config"
 	"github.com/manicar2093/charly_team_api/db/connections"
 	"github.com/manicar2093/charly_team_api/db/filters"
@@ -14,26 +13,29 @@ import (
 	"github.com/manicar2093/charly_team_api/validators"
 )
 
+var biotestFiltersRegistered = []filters.FilterRegistrationData{
+	{Name: "find_biotest_by_uuid", Func: FindBiotestByUUID},
+}
+
 func main() {
 	config.StartConfig()
 	repo := connections.PostgressConnection()
 	paginator := paginator.NewPaginable(repo)
+	validator := validators.NewStructValidator()
+	biotestFilter := filters.NewFilter(&filters.FilterParameters{
+		Repo:      repo,
+		Paginator: paginator,
+		Validator: validator,
+	}, biotestFiltersRegistered...)
 	lambda.Start(
-		CreateLambdaHandlerWDependencies(
-			connections.PostgressConnection(),
-			validators.NewStructValidator(),
-			NewBiotestFilterService(repo, paginator),
-			paginator,
-		),
+		CreateLambdaHandlerWDependencies(validator, biotestFilter),
 	)
 
 }
 
 func CreateLambdaHandlerWDependencies(
-	repo rel.Repository,
 	validator validators.ValidatorService,
-	biotestFilters filters.FilterService,
-	paginator paginator.Paginable,
+	biotestFilter filters.Filterable,
 ) func(ctx context.Context, req models.FilterRequest) (*models.Response, error) {
 
 	return func(ctx context.Context, req models.FilterRequest) (*models.Response, error) {
@@ -43,19 +45,15 @@ func CreateLambdaHandlerWDependencies(
 			return response, nil
 		}
 
-		filterRunner := biotestFilters.GetFilter(req.FilterName)
-		if !filterRunner.IsFound() {
-			return models.CreateResponse(http.StatusBadRequest, models.ErrorReponse{Error: "requested filter does not exists"}), nil
+		err := biotestFilter.GetFilter(req.FilterName)
+		if err != nil {
+			return models.CreateResponseFromError(err), nil
 		}
 
-		filterParams := filters.FilterParameters{
-			Ctx:       ctx,
-			Repo:      repo,
-			Values:    req,
-			Paginator: paginator,
-		}
+		biotestFilter.SetContext(ctx)
+		biotestFilter.SetValues(req.Values)
 
-		items, err := filterRunner.Run(&filterParams)
+		items, err := biotestFilter.Run()
 		if err != nil {
 			return models.CreateResponseFromError(err), nil
 		}

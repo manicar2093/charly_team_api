@@ -1,45 +1,69 @@
 package filters
 
 import (
+	"context"
 	"testing"
 
-	"github.com/manicar2093/charly_team_api/apperrors"
-	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/suite"
 )
 
-func TestFilterRunner(t *testing.T) {
+type FilterTests struct {
+	suite.Suite
+	filterParams      *FilterParameters
+	filterData1       FilterRegistrationData
+	filterData2       FilterRegistrationData
+	filterData3       FilterRegistrationData
+	filtersToRegister []FilterRegistrationData
+}
 
-	params := FilterParameters{}
-	mockedFuncItemReturned := "a returner value"
-	mockedFunc := func(filterParameters *FilterParameters) (interface{}, error) { return mockedFuncItemReturned, nil }
+func (c *FilterTests) SetupTest() {
+	c.filterParams = &FilterParameters{}
+	c.filterData1 = FilterRegistrationData{Name: "filter1", Func: func(filterParameters *FilterParameters) (interface{}, error) { return "runned", nil }}
+	c.filterData2 = FilterRegistrationData{Name: "filter2", Func: func(filterParameters *FilterParameters) (interface{}, error) { return "runned", nil }}
+	c.filterData3 = FilterRegistrationData{Name: "filter3", Func: func(filterParameters *FilterParameters) (interface{}, error) { return "runned", nil }}
+	c.filtersToRegister = []FilterRegistrationData{c.filterData1, c.filterData2, c.filterData3}
+}
 
-	runner := FilterRunner{FilterName: "a filter", Filter: mockedFunc, Found: true}
-
-	assert.True(t, runner.IsFound(), "function should be found")
-
-	itemGot, errGot := runner.Run(&params)
-
-	assert.Nil(t, errGot, "should not return an error")
-
-	itemGotAsString, ok := itemGot.(string)
-	assert.True(t, ok, "error parsing filter response")
-	assert.Equal(t, mockedFuncItemReturned, itemGotAsString, "item response unexpected")
+func (c *FilterTests) TearDownTest() {
 
 }
 
-func TestFilterRunner_NotFound(t *testing.T) {
+func (c *FilterTests) TestFilter_GetFilter() {
+	filter := NewFilter(c.filterParams, c.filtersToRegister...)
+	c.Nil(filter.GetFilter("filter1"), "should be found")
+}
 
-	params := FilterParameters{}
+func (c *FilterTests) TestFilter_FilterNotFound() {
+	filter := NewFilter(c.filterParams, c.filtersToRegister...)
+	c.NotNil(filter.GetFilter("not_exists"), "should not be found")
+}
 
-	runner := FilterRunner{FilterName: "a filter", Found: false}
+func (c *FilterTests) TestFilter_Run() {
+	filter := NewFilter(c.filterParams, c.filtersToRegister...)
+	c.Nil(filter.GetFilter("filter1"), "should be found")
+	got, err := filter.Run()
+	c.Nil(err, "should not get an error")
+	c.Equal("runned", got.(string), "bad filter response")
+}
 
-	assert.False(t, runner.IsFound(), "function should be found")
+func (c *FilterTests) TestFilter_SetCtx() {
+	filter := NewFilter(c.filterParams, c.filtersToRegister...)
+	c.Nil(filter.GetFilter("filter1"), "should be found")
+	ctx := context.Background()
+	filter.SetContext(ctx)
+	filterImpl := filter.(*Filter)
+	c.Equal(filterImpl.filterParams.Ctx, ctx)
+}
 
-	itemGot, errGot := runner.Run(&params)
+func (c *FilterTests) TestFilter_SetValues() {
+	filter := NewFilter(c.filterParams, c.filtersToRegister...)
+	c.Nil(filter.GetFilter("filter1"), "should be found")
+	newValues := "new-values"
+	filter.SetValues(newValues)
+	filterImpl := filter.(*Filter)
+	c.Equal(filterImpl.filterParams.Values, newValues)
+}
 
-	assert.Nil(t, itemGot, "should not return an item")
-
-	_, isBadStatusError := errGot.(apperrors.BadStatusError)
-	assert.True(t, isBadStatusError, "unexpected type of error")
-
+func TestFilters(t *testing.T) {
+	suite.Run(t, new(FilterTests))
 }

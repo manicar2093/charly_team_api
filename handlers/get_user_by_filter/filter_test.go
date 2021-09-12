@@ -256,21 +256,6 @@ func (c *UserFilterTest) TestFindAllUsersValidationError() {
 
 }
 
-func (c *UserFilterTest) TestNewUserFilterService() {
-
-	userFilter := NewUserFilterService(c.repo, c.paginator)
-	c.NotNil(userFilter, "user filter should not be nil")
-
-	userFilterRunner := userFilter.GetFilter("find_user_by_uuid")
-
-	c.True(userFilterRunner.IsFound(), "filter should be found")
-
-	userFilterRunner = userFilter.GetFilter("does_not_exists")
-
-	c.False(userFilterRunner.IsFound(), "filter should not be found")
-
-}
-
 func TestUserFilter(t *testing.T) {
 	suite.Run(t, new(UserFilterTest))
 }
