@@ -1,3 +1,9 @@
+## v0.26.0 (2021-09-12)
+
+### Feat
+
+- Add biotest comparision search (#71)
+
 ## v0.25.0 (2021-09-12)
 
 ### Feat
