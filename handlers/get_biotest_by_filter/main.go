@@ -22,7 +22,6 @@ func main() {
 		CreateLambdaHandlerWDependencies(
 			connections.PostgressConnection(),
 			validators.NewStructValidator(),
-			NewBiotestFilterService(repo, paginator),
 			paginator,
 		),
 	)
@@ -32,7 +31,6 @@ func main() {
 func CreateLambdaHandlerWDependencies(
 	repo rel.Repository,
 	validator validators.ValidatorService,
-	biotestFilters filters.FilterService,
 	paginator paginator.Paginable,
 ) func(ctx context.Context, req models.FilterRequest) (*models.Response, error) {
 

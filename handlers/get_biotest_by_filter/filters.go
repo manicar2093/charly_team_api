@@ -8,34 +8,7 @@ import (
 	"github.com/manicar2093/charly_team_api/apperrors"
 	"github.com/manicar2093/charly_team_api/db/entities"
 	"github.com/manicar2093/charly_team_api/db/filters"
-	"github.com/manicar2093/charly_team_api/db/paginator"
 )
-
-type BiotestFilterService struct {
-	filters   map[string]filters.FilterFunc
-	repo      rel.Repository
-	paginator paginator.Paginable
-}
-
-func NewBiotestFilterService(
-	repo rel.Repository,
-	paginator paginator.Paginable,
-) filters.FilterService {
-	biotestFilter := BiotestFilterService{
-		filters:   make(map[string]filters.FilterFunc),
-		repo:      repo,
-		paginator: paginator,
-	}
-	biotestFilter.filters["find_biotest_by_uuid"] = FindBiotestByUUID
-	return &biotestFilter
-}
-
-func (c BiotestFilterService) GetFilter(filterName string) filters.FilterRunable {
-
-	filterFound, isFound := c.filters[filterName]
-	return filters.FilterRunner{Filter: filterFound, Found: isFound}
-
-}
 
 func FindBiotestByUUID(params *filters.FilterParameters) (interface{}, error) {
 
