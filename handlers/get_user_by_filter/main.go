@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"github.com/aws/aws-lambda-go/lambda"
-	"github.com/go-rel/rel"
 	"github.com/manicar2093/charly_team_api/config"
 	"github.com/manicar2093/charly_team_api/db/connections"
 	"github.com/manicar2093/charly_team_api/db/filters"
@@ -14,25 +13,33 @@ import (
 	"github.com/manicar2093/charly_team_api/validators"
 )
 
+var userFilters = []filters.FilterRegistrationData{
+	{Name: "find_user_by_uuid", Func: FindUserByUUID},
+	{Name: "find_all_users", Func: FindAllUsers},
+	{Name: "find_user_by_email", Func: FindUserByEmail},
+}
+
 func main() {
 	config.StartConfig()
 	repo := connections.PostgressConnection()
 	paginator := paginator.NewPaginable(repo)
+	validator := validators.NewStructValidator()
+	userFilter := filters.NewFilter(&filters.FilterParameters{
+		Repo:      repo,
+		Paginator: paginator,
+		Validator: validator,
+	}, userFilters...)
 	lambda.Start(
 		CreateLambdaHandlerWDependencies(
-			repo,
-			validators.NewStructValidator(),
-			paginator,
-			NewUserFilterService(repo, paginator),
+			validator,
+			userFilter,
 		),
 	)
 }
 
 func CreateLambdaHandlerWDependencies(
-	repo rel.Repository,
 	validator validators.ValidatorService,
-	paginator paginator.Paginable,
-	userFilters filters.FilterService,
+	userFilter filters.Filterable,
 ) func(ctx context.Context, req models.FilterRequest) (*models.Response, error) {
 
 	return func(ctx context.Context, req models.FilterRequest) (*models.Response, error) {
@@ -42,19 +49,14 @@ func CreateLambdaHandlerWDependencies(
 			return response, nil
 		}
 
-		filterRunner := userFilters.GetFilter(req.FilterName)
-		if !filterRunner.IsFound() {
-			return models.CreateResponse(http.StatusBadRequest, models.ErrorReponse{Error: "requested filter does not exists"}), nil
+		err := userFilter.GetFilter(req.FilterName)
+		if err != nil {
+			return models.CreateResponseFromError(err), nil
 		}
 
-		filterParams := filters.FilterParameters{
-			Ctx:       ctx,
-			Repo:      repo,
-			Values:    req,
-			Paginator: paginator,
-		}
-
-		items, err := filterRunner.Run(&filterParams)
+		userFilter.SetContext(ctx)
+		userFilter.SetValues(req.Values)
+		items, err := userFilter.Run()
 		if err != nil {
 			return models.CreateResponseFromError(err), nil
 		}
