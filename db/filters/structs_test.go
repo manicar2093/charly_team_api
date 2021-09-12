@@ -1,6 +1,7 @@
 package filters
 
 import (
+	"context"
 	"testing"
 
 	"github.com/stretchr/testify/suite"
@@ -43,6 +44,24 @@ func (c *FilterTests) TestFilter_Run() {
 	got, err := filter.Run()
 	c.Nil(err, "should not get an error")
 	c.Equal("runned", got.(string), "bad filter response")
+}
+
+func (c *FilterTests) TestFilter_SetCtx() {
+	filter := NewFilter(c.filterParams, c.filtersToRegister...)
+	c.Nil(filter.GetFilter("filter1"), "should be found")
+	ctx := context.Background()
+	filter.SetContext(ctx)
+	filterImpl := filter.(*Filter)
+	c.Equal(filterImpl.filterParams.Ctx, ctx)
+}
+
+func (c *FilterTests) TestFilter_SetValues() {
+	filter := NewFilter(c.filterParams, c.filtersToRegister...)
+	c.Nil(filter.GetFilter("filter1"), "should be found")
+	newValues := "new-values"
+	filter.SetValues(newValues)
+	filterImpl := filter.(*Filter)
+	c.Equal(filterImpl.filterParams.Values, newValues)
 }
 
 func TestFilters(t *testing.T) {

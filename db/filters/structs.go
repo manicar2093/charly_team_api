@@ -13,6 +13,7 @@ import (
 type FilterFunc func(filterParameters *FilterParameters) (interface{}, error)
 
 type FilterParameters struct {
+	// Ctx can be pass throug SetCtx after instantation
 	Ctx       context.Context
 	Repo      rel.Repository
 	Paginator paginator.Paginable
@@ -47,7 +48,7 @@ func NewFilter(params *FilterParameters, filters ...FilterRegistrationData) Filt
 func (c *Filter) GetFilter(filterName string) error {
 	filterFound, isFound := c.registeredFilters[filterName]
 	if !isFound {
-		return apperrors.BadStatusError{
+		return apperrors.BadRequestError{
 			Message: fmt.Sprintf("'%s' filter does not exists",
 				filterName,
 			),
@@ -59,4 +60,12 @@ func (c *Filter) GetFilter(filterName string) error {
 
 func (c *Filter) Run() (interface{}, error) {
 	return c.filterToRun(&c.filterParams)
+}
+
+func (c *Filter) SetContext(ctx context.Context) {
+	c.filterParams.Ctx = ctx
+}
+
+func (c *Filter) SetValues(values interface{}) {
+	c.filterParams.Values = values
 }

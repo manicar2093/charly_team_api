@@ -14,14 +14,14 @@ func (c NotFoundError) StatusCode() int {
 	return http.StatusNotFound
 }
 
-type BadStatusError struct {
+type BadRequestError struct {
 	Message string
 }
 
-func (c BadStatusError) Error() string {
+func (c BadRequestError) Error() string {
 	return c.Message
 }
 
-func (c BadStatusError) StatusCode() int {
-	return http.StatusNotFound
+func (c BadRequestError) StatusCode() int {
+	return http.StatusBadRequest
 }
