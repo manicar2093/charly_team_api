@@ -7,11 +7,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/go-rel/rel"
-	"github.com/go-rel/rel/reltest"
 	"github.com/manicar2093/charly_team_api/apperrors"
 	"github.com/manicar2093/charly_team_api/db/entities"
-	"github.com/manicar2093/charly_team_api/db/filters"
 	"github.com/manicar2093/charly_team_api/mocks"
 	"github.com/manicar2093/charly_team_api/models"
 	"github.com/manicar2093/charly_team_api/validators"
@@ -20,43 +17,29 @@ import (
 
 type MainTests struct {
 	suite.Suite
-	repo                         *reltest.Repository
-	validator                    *mocks.ValidatorService
-	paginator                    *mocks.Paginable
-	biotestFilter                *mocks.FilterService
-	userRunable                  *mocks.FilterRunable
-	ctx                          context.Context
-	ordinaryError, notFoundError error
+	biotestFilter                      *mocks.Filterable
+	validator                          *mocks.ValidatorService
+	ctx                                context.Context
+	ordinaryError, filterNotFoundError error
 }
 
 func (c *MainTests) SetupTest() {
-	c.repo = reltest.New()
+	c.biotestFilter = &mocks.Filterable{}
 	c.validator = &mocks.ValidatorService{}
-	c.paginator = &mocks.Paginable{}
-	c.biotestFilter = &mocks.FilterService{}
-	c.userRunable = &mocks.FilterRunable{}
 	c.ctx = context.Background()
 	c.ordinaryError = errors.New("An ordinary error :O")
-	c.notFoundError = rel.NotFoundError{}
+	c.filterNotFoundError = apperrors.BadRequestError{Message: "not exists"}
 
 }
 
 func (c *MainTests) TearDownTest() {
-	c.repo.AssertExpectations(c.T())
-	c.validator.AssertExpectations(c.T())
-	c.paginator.AssertExpectations(c.T())
 	c.biotestFilter.AssertExpectations(c.T())
 }
 
 func (c *MainTests) TestFindBiotestByUUID() {
 	filterName := "find_biotest_by_uuid"
 	biotestFilter := models.FilterRequest{FilterName: filterName, Values: "values"}
-	expectedRunnerParams := filters.FilterParameters{
-		Ctx:       c.ctx,
-		Repo:      c.repo,
-		Values:    biotestFilter,
-		Paginator: c.paginator,
-	}
+
 	biotestRunnerReturn := entities.Biotest{
 		ID:                    1,
 		HigherMuscleDensityID: 1,
@@ -79,12 +62,14 @@ func (c *MainTests) TestFindBiotestByUUID() {
 			Err:     nil,
 		},
 	)
-	c.biotestFilter.On("GetFilter", biotestFilter.FilterName).Return(c.userRunable)
-	c.userRunable.On("IsFound").Return(true)
 
-	c.userRunable.On("Run", &expectedRunnerParams).Return(biotestRunnerReturn, nil)
+	c.biotestFilter.On("SetContext", c.ctx).Return(nil)
+	c.biotestFilter.On("SetValues", biotestFilter.Values).Return(nil)
+	c.biotestFilter.On("GetFilter", biotestFilter.FilterName).Return(nil)
 
-	res, _ := CreateLambdaHandlerWDependencies(c.repo, c.validator, c.biotestFilter, c.paginator)(c.ctx, biotestFilter)
+	c.biotestFilter.On("Run").Return(biotestRunnerReturn, nil)
+
+	res, _ := CreateLambdaHandlerWDependencies(c.validator, c.biotestFilter)(c.ctx, biotestFilter)
 
 	c.Equal(res.StatusCode, http.StatusOK, "http status is not correct")
 	c.Equal(res.Status, http.StatusText(http.StatusOK), "http status is not correct")
@@ -108,13 +93,12 @@ func (c *MainTests) TestFindBiotestByUUID_NoFilter() {
 			Err:     nil,
 		},
 	)
-	c.biotestFilter.On("GetFilter", biotestFilter.FilterName).Return(c.userRunable)
-	c.userRunable.On("IsFound").Return(false)
+	c.biotestFilter.On("GetFilter", biotestFilter.FilterName).Return(c.filterNotFoundError)
 
-	res, _ := CreateLambdaHandlerWDependencies(c.repo, c.validator, c.biotestFilter, c.paginator)(c.ctx, biotestFilter)
+	res, _ := CreateLambdaHandlerWDependencies(c.validator, c.biotestFilter)(c.ctx, biotestFilter)
 
-	c.Equal(res.StatusCode, http.StatusBadRequest, "http status is not correct")
-	c.Equal(res.Status, http.StatusText(http.StatusBadRequest), "http status is not correct")
+	c.Equal(http.StatusBadRequest, res.StatusCode, "http status is not correct")
+	c.Equal(http.StatusText(http.StatusBadRequest), res.Status, "http status is not correct")
 
 	bodyError := res.Body.(models.ErrorReponse)
 
@@ -125,12 +109,6 @@ func (c *MainTests) TestFindBiotestByUUID_NoFilter() {
 func (c *MainTests) TestFindBiotestByUUID_RunError() {
 	filterName := "find_biotest_by_uuid"
 	biotestFilter := models.FilterRequest{FilterName: filterName, Values: "values"}
-	expectedRunnerParams := filters.FilterParameters{
-		Ctx:       c.ctx,
-		Repo:      c.repo,
-		Values:    biotestFilter,
-		Paginator: c.paginator,
-	}
 
 	c.validator.On(
 		"Validate",
@@ -141,12 +119,13 @@ func (c *MainTests) TestFindBiotestByUUID_RunError() {
 			Err:     nil,
 		},
 	)
-	c.biotestFilter.On("GetFilter", biotestFilter.FilterName).Return(c.userRunable)
-	c.userRunable.On("IsFound").Return(true)
 
-	c.userRunable.On("Run", &expectedRunnerParams).Return(nil, c.ordinaryError)
+	c.biotestFilter.On("GetFilter", biotestFilter.FilterName).Return(nil)
+	c.biotestFilter.On("SetContext", c.ctx).Return(nil)
+	c.biotestFilter.On("SetValues", biotestFilter.Values).Return(nil)
+	c.biotestFilter.On("Run").Return(nil, c.ordinaryError)
 
-	res, _ := CreateLambdaHandlerWDependencies(c.repo, c.validator, c.biotestFilter, c.paginator)(c.ctx, biotestFilter)
+	res, _ := CreateLambdaHandlerWDependencies(c.validator, c.biotestFilter)(c.ctx, biotestFilter)
 
 	c.Equal(res.StatusCode, http.StatusInternalServerError, "http status is not correct")
 	c.Equal(res.Status, http.StatusText(http.StatusInternalServerError), "http status is not correct")
@@ -175,7 +154,7 @@ func (c *MainTests) TestFindBiotestByUUID_ValidationError() {
 		},
 	)
 
-	res, _ := CreateLambdaHandlerWDependencies(c.repo, c.validator, c.biotestFilter, c.paginator)(c.ctx, biotestFilter)
+	res, _ := CreateLambdaHandlerWDependencies(c.validator, c.biotestFilter)(c.ctx, biotestFilter)
 
 	c.Equal(res.StatusCode, http.StatusBadRequest, "http status is not correct")
 	c.Equal(res.Status, http.StatusText(http.StatusBadRequest), "http status is not correct")
