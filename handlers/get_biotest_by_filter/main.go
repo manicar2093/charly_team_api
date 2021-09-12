@@ -9,12 +9,13 @@ import (
 	"github.com/manicar2093/charly_team_api/db/connections"
 	"github.com/manicar2093/charly_team_api/db/filters"
 	"github.com/manicar2093/charly_team_api/db/paginator"
+	"github.com/manicar2093/charly_team_api/handlers/get_biotest_by_filter/biotestfilters"
 	"github.com/manicar2093/charly_team_api/models"
 	"github.com/manicar2093/charly_team_api/validators"
 )
 
 var biotestFiltersRegistered = []filters.FilterRegistrationData{
-	{Name: "find_biotest_by_uuid", Func: FindBiotestByUUID},
+	{Name: "find_biotest_by_uuid", Func: biotestfilters.FindBiotestByUUID},
 }
 
 func main() {

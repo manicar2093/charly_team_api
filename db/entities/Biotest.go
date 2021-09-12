@@ -6,6 +6,8 @@ import (
 	"gopkg.in/guregu/null.v4"
 )
 
+const BiotestTable = "Biotest"
+
 // TODO: Add autoload to need attributes
 type Biotest struct {
 	ID                      int32               `db:",primary" json:"id,omitempty"`
@@ -44,5 +46,5 @@ type Biotest struct {
 }
 
 func (b Biotest) Table() string {
-	return "Biotest"
+	return BiotestTable
 }
