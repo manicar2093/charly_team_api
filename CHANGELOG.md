@@ -1,3 +1,9 @@
+## v0.25.0 (2021-09-12)
+
+### Feat
+
+- Change filter implementation (#70)
+
 ## v0.24.0 (2021-09-11)
 
 ### Feat
