@@ -1,4 +1,4 @@
-package main
+package biotestfilters
 
 import (
 	"context"
@@ -15,7 +15,11 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
-type BiotestFilterTest struct {
+func TestFindByUUID(t *testing.T) {
+	suite.Run(t, new(FindByUUIDTest))
+}
+
+type FindByUUIDTest struct {
 	suite.Suite
 	repo                         *reltest.Repository
 	paginator                    *mocks.Paginable
@@ -24,7 +28,7 @@ type BiotestFilterTest struct {
 	notFoundError, ordinaryError error
 }
 
-func (c *BiotestFilterTest) SetupTest() {
+func (c *FindByUUIDTest) SetupTest() {
 	c.repo = reltest.New()
 	c.paginator = &mocks.Paginable{}
 	c.ctx = context.Background()
@@ -38,12 +42,12 @@ func (c *BiotestFilterTest) SetupTest() {
 
 }
 
-func (c *BiotestFilterTest) TearDownTest() {
+func (c *FindByUUIDTest) TearDownTest() {
 	c.repo.AssertExpectations(c.T())
 	c.paginator.AssertExpectations(c.T())
 }
 
-func (c *BiotestFilterTest) TestFindBiotestByUUID() {
+func (c *FindByUUIDTest) TestFindBiotestByUUID() {
 
 	biotestUUIDRequested := "an_uuid"
 
@@ -72,7 +76,7 @@ func (c *BiotestFilterTest) TestFindBiotestByUUID() {
 
 }
 
-func (c *BiotestFilterTest) TestFindBiotestByUUID_ValidationError() {
+func (c *FindByUUIDTest) TestFindBiotestByUUID_ValidationError() {
 
 	biotestUUIDRequested := "an_uuid"
 
@@ -91,7 +95,7 @@ func (c *BiotestFilterTest) TestFindBiotestByUUID_ValidationError() {
 
 }
 
-func (c *BiotestFilterTest) TestFindBiotestByUUID_NotFound() {
+func (c *FindByUUIDTest) TestFindBiotestByUUID_NotFound() {
 
 	biotestUUIDRequested := "an_uuid"
 
@@ -116,7 +120,7 @@ func (c *BiotestFilterTest) TestFindBiotestByUUID_NotFound() {
 
 }
 
-func (c *BiotestFilterTest) TestFindBiotestByUUID_UnhandledError() {
+func (c *FindByUUIDTest) TestFindBiotestByUUID_UnhandledError() {
 
 	biotestUUIDRequested := "an_uuid"
 
@@ -134,8 +138,4 @@ func (c *BiotestFilterTest) TestFindBiotestByUUID_UnhandledError() {
 
 	c.NotNil(err, "FindBiotestByUUID not return an error")
 
-}
-
-func TestUserFilter(t *testing.T) {
-	suite.Run(t, new(BiotestFilterTest))
 }
