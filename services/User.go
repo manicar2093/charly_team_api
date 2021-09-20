@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"log"
-	"strings"
 
 	"github.com/aws/aws-sdk-go/service/cognitoidentityprovider"
 	"github.com/go-rel/rel"
@@ -83,7 +82,7 @@ func (u UserServiceCognito) CreateUser(
 
 		requestData := cognitoidentityprovider.AdminCreateUserInput{
 			UserPoolId:        &config.CognitoPoolID,
-			Username:          u.getUserUsername(&user.Email),
+			Username:          &user.Email,
 			TemporaryPassword: &pass,
 			UserAttributes: []*cognitoidentityprovider.AttributeType{
 				{
@@ -114,9 +113,4 @@ func (u UserServiceCognito) CreateUser(
 
 	return userEntity.ID, err
 
-}
-
-func (u UserServiceCognito) getUserUsername(email *string) *string {
-	metadata := strings.Split(*email, "@")
-	return &metadata[0]
 }
