@@ -49,7 +49,7 @@ provider:
     DB_NAME: ${ssm:/charly_api_dev/db_settings/name}
     DB_USER: ${ssm:/charly_api_dev/db_settings/user}
     DB_PASSWORD: ${ssm:/charly_api_dev/db_settings/password}
-    COGNITO_POOL_ID: ${ssm:/charly_api_dev/login_service/cognito_pool_id}
+    COGNITO_POOL_ID: !Ref CharlyTeamAppUserPool
 
 package:
   patterns:
@@ -70,15 +70,56 @@ functions:
 
   registry_new_user:
     handler: bin/registry_new_user
+  
+  update_biotest:
+    handler: bin/update_biotest
+
+  update_user: 
+    handler: bin/update_user
 
 # you can add CloudFormation resource templates here
-#resources:
-#  Resources:
-#    NewResource:
-#      Type: AWS::S3::Bucket
-#      Properties:
-#        BucketName: my-new-bucket
-#  Outputs:
-#     NewOutput:
-#       Description: "Description for the output"
-#       Value: "Some output value"
+resources:
+  Resources:
+
+    CharlyTeamAppUserPool:
+      Type: AWS::Cognito::UserPool
+      Properties:
+        UserPoolName: charly-team-app-dev-user-pool
+        AdminCreateUserConfig:
+          AllowAdminCreateUserOnly: true
+          InviteMessageTemplate:
+            EmailMessage: ¡Ingresa a CharlyApp con tu usuario {username} y esta contraseña temporal {####} para continuar con tu plan! 
+            EmailSubject: ¡Bienvenido a #CharlyTeam!
+        AccountRecoverySetting:
+          RecoveryMechanisms:
+            - Name: verified_email
+              Priority: 1
+        UsernameAttributes: 
+          - email
+        AutoVerifiedAttributes:
+          - email
+        Policies:
+          PasswordPolicy:
+              MinimumLength: 8
+              RequireLowercase: true
+              RequireNumbers: true
+              RequireSymbols: true
+              RequireUppercase: true
+              TemporaryPasswordValidityDays: 14
+
+    CharlyTeamAppUserPoolClient:
+      Type: AWS::Cognito::UserPoolClient
+      Properties:
+        ClientName: charly-team-app-dev-user-pool-client
+        ExplicitAuthFlows: 
+          - ALLOW_ADMIN_USER_PASSWORD_AUTH
+          - ALLOW_USER_PASSWORD_AUTH
+          - ALLOW_REFRESH_TOKEN_AUTH
+        UserPoolId: !Ref CharlyTeamAppUserPool 
+
+  Outputs:
+    UserPoolClientId:
+      Value: !Ref CharlyTeamAppUserPoolClient
+      Export:
+        Name: UserPoolClientID
+
