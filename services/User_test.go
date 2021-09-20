@@ -18,6 +18,10 @@ import (
 	"gopkg.in/guregu/null.v4"
 )
 
+func TestUserService(t *testing.T) {
+	suite.Run(t, new(UserServiceTest))
+}
+
 type UserServiceTest struct {
 	suite.Suite
 	providerMock                        *mocks.CongitoClient
@@ -81,7 +85,7 @@ func (u *UserServiceTest) TestCreateUser() {
 
 	adminCreateUserReq := cognitoidentityprovider.AdminCreateUserInput{
 		UserPoolId:        &config.CognitoPoolID,
-		Username:          &u.username,
+		Username:          &u.userRequest.Email,
 		TemporaryPassword: &u.temporaryPass,
 		UserAttributes: []*cognitoidentityprovider.AttributeType{
 			{
@@ -179,7 +183,7 @@ func (u *UserServiceTest) TestCreateUserAdminCreateUserError() {
 
 	adminCreateUserReq := cognitoidentityprovider.AdminCreateUserInput{
 		UserPoolId:        &config.CognitoPoolID,
-		Username:          &u.username,
+		Username:          &u.userRequest.Email,
 		TemporaryPassword: &u.temporaryPass,
 		UserAttributes: []*cognitoidentityprovider.AttributeType{
 			{
@@ -222,8 +226,4 @@ func (u *UserServiceTest) TestCreateUserAdminCreateUserError() {
 	u.NotNil(err)
 	u.Empty(userCreated, "user id is not correct")
 
-}
-
-func TestUserService(t *testing.T) {
-	suite.Run(t, new(UserServiceTest))
 }
