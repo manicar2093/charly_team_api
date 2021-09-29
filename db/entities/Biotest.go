@@ -26,6 +26,8 @@ type Biotest struct {
 	Creator                 User                `ref:"creator_id" fk:"id" json:"-"`
 	CreatorID               int32               `validate:"required,gt=0" json:"creator_id,omitempty"`
 	BiotestUUID             string              `json:"biotest_uuid"`
+	AgeOnTest               int32               `validate:"required" json:"age_on_test"`
+	ChronologicalAge        int32               `validate:"required" json:"chronological_age"`
 	Weight                  float32             `validate:"required" json:"weight,omitempty"`
 	Height                  int32               `validate:"required" json:"height,omitempty"`
 	BodyFatPercentage       float32             `validate:"required" json:"body_fat_percentage,omitempty"`
