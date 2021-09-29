@@ -126,7 +126,7 @@ func (u *UserServiceTest) TestCreateUser() {
 	userCreated, err := userService.CreateUser(context.Background(), &u.userRequest)
 
 	u.Nil(err)
-	u.Equal(u.idUserCreated, userCreated, "user id is not correct")
+	u.Equal(u.idUserCreated, userCreated.ID, "user id is not correct")
 
 }
 

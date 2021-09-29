@@ -13,7 +13,7 @@ type User struct {
 	Biotype       Biotype     `ref:"biotype_id" fk:"id" json:"-"`
 	BiotypeID     null.Int    `json:"biotype_id,omitempty"`
 	BoneDensity   BoneDensity `ref:"bone_density_id" fk:"id" json:"-"`
-	BoneDensityID null.Int    `json:"bone_density"`
+	BoneDensityID null.Int    `json:"bone_density_id"`
 	Role          Role        `ref:"role_id" fk:"id" json:"-"`
 	RoleID        int32       `validate:"required" json:"role_id,omitempty"`
 	Gender        Gender      `ref:"gender_id" fk:"id" json:"-"`

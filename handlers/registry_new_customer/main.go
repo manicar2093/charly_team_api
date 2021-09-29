@@ -13,6 +13,10 @@ import (
 	"github.com/manicar2093/charly_team_api/validators"
 )
 
+const (
+	Customer_Role_ID = 3
+)
+
 func main() {
 	config.StartConfig()
 	lambda.Start(CreateLambdaHandlerWDependencies(
@@ -33,7 +37,7 @@ func CreateLambdaHandlerWDependencies(
 
 	return func(ctx context.Context, req models.CreateUserRequest) (*models.Response, error) {
 
-		isValid, response := validators.CheckValidationErrors(validator.Validate(req))
+		isValid, response := assignDefaultRoleToRequestAndValidate(&req, validator)
 
 		if !isValid {
 			return response, nil
@@ -52,4 +56,14 @@ func CreateLambdaHandlerWDependencies(
 
 	}
 
+}
+
+// assignDefaultRoleToRequestAndValidate assign Customer_Role_ID to request and do req validation
+func assignDefaultRoleToRequestAndValidate(
+	req *models.CreateUserRequest,
+	validator validators.ValidatorService,
+) (bool, *models.Response) {
+
+	req.RoleID = Customer_Role_ID
+	return validators.CheckValidationErrors(validator.Validate(req))
 }

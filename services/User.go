@@ -32,7 +32,7 @@ type UserService interface {
 	CreateUser(
 		ctx context.Context,
 		user *models.CreateUserRequest,
-	) (int32, error)
+	) (*entities.User, error)
 }
 
 // UserServiceCognito is a middleware to Cognito Services. PoolID is taken from config package.
@@ -60,7 +60,7 @@ func NewUserServiceCognito(
 func (u UserServiceCognito) CreateUser(
 	ctx context.Context,
 	user *models.CreateUserRequest,
-) (int32, error) {
+) (*entities.User, error) {
 
 	userEntity := entities.User{
 		Name:     user.Name,
@@ -108,9 +108,9 @@ func (u UserServiceCognito) CreateUser(
 	})
 
 	if err != nil {
-		return 0, err
+		return &entities.User{}, err
 	}
 
-	return userEntity.ID, err
+	return &userEntity, err
 
 }
