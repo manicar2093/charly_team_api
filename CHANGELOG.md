@@ -1,3 +1,9 @@
+## v0.27.0 (2021-09-29)
+
+### Feat
+
+- Add registry customer function: (#84)
+
 ## v0.26.0 (2021-09-12)
 
 ### Feat
