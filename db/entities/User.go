@@ -22,6 +22,7 @@ type User struct {
 	Name          string      `validate:"required" json:"name,omitempty"`
 	LastName      string      `validate:"required" json:"last_name,omitempty"`
 	Email         string      `validate:"required" json:"email,omitempty"`
+	AvatarUrl     string      `validate:"required" json:"avatar_url"`
 	Birthday      time.Time   `json:"birthday,omitempty"`
 	CreatedAt     time.Time   `json:"created_at,omitempty"`
 	UpdatedAt     time.Time   `json:"updated_at,omitempty"`
