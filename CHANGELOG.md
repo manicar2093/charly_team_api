@@ -1,3 +1,9 @@
+## v0.28.1 (2021-09-30)
+
+### Fix
+
+- Change attributes Biotest names (#88)
+
 ## v0.28.0 (2021-09-30)
 
 ### Feat
