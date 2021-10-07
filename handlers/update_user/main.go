@@ -29,10 +29,10 @@ func CreateLambdaHandlerWDependencies(
 
 	return func(ctx context.Context, req entities.User) (*models.Response, error) {
 
-		if req.ID == 0 {
+		if !validators.IsUpdateRequestValid(&req) {
 			return models.CreateResponse(
 				http.StatusBadRequest,
-				apperrors.ValidationErrors{{Field: "id", Validation: "required"}},
+				apperrors.ValidationErrors{{Field: "identifier", Validation: "required"}},
 			), nil
 		}
 

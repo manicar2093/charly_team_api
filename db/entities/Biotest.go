@@ -50,3 +50,11 @@ type Biotest struct {
 func (b Biotest) Table() string {
 	return BiotestTable
 }
+
+func (c Biotest) GetID() int32 {
+	return c.ID
+}
+
+func (c Biotest) GetUUID() string {
+	return c.BiotestUUID
+}

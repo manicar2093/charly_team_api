@@ -14,6 +14,10 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
+func TestMain(t *testing.T) {
+	suite.Run(t, new(MainTests))
+}
+
 type MainTests struct {
 	suite.Suite
 	repo          *reltest.Repository
@@ -77,7 +81,7 @@ func (c *MainTests) TestUpdateUser_NoUserID() {
 	c.Equal(res.Status, http.StatusText(http.StatusBadRequest), "http status is not correct")
 
 	bodyError := res.Body.(apperrors.ValidationErrors)
-	c.Equal("id", bodyError[0].Field, "validation error is not correct")
+	c.Equal("identifier", bodyError[0].Field, "validation error is not correct")
 	c.Equal("required", bodyError[0].Validation, "validation error is not correct")
 
 }
@@ -106,8 +110,4 @@ func (c *MainTests) TestUpdateUser_NoValidRequest() {
 	c.True(ok, "error parsing error message")
 	c.Equal(len(errorGot), 2, "error message should not be empty")
 
-}
-
-func TestMain(t *testing.T) {
-	suite.Run(t, new(MainTests))
 }

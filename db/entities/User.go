@@ -31,3 +31,11 @@ type User struct {
 func (c User) Table() string {
 	return UserTable
 }
+
+func (c User) GetID() int32 {
+	return c.ID
+}
+
+func (c User) GetUUID() string {
+	return c.UserUUID
+}
