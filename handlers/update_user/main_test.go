@@ -77,7 +77,7 @@ func (c *MainTests) TestUpdateUser_NoUserID() {
 	c.Equal(res.Status, http.StatusText(http.StatusBadRequest), "http status is not correct")
 
 	bodyError := res.Body.(apperrors.ValidationErrors)
-	c.Equal("id", bodyError[0].Field, "validation error is not correct")
+	c.Equal("identifier", bodyError[0].Field, "validation error is not correct")
 	c.Equal("required", bodyError[0].Validation, "validation error is not correct")
 
 }
