@@ -45,6 +45,7 @@ func (u *UserServiceTest) SetupTest() {
 	u.uuidGen = &mocks.UUIDGenerator{}
 	u.uuidReturned = "an uuid"
 	u.uuidGen.On("New").Return(u.uuidReturned)
+	u.uuidGen.On("New").Return(u.uuidReturned)
 	u.username = "testing"
 	u.temporaryPass = "12345678"
 	u.anError = errors.New("An error")
@@ -95,13 +96,14 @@ func (u *UserServiceTest) TestCreateUser() {
 		},
 	}
 	userDBReq := entities.User{
-		Name:     u.userRequest.Name,
-		LastName: u.userRequest.LastName,
-		RoleID:   int32(u.userRequest.RoleID),
-		Email:    u.userRequest.Email,
-		Birthday: u.userRequest.Birthday,
-		GenderID: null.IntFrom(1),
-		UserUUID: u.uuidReturned,
+		Name:      u.userRequest.Name,
+		LastName:  u.userRequest.LastName,
+		RoleID:    int32(u.userRequest.RoleID),
+		Email:     u.userRequest.Email,
+		Birthday:  u.userRequest.Birthday,
+		GenderID:  null.IntFrom(1),
+		UserUUID:  u.uuidReturned,
+		AvatarUrl: u.uuidReturned,
 	}
 
 	u.providerMock.On(
@@ -133,13 +135,14 @@ func (u *UserServiceTest) TestCreateUser() {
 func (u *UserServiceTest) TestCreateUserRepoSaveErr() {
 
 	userDBReq := entities.User{
-		Name:     u.userRequest.Name,
-		LastName: u.userRequest.LastName,
-		RoleID:   int32(u.userRequest.RoleID),
-		Email:    u.userRequest.Email,
-		Birthday: u.userRequest.Birthday,
-		GenderID: null.IntFrom(1),
-		UserUUID: u.uuidReturned,
+		Name:      u.userRequest.Name,
+		LastName:  u.userRequest.LastName,
+		RoleID:    int32(u.userRequest.RoleID),
+		Email:     u.userRequest.Email,
+		Birthday:  u.userRequest.Birthday,
+		GenderID:  null.IntFrom(1),
+		UserUUID:  u.uuidReturned,
+		AvatarUrl: u.uuidReturned,
 	}
 
 	u.repoMock.ExpectTransaction(func(r *reltest.Repository) {
@@ -193,13 +196,14 @@ func (u *UserServiceTest) TestCreateUserAdminCreateUserError() {
 		},
 	}
 	userDBReq := entities.User{
-		Name:     u.userRequest.Name,
-		LastName: u.userRequest.LastName,
-		RoleID:   int32(u.userRequest.RoleID),
-		Email:    u.userRequest.Email,
-		Birthday: u.userRequest.Birthday,
-		GenderID: null.IntFrom(1),
-		UserUUID: u.uuidReturned,
+		Name:      u.userRequest.Name,
+		LastName:  u.userRequest.LastName,
+		RoleID:    int32(u.userRequest.RoleID),
+		Email:     u.userRequest.Email,
+		Birthday:  u.userRequest.Birthday,
+		GenderID:  null.IntFrom(1),
+		UserUUID:  u.uuidReturned,
+		AvatarUrl: u.uuidReturned,
 	}
 
 	u.providerMock.On(
