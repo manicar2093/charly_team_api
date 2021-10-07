@@ -1,3 +1,9 @@
+## v0.29.0 (2021-10-07)
+
+### Feat
+
+- Add default avatar url for users (#90)
+
 ## v0.28.1 (2021-09-30)
 
 ### Fix
