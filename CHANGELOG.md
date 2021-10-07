@@ -1,3 +1,9 @@
+## v0.30.0 (2021-10-07)
+
+### Feat
+
+- Add seed fixes and uuid support in User and Biotest (#91)
+
 ## v0.29.0 (2021-10-07)
 
 ### Feat
