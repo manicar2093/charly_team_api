@@ -63,13 +63,14 @@ func (u UserServiceCognito) CreateUser(
 ) (*entities.User, error) {
 
 	userEntity := entities.User{
-		Name:     user.Name,
-		LastName: user.LastName,
-		RoleID:   int32(user.RoleID),
-		GenderID: null.IntFrom(int64(user.GenderID)),
-		UserUUID: u.uuidGen.New(),
-		Email:    user.Email,
-		Birthday: user.Birthday,
+		Name:      user.Name,
+		LastName:  user.LastName,
+		RoleID:    int32(user.RoleID),
+		GenderID:  null.IntFrom(int64(user.GenderID)),
+		UserUUID:  u.uuidGen.New(),
+		Email:     user.Email,
+		Birthday:  user.Birthday,
+		AvatarUrl: u.uuidGen.New(),
 	}
 
 	err := u.repo.Transaction(ctx, func(ctx context.Context) error {
