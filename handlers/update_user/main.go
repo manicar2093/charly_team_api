@@ -29,7 +29,7 @@ func CreateLambdaHandlerWDependencies(
 
 	return func(ctx context.Context, req entities.User) (*models.Response, error) {
 
-		if !isUpdateRequestValid(&req) {
+		if !validators.IsUpdateRequestValid(&req) {
 			return models.CreateResponse(
 				http.StatusBadRequest,
 				apperrors.ValidationErrors{{Field: "identifier", Validation: "required"}},
@@ -54,18 +54,4 @@ func CreateLambdaHandlerWDependencies(
 
 	}
 
-}
-
-// isUpdateRequestValid check if ID or UUID is in user entity request
-func isUpdateRequestValid(req *entities.User) bool {
-
-	if req.ID > 0 {
-		return true
-	}
-
-	if req.UserUUID != "" {
-		return true
-	}
-
-	return false
 }

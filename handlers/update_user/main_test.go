@@ -14,6 +14,10 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
+func TestMain(t *testing.T) {
+	suite.Run(t, new(MainTests))
+}
+
 type MainTests struct {
 	suite.Suite
 	repo          *reltest.Repository
@@ -106,8 +110,4 @@ func (c *MainTests) TestUpdateUser_NoValidRequest() {
 	c.True(ok, "error parsing error message")
 	c.Equal(len(errorGot), 2, "error message should not be empty")
 
-}
-
-func TestMain(t *testing.T) {
-	suite.Run(t, new(MainTests))
 }
