@@ -1,3 +1,9 @@
+## v0.31.0 (2021-10-10)
+
+### Feat
+
+- Add filter to get all user biotest (#92)
+
 ## v0.30.0 (2021-10-07)
 
 ### Feat
