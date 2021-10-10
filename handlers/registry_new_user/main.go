@@ -33,7 +33,7 @@ func CreateLambdaHandlerWDependencies(
 
 	return func(ctx context.Context, req models.CreateUserRequest) (*models.Response, error) {
 
-		isValid, response := validators.CheckValidationErrors(validator.Validate(req))
+		isValid, response := isValidRequest(&req, validator)
 
 		if !isValid {
 			return response, nil
@@ -52,4 +52,22 @@ func CreateLambdaHandlerWDependencies(
 
 	}
 
+}
+
+func isValidRequest(req *models.CreateUserRequest, validator validators.ValidatorService) (bool, *models.Response) {
+	isValid, response := validators.CheckValidationErrors(validator.Validate(req))
+
+	if !isValid {
+		return isValid, response
+	}
+	if req.RoleID == 3 {
+
+		isValid, response = validators.CheckValidationErrors(validator.Validate(req.GetCustomerValidations()))
+
+		if !isValid {
+			return isValid, response
+		}
+	}
+
+	return true, nil
 }

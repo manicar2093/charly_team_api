@@ -35,18 +35,17 @@ func (c *MainTests) TearDownTest() {
 	c.userService.AssertExpectations(c.T())
 }
 
-func (c *MainTests) TestRegistryNewUser() {
+func (c *MainTests) TestRegistryNewUser_Admin() {
 
 	userRequest := models.CreateUserRequest{
 		Name:     "testing",
 		LastName: "main",
 		Email:    "testing@main-func.com",
 		Birthday: time.Now(),
-		RoleID:   3,
-		GenderID: 1,
+		RoleID:   1,
 	}
 
-	c.validator.On("Validate", userRequest).Return(validators.ValidateOutput{IsValid: true, Err: nil})
+	c.validator.On("Validate", &userRequest).Return(validators.ValidateOutput{IsValid: true, Err: nil})
 	c.userService.On("CreateUser", c.ctx, &userRequest).Return(c.userCreated, nil)
 
 	res, _ := CreateLambdaHandlerWDependencies(&c.userService, &c.validator)(c.ctx, userRequest)
@@ -60,19 +59,19 @@ func (c *MainTests) TestRegistryNewUser() {
 
 }
 
-func (c *MainTests) TestRegistryNewUserError() {
+func (c *MainTests) TestRegistryNewUser_Error() {
 
 	userRequest := models.CreateUserRequest{
 		Name:     "testing",
 		LastName: "main",
 		Email:    "testing@main-func.com",
 		Birthday: time.Now(),
-		RoleID:   3,
+		RoleID:   1,
 	}
 
 	errorText := "an error"
 
-	c.validator.On("Validate", userRequest).Return(validators.ValidateOutput{IsValid: true, Err: nil})
+	c.validator.On("Validate", &userRequest).Return(validators.ValidateOutput{IsValid: true, Err: nil})
 	c.userService.On("CreateUser", c.ctx, &userRequest).Return(c.userCreated, errors.New(errorText))
 
 	res, _ := CreateLambdaHandlerWDependencies(&c.userService, &c.validator)(c.ctx, userRequest)
@@ -86,21 +85,21 @@ func (c *MainTests) TestRegistryNewUserError() {
 
 }
 
-func (c *MainTests) TestRegistryNewUserNoValidReq() {
+func (c *MainTests) TestRegistryNewUser_AdminNoValidReq() {
 
 	userRequest := models.CreateUserRequest{
 		Name:     "testing",
 		LastName: "main",
 		Email:    "testing@main-func.com",
 		Birthday: time.Now(),
-		RoleID:   3,
+		RoleID:   1,
 	}
 
 	validationErrors := apperrors.ValidationErrors{
 		{Field: "name", Validation: "required"},
 	}
 
-	c.validator.On("Validate", userRequest).Return(validators.ValidateOutput{IsValid: false, Err: validationErrors})
+	c.validator.On("Validate", &userRequest).Return(validators.ValidateOutput{IsValid: false, Err: validationErrors})
 
 	res, _ := CreateLambdaHandlerWDependencies(&c.userService, &c.validator)(c.ctx, userRequest)
 
@@ -112,6 +111,66 @@ func (c *MainTests) TestRegistryNewUserNoValidReq() {
 	errorGot, ok := bodyAsMap["error"].(apperrors.ValidationErrors)
 	c.True(ok, "error parsing error message")
 	c.Equal(len(errorGot), 1, "error message should not be empty")
+
+}
+
+func (c *MainTests) TestRegistryNewUser_Customer() {
+
+	userRequest := models.CreateUserRequest{
+		Name:          "testing",
+		LastName:      "main",
+		Email:         "testing@main-func.com",
+		Birthday:      time.Now(),
+		RoleID:        3,
+		GenderID:      1,
+		BoneDensityID: 1,
+		BiotypeID:     1,
+	}
+
+	c.validator.On("Validate", &userRequest).Return(validators.ValidateOutput{IsValid: true, Err: nil})
+	c.validator.On("Validate", userRequest.GetCustomerValidations()).Return(validators.ValidateOutput{IsValid: true, Err: nil})
+	c.userService.On("CreateUser", c.ctx, &userRequest).Return(c.userCreated, nil)
+
+	res, _ := CreateLambdaHandlerWDependencies(&c.userService, &c.validator)(c.ctx, userRequest)
+
+	c.Equal(res.StatusCode, http.StatusCreated, "http status is not correct")
+	c.Equal(res.Status, http.StatusText(http.StatusCreated), "http status is not correct")
+
+	createUserResponse := res.Body.(*models.UserCreationResponse)
+
+	c.Equal(createUserResponse.UserID, c.userCreated.ID, "unexpected id user response")
+
+}
+
+func (c *MainTests) TestRegistryNewUser_CustomerNoValidReq() {
+
+	userRequest := models.CreateUserRequest{
+		Name:     "testing",
+		LastName: "main",
+		Email:    "testing@main-func.com",
+		Birthday: time.Now(),
+		RoleID:   3,
+	}
+
+	validationErrors := apperrors.ValidationErrors{
+		{Field: "bone_density_id", Validation: "required"},
+		{Field: "biotype_id", Validation: "required"},
+		{Field: "gender_id", Validation: "required"},
+	}
+
+	c.validator.On("Validate", &userRequest).Return(validators.ValidateOutput{IsValid: true, Err: nil})
+	c.validator.On("Validate", userRequest.GetCustomerValidations()).Return(validators.ValidateOutput{IsValid: false, Err: validationErrors})
+
+	res, _ := CreateLambdaHandlerWDependencies(&c.userService, &c.validator)(c.ctx, userRequest)
+
+	c.Equal(res.StatusCode, http.StatusBadRequest, "http status is not correct")
+	c.Equal(res.Status, http.StatusText(http.StatusBadRequest), "http status is not correct")
+
+	bodyAsMap := res.Body.(map[string]interface{})
+
+	errorGot, ok := bodyAsMap["error"].(apperrors.ValidationErrors)
+	c.True(ok, "error parsing error message")
+	c.Equal(len(errorGot), 3, "error message should not be empty")
 
 }
 
