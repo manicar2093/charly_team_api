@@ -17,6 +17,7 @@ const (
 	// PassNumSymbols indicates how many symbols a password will contain
 	PassNumSymbols = 1
 	PageSize       = 10
+	AvatarURLSrc   = "https://avatars.dicebear.com/api/jdenticon/"
 )
 
 func DBConnectionURL() string {
