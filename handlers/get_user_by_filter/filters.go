@@ -63,7 +63,7 @@ func FindAllUsers(
 
 	valuesAsMap := params.Values.(map[string]interface{})
 
-	pageNumber, ok := valuesAsMap["page_number"].(int)
+	pageNumber, ok := valuesAsMap["page_number"].(float64)
 	if !ok {
 		return nil, apperrors.ValidationError{Field: "page_number", Validation: "required"}
 	}
@@ -74,7 +74,7 @@ func FindAllUsers(
 		params.Ctx,
 		entities.User{}.Table(),
 		&usersFound,
-		pageNumber,
+		int(pageNumber),
 	)
 
 }

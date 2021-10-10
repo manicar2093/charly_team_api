@@ -16,7 +16,7 @@ func GetAllUserBiotest(params *filters.FilterParameters) (interface{}, error) {
 
 	valuesAsMap := params.Values.(map[string]interface{})
 	userUUID := valuesAsMap["user_uuid"].(string)
-	pageNumber := valuesAsMap["page_number"].(int)
+	pageNumber := int(valuesAsMap["page_number"].(float64))
 
 	isValid, err := isRequestValid(&userUUID, &pageNumber, params.Validator)
 	if !isValid {

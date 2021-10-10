@@ -56,7 +56,8 @@ func (c *GetAllUserBiotestTest) TearDownTest() {
 func (c *GetAllUserBiotestTest) TestGetAllUserBiotest() {
 
 	userUUID := "an-uuid"
-	pageNumber := 1
+	pageNumber := float64(1)
+	pageNumberAsInt := int(pageNumber)
 	userID := int32(1)
 
 	request := map[string]interface{}{
@@ -73,7 +74,7 @@ func (c *GetAllUserBiotestTest) TestGetAllUserBiotest() {
 
 	pageResponse := &models.Paginator{
 		TotalPages:   2,
-		CurrendPage:  pageNumber,
+		CurrendPage:  pageNumberAsInt,
 		PreviousPage: 0,
 		NextPage:     2,
 		Data:         biotestResponse,
@@ -83,7 +84,7 @@ func (c *GetAllUserBiotestTest) TestGetAllUserBiotest() {
 		"Validate",
 		&GetAllUserBiotestsRequest{
 			userUUID,
-			pageNumber,
+			pageNumberAsInt,
 		}).Return(validators.ValidateOutput{IsValid: true, Err: nil})
 
 	c.repo.ExpectFind(
@@ -101,7 +102,7 @@ func (c *GetAllUserBiotestTest) TestGetAllUserBiotest() {
 		c.ctx,
 		entities.BiotestTable,
 		&biotestHolder,
-		pageNumber,
+		pageNumberAsInt,
 		where.Eq("customer_id", userID),
 	).Return(pageResponse, nil)
 
@@ -119,7 +120,8 @@ func (c *GetAllUserBiotestTest) TestGetAllUserBiotest() {
 func (c *GetAllUserBiotestTest) TestGetAllUserBiotest_NoUserUUID() {
 
 	userUUID := ""
-	pageNumber := 1
+	pageNumber := float64(1)
+	pageNumberAsInt := int(pageNumber)
 	validationErrors := apperrors.ValidationErrors{
 		{Field: "user_uuid", Validation: "required"},
 	}
@@ -135,7 +137,7 @@ func (c *GetAllUserBiotestTest) TestGetAllUserBiotest_NoUserUUID() {
 		"Validate",
 		&GetAllUserBiotestsRequest{
 			userUUID,
-			pageNumber,
+			pageNumberAsInt,
 		}).Return(validators.ValidateOutput{IsValid: false, Err: validationErrors})
 
 	_, err := GetAllUserBiotest(&c.filterParams)
