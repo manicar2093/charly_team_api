@@ -3,6 +3,8 @@
 ## Registered filters
 
 - _get_biotest_by_uuid_
+- _get_biotest_comparision_
+- _get_all_user_biotests_
 
 ## OK
 
