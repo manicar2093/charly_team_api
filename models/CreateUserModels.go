@@ -12,9 +12,21 @@ type CreateUserRequest struct {
 	Email         string    `json:"email,omitempty" validate:"required,email"`
 	Birthday      time.Time `json:"birthday,omitempty" validate:"required"`
 	RoleID        int       `json:"role_id,omitempty" validate:"required,gt=0"`
-	GenderID      int       `json:"gender_id,omitempty" validate:"required,gt=0"`
-	BoneDensityID int       `json:"bone_density_id,omitempty" validate:"required,gt=0"`
-	BiotypeID     int       `json:"biotype_id,omitempty" validate:"required,gt=0"`
+	GenderID      int       `json:"gender_id,omitempty"`
+	BoneDensityID int       `json:"bone_density_id,omitempty"`
+	BiotypeID     int       `json:"biotype_id,omitempty"`
+}
+
+func (c CreateUserRequest) GetCustomerValidations() interface{} {
+	return struct {
+		GenderID      int `validate:"required,gt=0"`
+		BoneDensityID int `validate:"required,gt=0"`
+		BiotypeID     int `validate:"required,gt=0"`
+	}{
+		GenderID:      c.GenderID,
+		BoneDensityID: c.BoneDensityID,
+		BiotypeID:     c.BiotypeID,
+	}
 }
 
 type UserCreationResponse struct {
