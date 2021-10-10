@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"errors"
+	"fmt"
 	"strings"
 	"testing"
 	"time"
@@ -24,18 +25,18 @@ func TestUserService(t *testing.T) {
 
 type UserServiceTest struct {
 	suite.Suite
-	providerMock                        *mocks.CongitoClient
-	passGenMock                         *mocks.PassGen
-	uuidGen                             *mocks.UUIDGenerator
-	repoMock                            *reltest.Repository
-	username                            string
-	temporaryPass                       string
-	name, lastName, email, uuidReturned string
-	idUserCreated                       int32
-	birthday                            time.Time
-	userRequest                         models.CreateUserRequest
-	anError                             error
-	saveFuncMock                        func(*entities.User) func(args mock.Arguments)
+	providerMock                                           *mocks.CongitoClient
+	passGenMock                                            *mocks.PassGen
+	uuidGen                                                *mocks.UUIDGenerator
+	repoMock                                               *reltest.Repository
+	username                                               string
+	temporaryPass                                          string
+	name, lastName, email, uuidReturned, avatarUrlExpected string
+	idUserCreated                                          int32
+	birthday                                               time.Time
+	userRequest                                            models.CreateUserRequest
+	anError                                                error
+	saveFuncMock                                           func(*entities.User) func(args mock.Arguments)
 }
 
 func (u *UserServiceTest) SetupTest() {
@@ -44,6 +45,7 @@ func (u *UserServiceTest) SetupTest() {
 	u.passGenMock = &mocks.PassGen{}
 	u.uuidGen = &mocks.UUIDGenerator{}
 	u.uuidReturned = "an uuid"
+	u.avatarUrlExpected = fmt.Sprintf("%s%s", config.AvatarURLSrc, u.uuidReturned)
 	u.uuidGen.On("New").Return(u.uuidReturned)
 	u.uuidGen.On("New").Return(u.uuidReturned)
 	u.username = "testing"
@@ -96,14 +98,16 @@ func (u *UserServiceTest) TestCreateUser() {
 		},
 	}
 	userDBReq := entities.User{
-		Name:      u.userRequest.Name,
-		LastName:  u.userRequest.LastName,
-		RoleID:    int32(u.userRequest.RoleID),
-		Email:     u.userRequest.Email,
-		Birthday:  u.userRequest.Birthday,
-		GenderID:  null.IntFrom(1),
-		UserUUID:  u.uuidReturned,
-		AvatarUrl: u.uuidReturned,
+		Name:          u.userRequest.Name,
+		LastName:      u.userRequest.LastName,
+		RoleID:        int32(u.userRequest.RoleID),
+		Email:         u.userRequest.Email,
+		Birthday:      u.userRequest.Birthday,
+		GenderID:      null.IntFrom(1),
+		UserUUID:      u.uuidReturned,
+		AvatarUrl:     u.avatarUrlExpected,
+		BiotypeID:     null.IntFrom(int64(u.userRequest.BiotypeID)),
+		BoneDensityID: null.IntFrom(int64(u.userRequest.BoneDensityID)),
 	}
 
 	u.providerMock.On(
@@ -135,14 +139,16 @@ func (u *UserServiceTest) TestCreateUser() {
 func (u *UserServiceTest) TestCreateUserRepoSaveErr() {
 
 	userDBReq := entities.User{
-		Name:      u.userRequest.Name,
-		LastName:  u.userRequest.LastName,
-		RoleID:    int32(u.userRequest.RoleID),
-		Email:     u.userRequest.Email,
-		Birthday:  u.userRequest.Birthday,
-		GenderID:  null.IntFrom(1),
-		UserUUID:  u.uuidReturned,
-		AvatarUrl: u.uuidReturned,
+		Name:          u.userRequest.Name,
+		LastName:      u.userRequest.LastName,
+		RoleID:        int32(u.userRequest.RoleID),
+		Email:         u.userRequest.Email,
+		Birthday:      u.userRequest.Birthday,
+		GenderID:      null.IntFrom(1),
+		UserUUID:      u.uuidReturned,
+		AvatarUrl:     u.avatarUrlExpected,
+		BiotypeID:     null.IntFrom(int64(u.userRequest.BiotypeID)),
+		BoneDensityID: null.IntFrom(int64(u.userRequest.BoneDensityID)),
 	}
 
 	u.repoMock.ExpectTransaction(func(r *reltest.Repository) {
@@ -196,14 +202,16 @@ func (u *UserServiceTest) TestCreateUserAdminCreateUserError() {
 		},
 	}
 	userDBReq := entities.User{
-		Name:      u.userRequest.Name,
-		LastName:  u.userRequest.LastName,
-		RoleID:    int32(u.userRequest.RoleID),
-		Email:     u.userRequest.Email,
-		Birthday:  u.userRequest.Birthday,
-		GenderID:  null.IntFrom(1),
-		UserUUID:  u.uuidReturned,
-		AvatarUrl: u.uuidReturned,
+		Name:          u.userRequest.Name,
+		LastName:      u.userRequest.LastName,
+		RoleID:        int32(u.userRequest.RoleID),
+		Email:         u.userRequest.Email,
+		Birthday:      u.userRequest.Birthday,
+		GenderID:      null.IntFrom(1),
+		UserUUID:      u.uuidReturned,
+		AvatarUrl:     u.avatarUrlExpected,
+		BiotypeID:     null.IntFrom(int64(u.userRequest.BiotypeID)),
+		BoneDensityID: null.IntFrom(int64(u.userRequest.BoneDensityID)),
 	}
 
 	u.providerMock.On(

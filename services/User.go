@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log"
 
 	"github.com/aws/aws-sdk-go/service/cognitoidentityprovider"
@@ -63,14 +64,16 @@ func (u UserServiceCognito) CreateUser(
 ) (*entities.User, error) {
 
 	userEntity := entities.User{
-		Name:      user.Name,
-		LastName:  user.LastName,
-		RoleID:    int32(user.RoleID),
-		GenderID:  null.IntFrom(int64(user.GenderID)),
-		UserUUID:  u.uuidGen.New(),
-		Email:     user.Email,
-		Birthday:  user.Birthday,
-		AvatarUrl: u.uuidGen.New(),
+		Name:          user.Name,
+		LastName:      user.LastName,
+		RoleID:        int32(user.RoleID),
+		GenderID:      null.IntFrom(int64(user.GenderID)),
+		UserUUID:      u.uuidGen.New(),
+		Email:         user.Email,
+		Birthday:      user.Birthday,
+		AvatarUrl:     fmt.Sprintf("%s%s", config.AvatarURLSrc, u.uuidGen.New()),
+		BiotypeID:     null.IntFrom(int64(user.BiotypeID)),
+		BoneDensityID: null.IntFrom(int64(user.BoneDensityID)),
 	}
 
 	err := u.repo.Transaction(ctx, func(ctx context.Context) error {
