@@ -1,8 +1,8 @@
 
 exports.up = function(knex) {
     return knex.schema.alterTable('Biotest', t => {
-        t.integer('chronological_age').notNullable();
-        t.integer('corporal_age').notNullable();
+        t.integer('chronological_age').notNullable().defaultTo(0);
+        t.integer('corporal_age').notNullable().defaultTo(0);
     });
 };
 

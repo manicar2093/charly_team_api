@@ -1,7 +1,7 @@
 
 exports.up = function(knex) {
     return knex.schema.alterTable('User', t => {
-        t.string('avatar_url').notNullable()
+        t.string('avatar_url').notNullable().defaultTo("")
     })
 };
 
