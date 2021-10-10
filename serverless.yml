@@ -20,11 +20,18 @@ service: charly-team-api
 # Check out our docs for more details
 frameworkVersion: '2'
 
+plugins:
+  - serverless-prune-plugin
+
+custom:
+  prune:
+    automatic: true
+    number: 2
+
 provider:
   name: aws
   runtime: go1.x
   lambdaHashingVersion: 20201221
-
 # you can overwrite defaults here
 #  stage: dev
 #  region: us-east-1
@@ -67,6 +74,9 @@ functions:
 
   get_user_by_filter:
     handler: bin/get_user_by_filter
+
+  # registry_new_customer:
+  #   handler: bin/registry_new_customer
 
   registry_new_user:
     handler: bin/registry_new_user
