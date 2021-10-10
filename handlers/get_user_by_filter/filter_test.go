@@ -218,7 +218,7 @@ func (c *UserFilterTest) TestFindUserByEmailUnhandledError() {
 
 func (c *UserFilterTest) TestFindAllUsers() {
 
-	userPageRequested := 2
+	userPageRequested := float64(2)
 
 	request := map[string]interface{}{
 		"page_number": userPageRequested,
@@ -229,7 +229,7 @@ func (c *UserFilterTest) TestFindAllUsers() {
 		c.ctx,
 		entities.UserTable,
 		mock.Anything,
-		userPageRequested,
+		int(userPageRequested),
 	).Return(&models.Paginator{}, nil)
 
 	c.filterParams.Values = request
