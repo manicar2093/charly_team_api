@@ -1,5 +1,7 @@
 # Register New User
 
+**-----DEPRECATED-----**: This is not need by the moment
+
 ## Request
 
 ```JSON

@@ -5,6 +5,7 @@ go 1.16
 require (
 	github.com/aws/aws-lambda-go v1.13.3
 	github.com/aws/aws-sdk-go v1.27.0
+	github.com/fnproject/fdk-go v0.0.9
 	github.com/go-playground/universal-translator v0.18.0 // indirect
 	github.com/go-playground/validator v9.31.0+incompatible
 	github.com/go-rel/rel v0.21.0
@@ -18,6 +19,7 @@ require (
 	github.com/sethvargo/go-password v0.2.0
 	github.com/stretchr/objx v0.2.0 // indirect
 	github.com/stretchr/testify v1.7.0
+	github.com/tencentyun/scf-go-lib v0.0.0-20200624065115-ba679e2ec9c9
 	golang.org/x/net v0.0.0-20210226172049-e18ecbb05110 // indirect
 	golang.org/x/sys v0.0.0-20210615035016-665e8c7367d1 // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
