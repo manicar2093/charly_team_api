@@ -10,7 +10,7 @@ Here are all sql queries to set mocked data to db and test.
 2. Export it as CSV
 3. Import data to DB
 
-Firts time was use DBeaver to do this
+Firts time was used DBeaver to do this
 
 ## Tables Done
 

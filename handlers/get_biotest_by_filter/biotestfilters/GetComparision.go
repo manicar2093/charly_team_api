@@ -35,10 +35,11 @@ func GetBiotestComparision(params *filters.FilterParameters) (interface{}, error
 	userID := userFound.ID
 
 	var comparisionData BiotestComparisionResponse
-
+	// TODO: add user id into search. this will return ALL biotest
 	err = params.Repo.FindAll(
 		params.Ctx,
 		&comparisionData.AllBiotestsDetails,
+		where.Eq("customer_id", userID),
 		rel.Select("biotest_uuid", "created_at").From(entities.BiotestTable),
 	)
 
