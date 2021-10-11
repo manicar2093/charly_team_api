@@ -1,3 +1,15 @@
+## v0.33.0 (2021-10-11)
+
+### Fix
+
+- Add svg format to avatar Url on user creation
+- Change way to save biotest.
+- Add changes and test to biotest entity
+
+### Feat
+
+- Add json tags to CustomerValidation struct
+
 ## v0.32.0 (2021-10-11)
 
 ### Feat
