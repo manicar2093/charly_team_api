@@ -2,6 +2,8 @@ package paginator
 
 import (
 	"context"
+	"fmt"
+	"net/http"
 
 	"github.com/go-rel/rel"
 	"github.com/manicar2093/charly_team_api/config"
@@ -17,6 +19,19 @@ type Paginable interface {
 		queries ...rel.Querier,
 	) (*models.Paginator, error)
 }
+
+type PageError struct {
+	PageNumber int
+}
+
+func (c PageError) Error() string {
+	return fmt.Sprintf("Page %v does not exists", c.PageNumber)
+}
+
+func (c PageError) StatusCode() int {
+	return http.StatusBadRequest
+}
+
 type PaginableImpl struct {
 	repo rel.Repository
 }
@@ -32,13 +47,20 @@ func (c PaginableImpl) CreatePaginator(
 	pageNumber int,
 	queries ...rel.Querier,
 ) (*models.Paginator, error) {
-	totalEntries, err := c.repo.Count(ctx, tableName)
+
+	pageLimitQuery := rel.Limit(config.PageSize)
+	pageOffsetQuery := rel.Offset(createOffsetValue(config.PageSize, pageNumber))
+
+	totalEntries, err := c.repo.Count(ctx, tableName, queries...)
 	if err != nil {
 		return nil, err
 	}
 
-	pageLimitQuery := rel.Limit(config.PageSize)
-	pageOffsetQuery := rel.Offset(createOffsetValue(config.PageSize, pageNumber))
+	totalPages := totalEntries / config.PageSize
+
+	if pageNumber > totalPages {
+		return nil, PageError{PageNumber: pageNumber}
+	}
 
 	queries = append(queries, pageLimitQuery, pageOffsetQuery)
 
@@ -48,14 +70,21 @@ func (c PaginableImpl) CreatePaginator(
 	}
 
 	return &models.Paginator{
-		TotalPages:   totalEntries / config.PageSize,
+		TotalPages:   totalPages,
 		CurrendPage:  pageNumber,
 		PreviousPage: pageNumber - 1,
-		NextPage:     pageNumber + 1,
+		NextPage:     calculateNextPage(pageNumber, totalPages),
 		Data:         holder,
 	}, nil
 }
 
 func createOffsetValue(pageSize, pageNumber int) int {
 	return config.PageSize * (pageNumber - 1)
+}
+
+func calculateNextPage(pageNumber, totalPages int) int {
+	if pageNumber == totalPages {
+		return 1
+	}
+	return pageNumber + 1
 }
