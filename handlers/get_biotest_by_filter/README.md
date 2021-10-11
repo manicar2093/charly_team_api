@@ -6,9 +6,9 @@
 
 - ### _get_biotest_comparision_
 
-    Should receive the flag *as_catalog* to send used data to show lists of biotests
-
 - ### _get_all_user_biotests_
+
+    Should receive the flag *as_catalog* to send used data to show lists of biotests
 
 ## OK
 
