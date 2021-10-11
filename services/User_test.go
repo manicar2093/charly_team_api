@@ -45,7 +45,7 @@ func (u *UserServiceTest) SetupTest() {
 	u.passGenMock = &mocks.PassGen{}
 	u.uuidGen = &mocks.UUIDGenerator{}
 	u.uuidReturned = "an uuid"
-	u.avatarUrlExpected = fmt.Sprintf("%s%s", config.AvatarURLSrc, u.uuidReturned)
+	u.avatarUrlExpected = fmt.Sprintf("%s%s.svg", config.AvatarURLSrc, u.uuidReturned)
 	u.uuidGen.On("New").Return(u.uuidReturned)
 	u.uuidGen.On("New").Return(u.uuidReturned)
 	u.username = "testing"
