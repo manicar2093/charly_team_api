@@ -1,3 +1,9 @@
+## v0.33.1 (2021-10-11)
+
+### Fix
+
+- Add biotest fixes for found bugs (#104)
+
 ## v0.33.0 (2021-10-11)
 
 ### Fix
