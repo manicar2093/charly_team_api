@@ -11,12 +11,12 @@ const BiotestTable = "Biotest"
 // TODO: Add autoload to need attributes
 type Biotest struct {
 	ID                      int32               `db:",primary" json:"id,omitempty"`
-	HigherMuscleDensity     HigherMuscleDensity `autoload:"true" json:"higher_muscle_density,omitempty"`
-	HigherMuscleDensityID   int32               `json:"-"`
-	LowerMuscleDensity      LowerMuscleDensity  `autoload:"true" json:"lower_muscle_density,omitempty"`
-	LowerMuscleDensityID    int32               `json:"-"`
-	SkinFolds               SkinFolds           `autoload:"true" json:"skin_folds,omitempty"`
-	SkinFoldsID             int32               `json:"-"`
+	HigherMuscleDensity     HigherMuscleDensity `auto:"true" json:"higher_muscle_density,omitempty"`
+	HigherMuscleDensityID   int32               `json:"higher_muscle_density_id"`
+	LowerMuscleDensity      LowerMuscleDensity  `auto:"true" json:"lower_muscle_density,omitempty"`
+	LowerMuscleDensityID    int32               `json:"lower_muscle_density_id"`
+	SkinFolds               SkinFolds           `auto:"true" json:"skin_folds,omitempty"`
+	SkinFoldsID             int32               `json:"skin_folds_id"`
 	WeightClasification     WeightClasification `json:"-"`
 	WeightClasificationID   int32               `validate:"required,gt=0" json:"weight_clasification_id,omitempty"`
 	HeartHealth             HeartHealth         `json:"-"`
