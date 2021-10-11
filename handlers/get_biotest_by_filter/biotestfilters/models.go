@@ -3,7 +3,12 @@ package biotestfilters
 import (
 	"time"
 
+	"github.com/go-rel/rel"
 	"github.com/manicar2093/charly_team_api/db/entities"
+)
+
+var (
+	BiotestAsCatalogQuery = rel.Select("biotest_uuid", "created_at").From(entities.BiotestTable)
 )
 
 type BiotestDetails struct {

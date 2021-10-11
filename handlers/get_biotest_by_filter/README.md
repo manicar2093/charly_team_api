@@ -2,9 +2,13 @@
 
 ## Registered filters
 
-- _get_biotest_by_uuid_
-- _get_biotest_comparision_
-- _get_all_user_biotests_
+- ### _get_biotest_by_uuid_
+
+- ### _get_biotest_comparision_
+
+    Should receive the flag *as_catalog* to send used data to show lists of biotests
+
+- ### _get_all_user_biotests_
 
 ## OK
 
