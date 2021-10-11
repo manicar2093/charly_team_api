@@ -1,3 +1,26 @@
+## v0.32.0 (2021-10-11)
+
+### Feat
+
+- Modify user filter to saerch by email and names Close#82
+- Add filter to return biotests as catalog Close#98
+- Add autoload for customer in biotype entity Close #95
+- Add customer validations Close  #97
+- Add avatar url on user service
+- Add serverless prune plugin
+- Add env variables for Prod migrations
+- Add avatar url
+
+### Refactor
+
+- Remove dead code Close#93
+- Add fixes for migrations issues
+
+### Fix
+
+- Add fix to Paginator package Close#96
+- Add page_number as float.
+
 ## v0.31.0 (2021-10-10)
 
 ### Feat
