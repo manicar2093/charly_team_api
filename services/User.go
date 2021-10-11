@@ -71,7 +71,7 @@ func (u UserServiceCognito) CreateUser(
 		UserUUID:      u.uuidGen.New(),
 		Email:         user.Email,
 		Birthday:      user.Birthday,
-		AvatarUrl:     fmt.Sprintf("%s%s", config.AvatarURLSrc, u.uuidGen.New()),
+		AvatarUrl:     fmt.Sprintf("%s%s.svg", config.AvatarURLSrc, u.uuidGen.New()),
 		BiotypeID:     null.IntFrom(int64(user.BiotypeID)),
 		BoneDensityID: null.IntFrom(int64(user.BoneDensityID)),
 	}
