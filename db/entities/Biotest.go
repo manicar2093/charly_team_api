@@ -21,7 +21,7 @@ type Biotest struct {
 	WeightClasificationID   int32               `validate:"required,gt=0" json:"weight_clasification_id,omitempty"`
 	HeartHealth             HeartHealth         `ref:"weight_clasification_id" fk:"id" json:"-"`
 	HeartHealthID           int32               `validate:"required,gt=0" json:"heart_health_id,omitempty"`
-	Customer                User                `ref:"customer_id" fk:"id" json:"-"`
+	Customer                User                `ref:"customer_id" autoload:"true" fk:"id" json:"customer,omitempty"`
 	CustomerID              int32               `validate:"required,gt=0" json:"customer_id,omitempty"`
 	Creator                 User                `ref:"creator_id" fk:"id" json:"-"`
 	CreatorID               int32               `validate:"required,gt=0" json:"creator_id,omitempty"`
