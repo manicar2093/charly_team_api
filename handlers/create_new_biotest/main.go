@@ -40,13 +40,34 @@ func CreateLambdaHandlerWDependencies(
 			return response, nil
 		}
 
-		req.BiotestUUID = uuidGen.New()
+		err := repo.Transaction(ctx, func(ctx context.Context) error {
+			req.BiotestUUID = uuidGen.New()
 
-		err := repo.Insert(ctx, &req)
+			if err := repo.Insert(ctx, &req.HigherMuscleDensity); err != nil {
+				return err
+			}
+			req.HigherMuscleDensityID = req.HigherMuscleDensity.ID
+
+			if err := repo.Insert(ctx, &req.LowerMuscleDensity); err != nil {
+				return err
+			}
+			req.LowerMuscleDensityID = req.LowerMuscleDensity.ID
+
+			if err := repo.Insert(ctx, &req.SkinFolds); err != nil {
+				return err
+			}
+			req.SkinFoldsID = req.SkinFolds.ID
+
+			if err := repo.Insert(ctx, &req); err != nil {
+				return err
+			}
+
+			return nil
+		})
+
 		if err != nil {
 			return models.CreateResponseFromError(err), nil
 		}
-
 		return models.CreateResponse(
 			http.StatusCreated,
 			CreateBiotestResponse{
