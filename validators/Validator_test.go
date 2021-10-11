@@ -10,12 +10,19 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+type TestNastedData struct {
+	RoleID   int `validate:"required" json:"role_id,omitempty"`
+	GenderID int `json:"gender_id,omitempty"`
+}
+
 type TestUser struct {
-	FirstName      string `json:"name" validate:"required"`
-	LastName       string `json:"last_name" validate:"required"`
-	Age            uint8  `validate:"gte=2,lte=130"`
-	Email          string `validate:"required,email"`
-	FavouriteColor string `validate:"iscolor"`
+	FirstName      string         `json:"name,omitempty" validate:"required"`
+	LastName       string         `json:"last_name,omitempty" validate:"required"`
+	Age            uint8          `validate:"gte=2,lte=130" json:"age,omitempty"`
+	Email          string         `validate:"required,email" json:"email,omitempty"`
+	FavouriteColor string         `validate:"iscolor" json:"favourite_color,omitempty"`
+	NestedData     TestNastedData `validate:"-" json:"nested_data,omitempty"`
+	MoreNestedData TestNastedData `json:"mode_nested_data,omitempty"`
 }
 
 func TestStructValidator(t *testing.T) {
@@ -30,7 +37,7 @@ func TestStructValidator(t *testing.T) {
 		val, ok := validationOutput.Err.(apperrors.ValidationErrors)
 
 		assert.True(t, ok, "error type is not correct")
-		assert.Len(t, val, 5, "errors count is not correct")
+		assert.Len(t, val, 6, "errors count is not correct")
 
 	})
 
@@ -51,6 +58,7 @@ func TestStructValidator(t *testing.T) {
 			Age:            5,
 			Email:          "testig@testing.com",
 			FavouriteColor: "#000000",
+			MoreNestedData: TestNastedData{RoleID: 1},
 		}
 
 		validationOutput := validator.Validate(userToValidate)
