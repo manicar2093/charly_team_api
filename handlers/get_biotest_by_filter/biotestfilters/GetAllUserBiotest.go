@@ -17,6 +17,7 @@ func GetAllUserBiotest(params *filters.FilterParameters) (interface{}, error) {
 	valuesAsMap := params.Values.(map[string]interface{})
 	userUUID := valuesAsMap["user_uuid"].(string)
 	pageNumber := int(valuesAsMap["page_number"].(float64))
+	asCatalog, _ := valuesAsMap["as_catalog"].(bool)
 
 	isValid, err := isRequestValid(&userUUID, &pageNumber, params.Validator)
 	if !isValid {
@@ -28,6 +29,18 @@ func GetAllUserBiotest(params *filters.FilterParameters) (interface{}, error) {
 	err = params.Repo.Find(params.Ctx, &userFound, where.Eq("user_uuid", userUUID))
 	if err != nil {
 		return nil, err
+	}
+
+	if asCatalog {
+		var biotestDetails []BiotestDetails
+		return params.Paginator.CreatePaginator(
+			params.Ctx,
+			entities.BiotestTable,
+			&biotestDetails,
+			pageNumber,
+			where.Eq("customer_id", userFound.ID),
+			BiotestAsCatalogQuery,
+		)
 	}
 
 	var biotests []entities.Biotest

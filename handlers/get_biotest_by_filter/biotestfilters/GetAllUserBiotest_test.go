@@ -117,6 +117,72 @@ func (c *GetAllUserBiotestTest) TestGetAllUserBiotest() {
 
 }
 
+func (c *GetAllUserBiotestTest) TestGetAllUserBiotest_AsCatalog() {
+
+	userUUID := "an-uuid"
+	pageNumber := float64(1)
+	pageNumberAsInt := int(pageNumber)
+	userID := int32(1)
+
+	request := map[string]interface{}{
+		"user_uuid":   userUUID,
+		"page_number": pageNumber,
+		"as_catalog":  true,
+	}
+
+	c.filterParams.Values = request
+
+	biotestResponse := []BiotestDetails{
+		{BiotestUUID: "uuid1", CreatedAt: time.Now()},
+		{BiotestUUID: "uuid2", CreatedAt: time.Now()},
+	}
+
+	pageResponse := &models.Paginator{
+		TotalPages:   2,
+		CurrendPage:  pageNumberAsInt,
+		PreviousPage: 0,
+		NextPage:     2,
+		Data:         biotestResponse,
+	}
+
+	c.validator.On(
+		"Validate",
+		&GetAllUserBiotestsRequest{
+			userUUID,
+			pageNumberAsInt,
+		}).Return(validators.ValidateOutput{IsValid: true, Err: nil})
+
+	c.repo.ExpectFind(
+		where.Eq("user_uuid", userUUID),
+	).Result(
+		entities.User{
+			ID:       userID,
+			UserUUID: userUUID,
+		},
+	)
+
+	var biotestHolder []BiotestDetails
+	c.paginator.On(
+		"CreatePaginator",
+		c.ctx,
+		entities.BiotestTable,
+		&biotestHolder,
+		pageNumberAsInt,
+		where.Eq("customer_id", userID),
+		BiotestAsCatalogQuery,
+	).Return(pageResponse, nil)
+
+	got, err := GetAllUserBiotest(&c.filterParams)
+
+	c.Nil(err, "return an error")
+
+	page, ok := got.(*models.Paginator)
+
+	c.True(ok, "unexpected answare type")
+	c.Equal(2, len(page.Data.([]BiotestDetails)), "Wrong data len")
+
+}
+
 func (c *GetAllUserBiotestTest) TestGetAllUserBiotest_NoUserUUID() {
 
 	userUUID := ""

@@ -40,7 +40,7 @@ func GetBiotestComparision(params *filters.FilterParameters) (interface{}, error
 		params.Ctx,
 		&comparisionData.AllBiotestsDetails,
 		where.Eq("customer_id", userID),
-		rel.Select("biotest_uuid", "created_at").From(entities.BiotestTable),
+		BiotestAsCatalogQuery,
 	)
 
 	if err != nil {
