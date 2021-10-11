@@ -71,7 +71,8 @@ func CreateLambdaHandlerWDependencies(
 		return models.CreateResponse(
 			http.StatusCreated,
 			CreateBiotestResponse{
-				BiotestID: req.ID,
+				BiotestID:   req.ID,
+				BiotestUUID: req.BiotestUUID,
 			},
 		), nil
 	}
