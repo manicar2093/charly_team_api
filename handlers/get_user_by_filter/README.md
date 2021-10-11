@@ -1,5 +1,13 @@
 # UserFilters
 
+## Registered filters
+
+- ### _find_user_by_uuid_
+
+- ### _find_all_users_
+
+- ### _find_user_like_email_or_name_or_last_name_
+
 ## OK
 
 ```JSON

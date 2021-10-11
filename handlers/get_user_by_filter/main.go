@@ -16,7 +16,7 @@ import (
 var userFilters = []filters.FilterRegistrationData{
 	{Name: "find_user_by_uuid", Func: FindUserByUUID},
 	{Name: "find_all_users", Func: FindAllUsers},
-	{Name: "find_user_by_email", Func: FindUserByEmail},
+	{Name: "find_user_like_email_or_name_or_last_name", Func: FindUserLikeEmailOrNameOrLastName},
 }
 
 func main() {

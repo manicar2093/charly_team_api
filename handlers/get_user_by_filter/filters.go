@@ -31,29 +31,33 @@ func FindUserByUUID(
 	return userFound, nil
 }
 
-func FindUserByEmail(
+func FindUserLikeEmailOrNameOrLastName(
 	params *filters.FilterParameters,
 ) (interface{}, error) {
 
 	valuesAsMap := params.Values.(map[string]interface{})
 
-	userEmail, ok := valuesAsMap["email"].(string)
+	dataToSearch, ok := valuesAsMap["data_to_search"].(string)
 	if !ok {
-		return nil, apperrors.ValidationError{Field: "email", Validation: "required"}
+		return nil, apperrors.ValidationError{Field: "data_to_search", Validation: "required"}
 	}
+	filter := where.Like("email", "%"+dataToSearch+"%")
+	filter.Or(where.Like("name", "%"+dataToSearch+"%"))
+	filter.Or(where.Like("last_name", "%"+dataToSearch+"%"))
 
-	var userFound entities.User
+	var usersFound []entities.User
 
-	err := params.Repo.Find(params.Ctx, &userFound, where.Like("email", "%"+userEmail+"%"))
+	err := params.Repo.FindAll(
+		params.Ctx,
+		&usersFound,
+		filter,
+	)
 
 	if err != nil {
-		if _, ok := err.(rel.NotFoundError); ok {
-			return nil, apperrors.UserNotFound{}
-		}
 		return nil, err
 	}
 
-	return userFound, nil
+	return usersFound, nil
 
 }
 
