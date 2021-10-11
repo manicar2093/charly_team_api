@@ -11,25 +11,25 @@ const BiotestTable = "Biotest"
 // TODO: Add autoload to need attributes
 type Biotest struct {
 	ID                      int32               `db:",primary" json:"id,omitempty"`
-	HigherMuscleDensity     HigherMuscleDensity `ref:"higher_muscle_density_id" fk:"id" validate:"required,dive,required" json:"higher_muscle_density,omitempty"`
+	HigherMuscleDensity     HigherMuscleDensity `autoload:"true" json:"higher_muscle_density,omitempty"`
 	HigherMuscleDensityID   int32               `json:"-"`
-	LowerMuscleDensity      LowerMuscleDensity  `ref:"lower_muscle_density_id" fk:"id" validate:"required,dive,required" json:"lower_muscle_density,omitempty"`
+	LowerMuscleDensity      LowerMuscleDensity  `autoload:"true" json:"lower_muscle_density,omitempty"`
 	LowerMuscleDensityID    int32               `json:"-"`
-	SkinFolds               SkinFolds           `ref:"skin_folds_id" fk:"id" validate:"required,dive,required" json:"skin_folds,omitempty"`
+	SkinFolds               SkinFolds           `autoload:"true" json:"skin_folds,omitempty"`
 	SkinFoldsID             int32               `json:"-"`
-	WeightClasification     WeightClasification `ref:"weight_clasification_id" fk:"id" json:"-"`
+	WeightClasification     WeightClasification `json:"-"`
 	WeightClasificationID   int32               `validate:"required,gt=0" json:"weight_clasification_id,omitempty"`
-	HeartHealth             HeartHealth         `ref:"weight_clasification_id" fk:"id" json:"-"`
+	HeartHealth             HeartHealth         `json:"-"`
 	HeartHealthID           int32               `validate:"required,gt=0" json:"heart_health_id,omitempty"`
-	Customer                User                `ref:"customer_id" autoload:"true" fk:"id" json:"customer,omitempty"`
+	Customer                User                `validate:"-" ref:"customer_id" autoload:"true" fk:"id" json:"customer,omitempty"`
 	CustomerID              int32               `validate:"required,gt=0" json:"customer_id,omitempty"`
-	Creator                 User                `ref:"creator_id" fk:"id" json:"-"`
+	Creator                 User                `validate:"-" ref:"creator_id" fk:"id" json:"-"`
 	CreatorID               int32               `validate:"required,gt=0" json:"creator_id,omitempty"`
 	BiotestUUID             string              `json:"biotest_uuid"`
 	CorporalAge             int32               `validate:"required" json:"corporal_age"`
 	ChronologicalAge        int32               `validate:"required" json:"chronological_age"`
 	Weight                  float32             `validate:"required" json:"weight,omitempty"`
-	Height                  int32               `validate:"required" json:"height,omitempty"`
+	Height                  float32             `validate:"required" json:"height,omitempty"`
 	BodyFatPercentage       float32             `validate:"required" json:"body_fat_percentage,omitempty"`
 	TotalBodyWater          float32             `validate:"required" json:"total_body_water,omitempty"`
 	BodyMassIndex           float32             `validate:"required" json:"body_mass_index,omitempty"`
