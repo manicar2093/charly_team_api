@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/go-rel/rel/where"
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/guregu/null.v4"
 )
@@ -128,6 +129,12 @@ func TestBiotestEntity(t *testing.T) {
 
 		DB.Insert(context.Background(), &biotest)
 		assert.NotEmpty(t, biotest.ID, "ID should not be empty")
+	})
+
+	t.Run("Test Customer autoload", func(t *testing.T) {
+		var biotestFound Biotest
+		DB.Find(context.Background(), &biotestFound, where.Eq("id", biotest.ID))
+		assert.Equal(t, customer.ID, biotestFound.Customer.ID, "Customer was not loaded correctly")
 	})
 
 	t.Cleanup(func() {
