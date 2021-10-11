@@ -2,6 +2,7 @@ package entities
 
 import (
 	"context"
+	"encoding/json"
 	"testing"
 	"time"
 
@@ -124,6 +125,22 @@ func TestBiotestEntity(t *testing.T) {
 	assert.NotEmpty(t, biotestFound.HigherMuscleDensity.ID, "ID should not be empty")
 	assert.NotEmpty(t, biotestFound.SkinFolds.ID, "ID should not be empty")
 	assert.NotEmpty(t, biotestFound.LowerMuscleDensity.ID, "ID should not be empty")
+
+	biotestAsBytes, _ := json.Marshal(biotestFound)
+	var biotestFromJson Biotest
+
+	json.Unmarshal(biotestAsBytes, &biotestFromJson)
+
+	biotestFromJson.CorporalAge = 50
+	err = DB.Update(context.Background(), &biotestFromJson)
+
+	DB.Find(context.Background(), &biotestFound, where.Eq("id", biotest.ID))
+
+	assert.Equal(t, biotestFound.CorporalAge, biotestFromJson.CorporalAge, "update was not executed correctly")
+
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	t.Cleanup(func() {
 		ctx := context.Background()
