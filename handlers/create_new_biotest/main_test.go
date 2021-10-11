@@ -44,7 +44,12 @@ func (c *MainTests) TestCreateNewBiotest() {
 	biotestRequest := entities.Biotest{}
 
 	c.validator.On("Validate", biotestRequest).Return(validators.ValidateOutput{IsValid: true, Err: nil})
-	c.repo.ExpectInsert().ForType("entities.Biotest").Return(nil)
+	c.repo.ExpectTransaction(func(r *reltest.Repository) {
+		c.repo.ExpectInsert().ForType("entities.Biotest").Return(nil)
+		c.repo.ExpectInsert().ForType("entities.HigherMuscleDensity").Return(nil)
+		c.repo.ExpectInsert().ForType("entities.LowerMuscleDensity").Return(nil)
+		c.repo.ExpectInsert().ForType("entities.SkinFolds").Return(nil)
+	})
 
 	res, _ := CreateLambdaHandlerWDependencies(c.repo, &c.validator, &c.uuidGen)(c.ctx, biotestRequest)
 
@@ -62,7 +67,12 @@ func (c *MainTests) TestCreateNewBiotest_InsertError() {
 	biotestRequest := entities.Biotest{}
 
 	c.validator.On("Validate", biotestRequest).Return(validators.ValidateOutput{IsValid: true, Err: nil})
-	c.repo.ExpectInsert().ForType("entities.Biotest").Return(c.ordinaryError)
+	c.repo.ExpectTransaction(func(r *reltest.Repository) {
+		c.repo.ExpectInsert().ForType("entities.Biotest").Return(c.ordinaryError)
+		c.repo.ExpectInsert().ForType("entities.HigherMuscleDensity").Return(nil)
+		c.repo.ExpectInsert().ForType("entities.LowerMuscleDensity").Return(nil)
+		c.repo.ExpectInsert().ForType("entities.SkinFolds").Return(nil)
+	})
 
 	res, _ := CreateLambdaHandlerWDependencies(c.repo, &c.validator, &c.uuidGen)(c.ctx, biotestRequest)
 
