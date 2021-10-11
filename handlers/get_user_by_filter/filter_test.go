@@ -133,84 +133,66 @@ func (c *UserFilterTest) TestFilterUserByUUID_UnhandledError() {
 
 }
 
-func (c *UserFilterTest) TestFindUserByEmail() {
+func (c *UserFilterTest) TestFindUserLikeEmailOrNameOrLastName() {
 
-	userEmailRequested := "testing@testing.com"
+	dataToSearch := "testing"
 
 	request := map[string]interface{}{
-		"email": userEmailRequested,
+		"data_to_search": dataToSearch,
 	}
 
-	c.repo.ExpectFind(
-		where.Like("email", "%"+userEmailRequested+"%"),
+	filter := where.Like("email", "%"+dataToSearch+"%")
+	filter.Or(where.Like("name", "%"+dataToSearch+"%"))
+	filter.Or(where.Like("last_name", "%"+dataToSearch+"%"))
+
+	c.repo.ExpectFindAll(
+		filter,
 	).Result(
-		entities.User{
-			Email: userEmailRequested,
+		[]entities.User{
+			{Email: dataToSearch},
 		},
 	)
 
 	c.filterParams.Values = request
 
-	got, err := FindUserByEmail(&c.filterParams)
+	got, err := FindUserLikeEmailOrNameOrLastName(&c.filterParams)
 
 	c.Nil(err, "FindUserByID return an error")
 
-	userGot, ok := got.(entities.User)
+	userGot, ok := got.([]entities.User)
 	c.True(ok, "unexpected answare type")
-	c.Equal(userGot.Email, userEmailRequested, "unexpected user id")
+	c.Contains(userGot[0].Email, dataToSearch, "unexpected user id")
 
 }
 
-func (c *UserFilterTest) TestFindUserByEmailValidationError() {
+func (c *UserFilterTest) TestFindUserLikeEmailOrNameOrLastName_ValidationError() {
 
 	request := map[string]interface{}{}
 
 	c.filterParams.Values = request
 
-	_, err := FindUserByEmail(&c.filterParams)
+	_, err := FindUserLikeEmailOrNameOrLastName(&c.filterParams)
 
 	_, isValidationError := err.(apperrors.ValidationError)
 	c.True(isValidationError, "unexpected error type")
 
 }
 
-func (c *UserFilterTest) TestFindUserByEmailNotFoundError() {
+func (c *UserFilterTest) TestFindUserLikeEmailOrNameOrLastName_UnhandledError() {
 
-	userEmailRequested := "testing@testing.com"
-
-	request := map[string]interface{}{
-		"email": userEmailRequested,
-	}
-
-	c.repo.ExpectFind(
-		where.Like("email", "%"+userEmailRequested+"%"),
-	).Return(c.notFoundError)
-
-	c.filterParams.Values = request
-
-	_, err := FindUserByEmail(&c.filterParams)
-
-	_, isHandableNotFoundError := err.(apperrors.UserNotFound)
-
-	c.True(isHandableNotFoundError, "unexpected error type")
-
-}
-
-func (c *UserFilterTest) TestFindUserByEmailUnhandledError() {
-
-	userEmailRequested := "testing@testing.com"
+	dataToSearch := "testing"
 
 	request := map[string]interface{}{
-		"email": userEmailRequested,
+		"data_to_search": dataToSearch,
 	}
 
-	c.repo.ExpectFind(
-		where.Like("email", "%"+userEmailRequested+"%"),
+	c.repo.ExpectFindAll(
+		where.Like("email", "%"+dataToSearch+"%"),
 	).Return(c.ordinaryError)
 
 	c.filterParams.Values = request
 
-	_, err := FindUserByEmail(&c.filterParams)
+	_, err := FindUserLikeEmailOrNameOrLastName(&c.filterParams)
 
 	c.NotNil(err, "should not return error")
 
