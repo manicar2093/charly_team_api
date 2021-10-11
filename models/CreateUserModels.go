@@ -19,9 +19,9 @@ type CreateUserRequest struct {
 
 func (c CreateUserRequest) GetCustomerValidations() interface{} {
 	return struct {
-		GenderID      int `validate:"required,gt=0"`
-		BoneDensityID int `validate:"required,gt=0"`
-		BiotypeID     int `validate:"required,gt=0"`
+		GenderID      int `validate:"required,gt=0" json:"gender_id,omitempty"`
+		BoneDensityID int `validate:"required,gt=0" json:"bone_density_id,omitempty"`
+		BiotypeID     int `validate:"required,gt=0" json:"biotype_id,omitempty"`
 	}{
 		GenderID:      c.GenderID,
 		BoneDensityID: c.BoneDensityID,
