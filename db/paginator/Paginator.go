@@ -58,6 +58,10 @@ func (c PaginableImpl) CreatePaginator(
 
 	totalPages := totalEntries / config.PageSize
 
+	if totalEntries > 0 && totalEntries < config.PageSize {
+		totalPages = 1
+	}
+
 	if pageNumber > totalPages {
 		return nil, PageError{PageNumber: pageNumber}
 	}
