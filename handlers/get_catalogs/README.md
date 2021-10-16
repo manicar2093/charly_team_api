@@ -4,7 +4,7 @@
 - _bone_density_
 - _heart_healths_
 - _roles_
-- _weight_classifications_
+- _weight_clasifications_
 - _genders_
 
 ## BadRequest Validation errors
