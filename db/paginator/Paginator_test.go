@@ -3,15 +3,19 @@ package paginator
 import (
 	"context"
 	"testing"
+	"time"
 
 	"github.com/go-rel/rel"
 	"github.com/go-rel/rel/reltest"
+	"github.com/go-rel/rel/where"
 	"github.com/manicar2093/charly_team_api/config"
 	"github.com/manicar2093/charly_team_api/db/entities"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestPaginator(t *testing.T) {
+
+	t.Skip("Implementation deprecated")
 
 	repo := reltest.New()
 	paginator := NewPaginable(repo)
@@ -46,12 +50,12 @@ func TestPaginator(t *testing.T) {
 	assert.Equal(t, page.TotalPages, totalPagesExpected, "total pages are incorrect")
 	assert.Equal(t, page.NextPage, nextPageExpected, "next page is not correct")
 	assert.Equal(t, page.PreviousPage, previousPageExpect, "previous page is not correct")
-	assert.Equal(t, page.CurrendPage, pageRequested, "current page is not correct")
+	assert.Equal(t, page.CurrentPage, pageRequested, "current page is not correct")
 
 }
 
 func TestPaginator_LastPage(t *testing.T) {
-
+	t.Skip("Implementation deprecated")
 	repo := reltest.New()
 	paginator := NewPaginable(repo)
 
@@ -85,12 +89,12 @@ func TestPaginator_LastPage(t *testing.T) {
 	assert.Equal(t, totalPagesExpected, page.TotalPages, "total pages are incorrect")
 	assert.Equal(t, nextPageExpected, page.NextPage, "next page is not correct")
 	assert.Equal(t, previousPageExpect, page.PreviousPage, "previous page is not correct")
-	assert.Equal(t, pageRequested, page.CurrendPage, "current page is not correct")
+	assert.Equal(t, pageRequested, page.CurrentPage, "current page is not correct")
 
 }
 
 func TestPaginator_PageDoesNotExist(t *testing.T) {
-
+	t.Skip("Implementation deprecated")
 	repo := reltest.New()
 	paginator := NewPaginable(repo)
 
@@ -119,7 +123,7 @@ func TestPaginator_PageDoesNotExist(t *testing.T) {
 }
 
 func TestPaginator_ReturnOnePageIfEntriesLessThanPageSize(t *testing.T) {
-
+	t.Skip("Implementation deprecated")
 	repo := reltest.New()
 	paginator := NewPaginable(repo)
 
@@ -151,6 +155,196 @@ func TestPaginator_ReturnOnePageIfEntriesLessThanPageSize(t *testing.T) {
 	assert.Equal(t, page.TotalPages, totalPagesExpected, "total pages are incorrect")
 	assert.Equal(t, page.NextPage, nextPageExpected, "next page is not correct")
 	assert.Equal(t, page.PreviousPage, previousPageExpect, "previous page is not correct")
-	assert.Equal(t, page.CurrendPage, pageRequested, "current page is not correct")
+	assert.Equal(t, page.CurrentPage, pageRequested, "current page is not correct")
+
+}
+
+func TestPaginableImpl_CreatePagination__WFilters(t *testing.T) {
+
+	repo := reltest.New()
+	paginator := NewPaginable(repo)
+
+	pageRequested := 1
+	previousPageExpect := 0
+	nextPageExpected := 2
+	totalPagesExpected := 100
+
+	pageSort := PageSort{Page: float64(pageRequested)}
+	userUUIDFilter := where.Eq("user_uuid", "an_uuid")
+	userCreatedAtFilter := where.Eq("created_at", time.Now())
+	pageSort.SetFiltersQueries(userUUIDFilter, userCreatedAtFilter)
+
+	dbTable := entities.UserTable
+
+	var users []entities.User
+
+	repo.ExpectCount(dbTable, userUUIDFilter, userCreatedAtFilter).Result(1000)
+	repo.ExpectFindAll(
+		userUUIDFilter,
+		userCreatedAtFilter,
+		rel.Limit(config.PageSize),
+		rel.Offset(
+			createOffsetValue(
+				config.PageSize,
+				pageRequested,
+			),
+		),
+	).Result([]entities.User{{}, {}, {}, {}, {}, {}, {}, {}, {}, {}})
+
+	page, err := paginator.CreatePagination(context.Background(), dbTable, &users, &pageSort)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	assert.NotEmpty(t, page.TotalPages, "Total pages should not be empty")
+	assert.Equal(t, len(users), config.PageSize, "number of items does not correspond with page size")
+	assert.Equal(t, page.TotalPages, totalPagesExpected, "total pages are incorrect")
+	assert.Equal(t, page.NextPage, nextPageExpected, "next page is not correct")
+	assert.Equal(t, page.PreviousPage, previousPageExpect, "previous page is not correct")
+	assert.Equal(t, page.CurrentPage, pageRequested, "current page is not correct")
+
+}
+
+func TestPaginableImpl_CreatePagination__WOFilters(t *testing.T) {
+
+	repo := reltest.New()
+	paginator := NewPaginable(repo)
+
+	pageRequested := 1
+	previousPageExpect := 0
+	nextPageExpected := 2
+	totalPagesExpected := 100
+
+	dbTable := entities.UserTable
+
+	var users []entities.User
+
+	repo.ExpectCount(dbTable).Result(1000)
+	repo.ExpectFindAll(
+		rel.Limit(config.PageSize),
+		rel.Offset(
+			createOffsetValue(
+				config.PageSize,
+				pageRequested,
+			),
+		),
+	).Result([]entities.User{{}, {}, {}, {}, {}, {}, {}, {}, {}, {}})
+
+	page, err := paginator.CreatePagination(context.Background(), dbTable, &users, &PageSort{Page: 1})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	assert.NotEmpty(t, page.TotalPages, "Total pages should not be empty")
+	assert.Equal(t, len(users), config.PageSize, "number of items does not correspond with page size")
+	assert.Equal(t, page.TotalPages, totalPagesExpected, "total pages are incorrect")
+	assert.Equal(t, page.NextPage, nextPageExpected, "next page is not correct")
+	assert.Equal(t, page.PreviousPage, previousPageExpect, "previous page is not correct")
+	assert.Equal(t, page.CurrentPage, pageRequested, "current page is not correct")
+
+}
+
+func TestPaginator_CreatePagination__LastPage(t *testing.T) {
+
+	repo := reltest.New()
+	paginator := NewPaginable(repo)
+
+	pageRequested := 100
+	previousPageExpect := 99
+	nextPageExpected := 1
+	totalPagesExpected := 100
+
+	dbTable := entities.UserTable
+
+	var users []entities.User
+
+	repo.ExpectCount(dbTable).Result(1000)
+	repo.ExpectFindAll(
+		rel.Limit(config.PageSize),
+		rel.Offset(
+			createOffsetValue(
+				config.PageSize,
+				pageRequested,
+			),
+		),
+	).Result([]entities.User{{}, {}, {}, {}, {}, {}})
+
+	page, err := paginator.CreatePagination(context.Background(), dbTable, &users, &PageSort{Page: float64(pageRequested)})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	assert.NotEmpty(t, page.TotalPages, "Total pages should not be empty")
+	assert.GreaterOrEqual(t, config.PageSize, len(users), "number of items does not correspond with page size")
+	assert.Equal(t, totalPagesExpected, page.TotalPages, "total pages are incorrect")
+	assert.Equal(t, nextPageExpected, page.NextPage, "next page is not correct")
+	assert.Equal(t, previousPageExpect, page.PreviousPage, "previous page is not correct")
+	assert.Equal(t, pageRequested, page.CurrentPage, "current page is not correct")
+
+}
+
+func TestPaginator_CreatePagination__PageDoesNotExist(t *testing.T) {
+
+	repo := reltest.New()
+	paginator := NewPaginable(repo)
+
+	pageRequested := 101
+
+	dbTable := entities.UserTable
+
+	var users []entities.User
+
+	repo.ExpectCount(dbTable).Result(1000)
+	repo.ExpectFindAll(
+		rel.Limit(config.PageSize),
+		rel.Offset(
+			createOffsetValue(
+				config.PageSize,
+				pageRequested,
+			),
+		),
+	).Result([]entities.User{{}, {}, {}, {}, {}, {}, {}, {}, {}, {}})
+
+	_, err := paginator.CreatePagination(context.Background(), dbTable, &users, &PageSort{Page: float64(pageRequested)})
+
+	_, ok := err.(PageError)
+	assert.True(t, ok, "Error returned wrong")
+
+}
+
+func TestPaginator_CreatePagination__ReturnOnePageIfEntriesLessThanPageSize(t *testing.T) {
+
+	repo := reltest.New()
+	paginator := NewPaginable(repo)
+
+	pageRequested := 1
+	previousPageExpect := 0
+	nextPageExpected := 1
+	totalPagesExpected := 1
+
+	dbTable := entities.UserTable
+
+	var users []entities.User
+
+	repo.ExpectCount(dbTable).Result(2)
+	repo.ExpectFindAll(
+		rel.Limit(config.PageSize),
+		rel.Offset(
+			createOffsetValue(
+				config.PageSize,
+				pageRequested,
+			),
+		),
+	).Result([]entities.User{{}, {}, {}, {}, {}, {}, {}, {}, {}, {}})
+
+	page, err := paginator.CreatePagination(context.Background(), dbTable, &users, &PageSort{Page: float64(pageRequested)})
+	assert.Nil(t, err, "should not be an error")
+
+	assert.NotEmpty(t, page.TotalPages, "Total pages should not be empty")
+	assert.Equal(t, len(users), config.PageSize, "number of items does not correspond with page size")
+	assert.Equal(t, page.TotalPages, totalPagesExpected, "total pages are incorrect")
+	assert.Equal(t, page.NextPage, nextPageExpected, "next page is not correct")
+	assert.Equal(t, page.PreviousPage, previousPageExpect, "previous page is not correct")
+	assert.Equal(t, page.CurrentPage, pageRequested, "current page is not correct")
 
 }
