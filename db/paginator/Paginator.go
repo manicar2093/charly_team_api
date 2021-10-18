@@ -11,12 +11,19 @@ import (
 )
 
 type Paginable interface {
+	// Deprecated: CreatePaginator is deprecated. Use CreatePagination instead
 	CreatePaginator(
 		ctx context.Context,
 		tableName string,
 		holder interface{},
 		pageNumber int,
 		queries ...rel.Querier,
+	) (*models.Paginator, error)
+	CreatePagination(
+		ctx context.Context,
+		tableName string,
+		holder interface{},
+		pageSort *PageSort,
 	) (*models.Paginator, error)
 }
 
@@ -75,9 +82,53 @@ func (c PaginableImpl) CreatePaginator(
 
 	return &models.Paginator{
 		TotalPages:   totalPages,
-		CurrendPage:  pageNumber,
+		CurrentPage:  pageNumber,
 		PreviousPage: pageNumber - 1,
 		NextPage:     calculateNextPage(pageNumber, totalPages),
+		Data:         holder,
+	}, nil
+}
+
+func (c PaginableImpl) CreatePagination(
+	ctx context.Context,
+	tableName string,
+	holder interface{},
+	pageSort *PageSort,
+) (*models.Paginator, error) {
+	pageSize := pageSort.GetItemsPerPage()
+	page := pageSort.GetPage()
+
+	totalEntries, err := c.repo.Count(ctx, tableName, pageSort.GetFiltersQueries()...)
+	if err != nil {
+		return nil, err
+	}
+
+	totalPages := totalEntries / config.PageSize
+
+	if totalEntries > 0 && totalEntries < config.PageSize {
+		totalPages = 1
+	}
+
+	if page > totalPages {
+		return nil, PageError{PageNumber: page}
+	}
+
+	pageLimitQuery := rel.Limit(pageSize)
+	pageOffsetQuery := rel.Offset(createOffsetValue(pageSize, page))
+	queries := pageSort.GetFiltersQueries()
+
+	queries = append(queries, pageLimitQuery, pageOffsetQuery)
+
+	err = c.repo.FindAll(ctx, holder, queries...)
+	if err != nil {
+		return nil, err
+	}
+
+	return &models.Paginator{
+		TotalPages:   totalPages,
+		CurrentPage:  page,
+		PreviousPage: page - 1,
+		NextPage:     calculateNextPage(page, totalPages),
 		Data:         holder,
 	}, nil
 }

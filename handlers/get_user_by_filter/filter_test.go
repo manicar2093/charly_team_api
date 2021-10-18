@@ -11,6 +11,7 @@ import (
 	"github.com/manicar2093/charly_team_api/apperrors"
 	"github.com/manicar2093/charly_team_api/db/entities"
 	"github.com/manicar2093/charly_team_api/db/filters"
+	"github.com/manicar2093/charly_team_api/db/paginator"
 	"github.com/manicar2093/charly_team_api/mocks"
 	"github.com/manicar2093/charly_team_api/models"
 	"github.com/stretchr/testify/mock"
@@ -201,17 +202,20 @@ func (c *UserFilterTest) TestFindUserLikeEmailOrNameOrLastName_UnhandledError() 
 func (c *UserFilterTest) TestFindAllUsers() {
 
 	userPageRequested := float64(2)
+	pageSort := paginator.PageSort{
+		Page: userPageRequested,
+	}
 
 	request := map[string]interface{}{
 		"page_number": userPageRequested,
 	}
 
 	c.paginator.On(
-		"CreatePaginator",
+		"CreatePagination",
 		c.ctx,
 		entities.UserTable,
 		mock.Anything,
-		int(userPageRequested),
+		&pageSort,
 	).Return(&models.Paginator{}, nil)
 
 	c.filterParams.Values = request

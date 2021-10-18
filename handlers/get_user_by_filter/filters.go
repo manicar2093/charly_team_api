@@ -6,6 +6,7 @@ import (
 	"github.com/manicar2093/charly_team_api/apperrors"
 	"github.com/manicar2093/charly_team_api/db/entities"
 	"github.com/manicar2093/charly_team_api/db/filters"
+	"github.com/manicar2093/charly_team_api/db/paginator"
 )
 
 func FindUserByUUID(
@@ -67,18 +68,20 @@ func FindAllUsers(
 
 	valuesAsMap := params.Values.(map[string]interface{})
 
-	pageNumber, ok := valuesAsMap["page_number"].(float64)
+	_, ok := valuesAsMap["page_number"].(float64)
 	if !ok {
 		return nil, apperrors.ValidationError{Field: "page_number", Validation: "required"}
 	}
 
+	pageSort := paginator.CreatePageSortFromMap(valuesAsMap)
+
 	var usersFound []entities.User
 
-	return params.Paginator.CreatePaginator(
+	return params.Paginator.CreatePagination(
 		params.Ctx,
 		entities.User{}.Table(),
 		&usersFound,
-		int(pageNumber),
+		pageSort,
 	)
 
 }

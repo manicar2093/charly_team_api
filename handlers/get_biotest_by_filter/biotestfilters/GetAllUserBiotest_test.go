@@ -12,6 +12,7 @@ import (
 	"github.com/manicar2093/charly_team_api/apperrors"
 	"github.com/manicar2093/charly_team_api/db/entities"
 	"github.com/manicar2093/charly_team_api/db/filters"
+	"github.com/manicar2093/charly_team_api/db/paginator"
 	"github.com/manicar2093/charly_team_api/mocks"
 	"github.com/manicar2093/charly_team_api/models"
 	"github.com/manicar2093/charly_team_api/validators"
@@ -60,6 +61,10 @@ func (c *GetAllUserBiotestTest) TestGetAllUserBiotest() {
 	pageNumberAsInt := int(pageNumber)
 	userID := int32(1)
 
+	pageSort := paginator.PageSort{
+		Page: pageNumber,
+	}
+
 	request := map[string]interface{}{
 		"user_uuid":   userUUID,
 		"page_number": pageNumber,
@@ -74,7 +79,7 @@ func (c *GetAllUserBiotestTest) TestGetAllUserBiotest() {
 
 	pageResponse := &models.Paginator{
 		TotalPages:   2,
-		CurrendPage:  pageNumberAsInt,
+		CurrentPage:  pageNumberAsInt,
 		PreviousPage: 0,
 		NextPage:     2,
 		Data:         biotestResponse,
@@ -97,13 +102,13 @@ func (c *GetAllUserBiotestTest) TestGetAllUserBiotest() {
 	)
 
 	var biotestHolder []entities.Biotest
+	pageSort.SetFiltersQueries(where.Eq("customer_id", userID))
 	c.paginator.On(
-		"CreatePaginator",
+		"CreatePagination",
 		c.ctx,
 		entities.BiotestTable,
 		&biotestHolder,
-		pageNumberAsInt,
-		where.Eq("customer_id", userID),
+		&pageSort,
 	).Return(pageResponse, nil)
 
 	got, err := GetAllUserBiotest(&c.filterParams)
@@ -123,6 +128,9 @@ func (c *GetAllUserBiotestTest) TestGetAllUserBiotest_AsCatalog() {
 	pageNumber := float64(1)
 	pageNumberAsInt := int(pageNumber)
 	userID := int32(1)
+	pageSort := paginator.PageSort{
+		Page: pageNumber,
+	}
 
 	request := map[string]interface{}{
 		"user_uuid":   userUUID,
@@ -139,7 +147,7 @@ func (c *GetAllUserBiotestTest) TestGetAllUserBiotest_AsCatalog() {
 
 	pageResponse := &models.Paginator{
 		TotalPages:   2,
-		CurrendPage:  pageNumberAsInt,
+		CurrentPage:  pageNumberAsInt,
 		PreviousPage: 0,
 		NextPage:     2,
 		Data:         biotestResponse,
@@ -162,14 +170,16 @@ func (c *GetAllUserBiotestTest) TestGetAllUserBiotest_AsCatalog() {
 	)
 
 	var biotestHolder []BiotestDetails
+	pageSort.SetFiltersQueries(
+		where.Eq("customer_id", userID),
+		BiotestAsCatalogQuery,
+	)
 	c.paginator.On(
-		"CreatePaginator",
+		"CreatePagination",
 		c.ctx,
 		entities.BiotestTable,
 		&biotestHolder,
-		pageNumberAsInt,
-		where.Eq("customer_id", userID),
-		BiotestAsCatalogQuery,
+		&pageSort,
 	).Return(pageResponse, nil)
 
 	got, err := GetAllUserBiotest(&c.filterParams)

@@ -4,6 +4,7 @@ import (
 	"github.com/go-rel/rel/where"
 	"github.com/manicar2093/charly_team_api/db/entities"
 	"github.com/manicar2093/charly_team_api/db/filters"
+	"github.com/manicar2093/charly_team_api/db/paginator"
 	"github.com/manicar2093/charly_team_api/validators"
 )
 
@@ -15,6 +16,7 @@ type GetAllUserBiotestsRequest struct {
 func GetAllUserBiotest(params *filters.FilterParameters) (interface{}, error) {
 
 	valuesAsMap := params.Values.(map[string]interface{})
+	pageSort := paginator.CreatePageSortFromMap(valuesAsMap)
 	userUUID := valuesAsMap["user_uuid"].(string)
 	pageNumber := int(valuesAsMap["page_number"].(float64))
 	asCatalog, _ := valuesAsMap["as_catalog"].(bool)
@@ -33,23 +35,27 @@ func GetAllUserBiotest(params *filters.FilterParameters) (interface{}, error) {
 
 	if asCatalog {
 		var biotestDetails []BiotestDetails
-		return params.Paginator.CreatePaginator(
+		pageSort.SetFiltersQueries(
+			where.Eq("customer_id", userFound.ID),
+			BiotestAsCatalogQuery,
+		)
+		return params.Paginator.CreatePagination(
 			params.Ctx,
 			entities.BiotestTable,
 			&biotestDetails,
-			pageNumber,
-			where.Eq("customer_id", userFound.ID),
-			BiotestAsCatalogQuery,
+			pageSort,
 		)
 	}
 
 	var biotests []entities.Biotest
-	return params.Paginator.CreatePaginator(
+	pageSort.SetFiltersQueries(
+		where.Eq("customer_id", userFound.ID),
+	)
+	return params.Paginator.CreatePagination(
 		params.Ctx,
 		entities.BiotestTable,
 		&biotests,
-		pageNumber,
-		where.Eq("customer_id", userFound.ID),
+		pageSort,
 	)
 
 }
