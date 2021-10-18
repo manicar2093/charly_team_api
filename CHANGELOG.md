@@ -1,3 +1,9 @@
+## v0.35.0 (2021-10-18)
+
+### Feat
+
+- Add lambda to retreive user info when login (#109)
+
 ## v0.34.0 (2021-10-18)
 
 ### Feat
