@@ -1,3 +1,17 @@
+## v0.34.0 (2021-10-18)
+
+### Feat
+
+- Add new Pagination implementation.
+- Add json tags to catalog entities
+- Add authflow for cognito
+
+### Fix
+
+- Add fix to emailSubject on serverless yml
+- Change catalog name
+- Fix error on page has just 1 entry
+
 ## v0.33.1 (2021-10-11)
 
 ### Fix
