@@ -87,6 +87,14 @@ functions:
   update_user: 
     handler: bin/update_user
 
+  cognito_token_gen:
+    handler: bin/cognito_token_gen
+    events:
+      - cognitoUserPool:
+          pool: UserPool
+          trigger: PreTokenGeneration
+          existing: true
+
 # you can add CloudFormation resource templates here
 resources:
   Resources:
