@@ -99,7 +99,7 @@ resources:
           AllowAdminCreateUserOnly: true
           InviteMessageTemplate:
             EmailMessage: ¡Ingresa a CharlyApp con tu usuario {username} y esta contraseña temporal {####} para continuar con tu plan! 
-            EmailSubject: ¡Bienvenido a #CharlyTeam!
+            EmailSubject: "¡Bienvenido a #CharlyTeam!"
         AccountRecoverySetting:
           RecoveryMechanisms:
             - Name: verified_email
