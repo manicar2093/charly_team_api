@@ -1,3 +1,9 @@
+## v0.35.1 (2021-10-20)
+
+### Fix
+
+- Add solution to user filter (#111)
+
 ## v0.35.0 (2021-10-18)
 
 ### Feat
