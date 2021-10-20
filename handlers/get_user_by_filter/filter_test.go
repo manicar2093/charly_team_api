@@ -142,9 +142,7 @@ func (c *UserFilterTest) TestFindUserLikeEmailOrNameOrLastName() {
 		"data_to_search": dataToSearch,
 	}
 
-	filter := where.Like("email", "%"+dataToSearch+"%")
-	filter.Or(where.Like("name", "%"+dataToSearch+"%"))
-	filter.Or(where.Like("last_name", "%"+dataToSearch+"%"))
+	filter := where.Like("email", "%"+dataToSearch+"%").OrLike("name", "%"+dataToSearch+"%").OrLike("last_name", "%"+dataToSearch+"%")
 
 	c.repo.ExpectFindAll(
 		filter,
@@ -187,8 +185,10 @@ func (c *UserFilterTest) TestFindUserLikeEmailOrNameOrLastName_UnhandledError() 
 		"data_to_search": dataToSearch,
 	}
 
+	filter := where.Like("email", "%"+dataToSearch+"%").OrLike("name", "%"+dataToSearch+"%").OrLike("last_name", "%"+dataToSearch+"%")
+
 	c.repo.ExpectFindAll(
-		where.Like("email", "%"+dataToSearch+"%"),
+		filter,
 	).Return(c.ordinaryError)
 
 	c.filterParams.Values = request

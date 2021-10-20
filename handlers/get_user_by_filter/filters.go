@@ -42,9 +42,7 @@ func FindUserLikeEmailOrNameOrLastName(
 	if !ok {
 		return nil, apperrors.ValidationError{Field: "data_to_search", Validation: "required"}
 	}
-	filter := where.Like("email", "%"+dataToSearch+"%")
-	filter.Or(where.Like("name", "%"+dataToSearch+"%"))
-	filter.Or(where.Like("last_name", "%"+dataToSearch+"%"))
+	filter := where.Like("email", "%"+dataToSearch+"%").OrLike("name", "%"+dataToSearch+"%").OrLike("last_name", "%"+dataToSearch+"%")
 
 	var usersFound []entities.User
 
