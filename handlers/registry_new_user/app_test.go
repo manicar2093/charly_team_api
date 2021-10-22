@@ -1,4 +1,4 @@
-package services
+package main
 
 import (
 	"context"
@@ -14,16 +14,16 @@ import (
 	"github.com/manicar2093/charly_team_api/db/entities"
 	"github.com/manicar2093/charly_team_api/mocks"
 	"github.com/manicar2093/charly_team_api/models"
+	"github.com/manicar2093/charly_team_api/validators/nullsql"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
-	"gopkg.in/guregu/null.v4"
 )
 
 func TestUserService(t *testing.T) {
-	suite.Run(t, new(UserServiceTest))
+	suite.Run(t, new(UserAppTest))
 }
 
-type UserServiceTest struct {
+type UserAppTest struct {
 	suite.Suite
 	providerMock                                           *mocks.CongitoClient
 	passGenMock                                            *mocks.PassGen
@@ -37,17 +37,12 @@ type UserServiceTest struct {
 	userRequest                                            models.CreateUserRequest
 	anError                                                error
 	saveFuncMock                                           func(*entities.User) func(args mock.Arguments)
+	adminCreateUserReq                                     cognitoidentityprovider.AdminCreateUserInput
 }
 
-func (u *UserServiceTest) SetupTest() {
-	u.providerMock = &mocks.CongitoClient{}
-	u.repoMock = reltest.New()
-	u.passGenMock = &mocks.PassGen{}
-	u.uuidGen = &mocks.UUIDGenerator{}
+func (u *UserAppTest) SetupTest() {
 	u.uuidReturned = "an uuid"
 	u.avatarUrlExpected = fmt.Sprintf("%s%s.svg", config.AvatarURLSrc, u.uuidReturned)
-	u.uuidGen.On("New").Return(u.uuidReturned)
-	u.uuidGen.On("New").Return(u.uuidReturned)
 	u.username = "testing"
 	u.temporaryPass = "12345678"
 	u.anError = errors.New("An error")
@@ -65,7 +60,6 @@ func (u *UserServiceTest) SetupTest() {
 	u.email = strings.Join([]string{u.username, "@gmail.com"}, "")
 	u.birthday = time.Date(1993, time.August, 20, 0, 0, 0, 0, time.UTC)
 	u.idUserCreated = 1
-
 	u.userRequest = models.CreateUserRequest{
 		Name:     u.name,
 		LastName: u.lastName,
@@ -74,19 +68,13 @@ func (u *UserServiceTest) SetupTest() {
 		RoleID:   3,
 		GenderID: 1,
 	}
-}
 
-func (u *UserServiceTest) TearDownTest() {
-	t := u.T()
-	u.repoMock.AssertExpectations(t)
-	u.passGenMock.AssertExpectations(t)
-	u.providerMock.AssertExpectations(t)
-	u.uuidGen.AssertExpectations(t)
-}
-
-func (u *UserServiceTest) TestCreateUser() {
-
-	adminCreateUserReq := cognitoidentityprovider.AdminCreateUserInput{
+	u.providerMock = &mocks.CongitoClient{}
+	u.repoMock = reltest.New()
+	u.passGenMock = &mocks.PassGen{}
+	u.uuidGen = &mocks.UUIDGenerator{}
+	u.uuidGen.On("New").Return(u.uuidReturned)
+	u.adminCreateUserReq = cognitoidentityprovider.AdminCreateUserInput{
 		UserPoolId:        &config.CognitoPoolID,
 		Username:          &u.userRequest.Email,
 		TemporaryPassword: &u.temporaryPass,
@@ -97,28 +85,44 @@ func (u *UserServiceTest) TestCreateUser() {
 			},
 		},
 	}
+}
+
+func (u *UserAppTest) TearDownTest() {
+	t := u.T()
+	u.repoMock.AssertExpectations(t)
+	u.passGenMock.AssertExpectations(t)
+	u.providerMock.AssertExpectations(t)
+	u.uuidGen.AssertExpectations(t)
+}
+
+func (u *UserAppTest) TestCreateUser() {
+
 	userDBReq := entities.User{
 		Name:          u.userRequest.Name,
 		LastName:      u.userRequest.LastName,
 		RoleID:        int32(u.userRequest.RoleID),
 		Email:         u.userRequest.Email,
 		Birthday:      u.userRequest.Birthday,
-		GenderID:      null.IntFrom(1),
+		GenderID:      nullsql.ValidateIntSQLValid(1),
 		UserUUID:      u.uuidReturned,
 		AvatarUrl:     u.avatarUrlExpected,
-		BiotypeID:     null.IntFrom(int64(u.userRequest.BiotypeID)),
-		BoneDensityID: null.IntFrom(int64(u.userRequest.BoneDensityID)),
+		BiotypeID:     nullsql.ValidateIntSQLValid(int64(u.userRequest.BiotypeID)),
+		BoneDensityID: nullsql.ValidateIntSQLValid(int64(u.userRequest.BoneDensityID)),
 	}
 
 	u.providerMock.On(
 		"AdminCreateUser",
-		&adminCreateUserReq,
+		&u.adminCreateUserReq,
 	).Return(
-		&cognitoidentityprovider.AdminCreateUserOutput{},
+		&cognitoidentityprovider.AdminCreateUserOutput{
+			User: &cognitoidentityprovider.UserType{
+				Username: &u.uuidReturned,
+			},
+		},
 		nil,
 	)
+	u.passGenMock.On("Generate").Return(u.temporaryPass, nil)
 	u.repoMock.ExpectTransaction(func(r *reltest.Repository) {
-		u.passGenMock.On("Generate").Return(u.temporaryPass, nil)
 		r.ExpectInsert().For(&userDBReq)
 	})
 
@@ -136,7 +140,7 @@ func (u *UserServiceTest) TestCreateUser() {
 
 }
 
-func (u *UserServiceTest) TestCreateUserRepoSaveErr() {
+func (u *UserAppTest) TestCreateUserRepoSaveErr() {
 
 	userDBReq := entities.User{
 		Name:          u.userRequest.Name,
@@ -144,15 +148,26 @@ func (u *UserServiceTest) TestCreateUserRepoSaveErr() {
 		RoleID:        int32(u.userRequest.RoleID),
 		Email:         u.userRequest.Email,
 		Birthday:      u.userRequest.Birthday,
-		GenderID:      null.IntFrom(1),
+		GenderID:      nullsql.ValidateIntSQLValid(1),
 		UserUUID:      u.uuidReturned,
 		AvatarUrl:     u.avatarUrlExpected,
-		BiotypeID:     null.IntFrom(int64(u.userRequest.BiotypeID)),
-		BoneDensityID: null.IntFrom(int64(u.userRequest.BoneDensityID)),
+		BiotypeID:     nullsql.ValidateIntSQLValid(int64(u.userRequest.BiotypeID)),
+		BoneDensityID: nullsql.ValidateIntSQLValid(int64(u.userRequest.BoneDensityID)),
 	}
 
+	u.passGenMock.On("Generate").Return(u.temporaryPass, nil)
+	u.providerMock.On(
+		"AdminCreateUser",
+		&u.adminCreateUserReq,
+	).Return(
+		&cognitoidentityprovider.AdminCreateUserOutput{
+			User: &cognitoidentityprovider.UserType{
+				Username: &u.uuidReturned,
+			},
+		},
+		nil,
+	)
 	u.repoMock.ExpectTransaction(func(r *reltest.Repository) {
-		u.passGenMock.On("Generate").Return(u.temporaryPass, nil)
 		r.ExpectInsert().For(&userDBReq).Return(u.anError)
 	})
 	userService := NewUserServiceCognito(
@@ -169,7 +184,7 @@ func (u *UserServiceTest) TestCreateUserRepoSaveErr() {
 
 }
 
-func (u *UserServiceTest) TestCreateUserPassGenError() {
+func (u *UserAppTest) TestCreateUserPassGenError() {
 
 	u.repoMock.ExpectTransaction(func(r *reltest.Repository) {
 		u.passGenMock.On("Generate").Return("", u.anError).Once()
@@ -188,7 +203,7 @@ func (u *UserServiceTest) TestCreateUserPassGenError() {
 	u.Empty(userGot, "user should not be created")
 }
 
-func (u *UserServiceTest) TestCreateUserAdminCreateUserError() {
+func (u *UserAppTest) TestCreateUserAdminCreateUserError() {
 
 	adminCreateUserReq := cognitoidentityprovider.AdminCreateUserInput{
 		UserPoolId:        &config.CognitoPoolID,
@@ -201,19 +216,8 @@ func (u *UserServiceTest) TestCreateUserAdminCreateUserError() {
 			},
 		},
 	}
-	userDBReq := entities.User{
-		Name:          u.userRequest.Name,
-		LastName:      u.userRequest.LastName,
-		RoleID:        int32(u.userRequest.RoleID),
-		Email:         u.userRequest.Email,
-		Birthday:      u.userRequest.Birthday,
-		GenderID:      null.IntFrom(1),
-		UserUUID:      u.uuidReturned,
-		AvatarUrl:     u.avatarUrlExpected,
-		BiotypeID:     null.IntFrom(int64(u.userRequest.BiotypeID)),
-		BoneDensityID: null.IntFrom(int64(u.userRequest.BoneDensityID)),
-	}
 
+	u.passGenMock.On("Generate").Return(u.temporaryPass, nil)
 	u.providerMock.On(
 		"AdminCreateUser",
 		&adminCreateUserReq,
@@ -221,10 +225,7 @@ func (u *UserServiceTest) TestCreateUserAdminCreateUserError() {
 		&cognitoidentityprovider.AdminCreateUserOutput{},
 		u.anError,
 	)
-	u.repoMock.ExpectTransaction(func(r *reltest.Repository) {
-		u.passGenMock.On("Generate").Return(u.temporaryPass, nil)
-		r.ExpectInsert().For(&userDBReq)
-	})
+	u.repoMock.ExpectTransaction(func(r *reltest.Repository) {})
 
 	userService := NewUserServiceCognito(
 		u.providerMock,

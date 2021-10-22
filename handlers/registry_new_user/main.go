@@ -16,7 +16,7 @@ import (
 func main() {
 	config.StartConfig()
 	lambda.Start(CreateLambdaHandlerWDependencies(
-		services.NewUserServiceCognito(
+		NewUserServiceCognito(
 			aws.NewCognitoClient(),
 			services.PasswordGenerator{},
 			connections.PostgressConnection(),
@@ -27,7 +27,7 @@ func main() {
 }
 
 func CreateLambdaHandlerWDependencies(
-	userService services.UserService,
+	userService UserService,
 	validator validators.ValidatorService,
 ) func(ctx context.Context, req models.CreateUserRequest) (*models.Response, error) {
 
