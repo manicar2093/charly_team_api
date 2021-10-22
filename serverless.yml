@@ -75,9 +75,6 @@ functions:
   get_user_by_filter:
     handler: bin/get_user_by_filter
 
-  # registry_new_customer:
-  #   handler: bin/registry_new_customer
-
   registry_new_user:
     handler: bin/registry_new_user
   
@@ -93,7 +90,6 @@ functions:
       - cognitoUserPool:
           pool: UserPool
           trigger: PreTokenGeneration
-          existing: true
 
 # you can add CloudFormation resource templates here
 resources:
