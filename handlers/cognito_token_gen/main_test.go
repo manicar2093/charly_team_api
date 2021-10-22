@@ -37,13 +37,11 @@ func TestCognitoTokenGen(t *testing.T) {
 	}
 	repo := reltest.New()
 	event := events.CognitoEventUserPoolsPreTokenGen{
-		Request: events.CognitoEventUserPoolsPreTokenGenRequest{
-			UserAttributes: map[string]string{
-				"email": email,
-			},
+		CognitoEventUserPoolsHeader: events.CognitoEventUserPoolsHeader{
+			UserName: userUUID,
 		},
 	}
-	repo.ExpectFind(where.Eq("email", email)).Result(userFound)
+	repo.ExpectFind(where.Eq("user_uuid", userUUID)).Result(userFound)
 	eventGot, err := CreateLambdaHandlerWDependencies(repo)(context.Background(), event)
 	assert.Nil(t, err, "Should not response with an error")
 	gotClaims := eventGot.Response.ClaimsOverrideDetails.ClaimsToAddOrOverride

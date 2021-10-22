@@ -32,9 +32,7 @@ func CreateLambdaHandlerWDependencies(
 	return func(ctx context.Context, event events.CognitoEventUserPoolsPreTokenGen) (events.CognitoEventUserPoolsPreTokenGen, error) {
 		var userToSign entities.User
 
-		email := event.Request.UserAttributes["email"]
-
-		err := repo.Find(ctx, &userToSign, where.Eq("email", email))
+		err := repo.Find(ctx, &userToSign, where.Eq("user_uuid", event.UserName))
 		if err != nil {
 			log.Println(err)
 			return event, errors.New("user was not found")
