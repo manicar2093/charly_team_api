@@ -1,3 +1,17 @@
+## v0.36.0 (2021-10-22)
+
+### Feat
+
+- Find user by uuid to get session properties to front
+
+### Refactor
+
+- Remove unused handler
+
+### Fix
+
+- Add int validator to create sql.Int null
+
 ## v0.35.1 (2021-10-20)
 
 ### Fix
