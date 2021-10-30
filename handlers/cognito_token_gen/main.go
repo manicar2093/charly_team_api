@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"strconv"
 	"strings"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -37,11 +38,18 @@ func CreateLambdaHandlerWDependencies(
 			log.Println(err)
 			return event, errors.New("user was not found")
 		}
+		err = repo.Preload(ctx, &userToSign, "role")
+		if err != nil {
+			log.Println(err)
+			return event, errors.New("user was not found")
+		}
 
 		myClaims := map[string]string{
 			"name_to_show": CreateNameToShow(userToSign.Name, userToSign.LastName),
 			"avatar_url":   userToSign.AvatarUrl,
 			"uuid":         userToSign.UserUUID,
+			"id":           strconv.Itoa(int(userToSign.ID)),
+			"role":         userToSign.Role.Description,
 		}
 
 		event.Response.ClaimsOverrideDetails.ClaimsToAddOrOverride = myClaims
