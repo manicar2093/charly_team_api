@@ -1,3 +1,9 @@
+## v0.37.0 (2021-10-30)
+
+### Feat
+
+- Add data to cognito lambda (#118)
+
 ## v0.36.0 (2021-10-22)
 
 ### Feat
