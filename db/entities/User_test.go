@@ -29,6 +29,9 @@ func TestCustomerEntity(t *testing.T) {
 
 	assert.NotEmpty(t, user.ID, "ID should not be empty. Customer was not created")
 
+	DB.Preload(ctx, &user, "role")
+	assert.NotEmpty(t, user.Role.Description, "Role was not load correctly")
+	t.Log(user)
 	DB.Delete(ctx, &user)
 
 }
