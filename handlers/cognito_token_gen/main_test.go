@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"strconv"
 	"testing"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -27,8 +28,12 @@ func TestCognitoTokenGen(t *testing.T) {
 	lastName := "Great System"
 	avatarURL := "a_avatar_url"
 	userUUID := "an_uuid"
+	userID := int32(1)
+	userIDAsStr := strconv.Itoa(int(userID))
+	roleDescription := "ADescription"
 
 	userFound := entities.User{
+		ID:        userID,
 		Name:      name,
 		LastName:  lastName,
 		Email:     email,
@@ -42,6 +47,7 @@ func TestCognitoTokenGen(t *testing.T) {
 		},
 	}
 	repo.ExpectFind(where.Eq("user_uuid", userUUID)).Result(userFound)
+	repo.ExpectPreload("role").Result(entities.Role{Description: roleDescription})
 	eventGot, err := CreateLambdaHandlerWDependencies(repo)(context.Background(), event)
 	assert.Nil(t, err, "Should not response with an error")
 	gotClaims := eventGot.Response.ClaimsOverrideDetails.ClaimsToAddOrOverride
@@ -50,4 +56,6 @@ func TestCognitoTokenGen(t *testing.T) {
 	assert.Contains(t, gotClaims["name_to_show"], "Great", "Last Name is not in name to show")
 	assert.Equal(t, avatarURL, gotClaims["avatar_url"])
 	assert.Equal(t, userUUID, gotClaims["uuid"])
+	assert.Equal(t, userIDAsStr, gotClaims["id"])
+	assert.Equal(t, roleDescription, gotClaims["role"])
 }
