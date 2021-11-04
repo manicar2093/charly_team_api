@@ -132,6 +132,11 @@ resources:
           - ALLOW_USER_SRP_AUTH
         UserPoolId: !Ref CharlyTeamAppUserPool 
 
+    CharlyTeamBiotestImagesBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: charly-team-api-dev-biotest-images-bucket
+
   Outputs:
     UserPoolClientId:
       Value: !Ref CharlyTeamAppUserPoolClient
