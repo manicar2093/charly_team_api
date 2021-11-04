@@ -1,6 +1,8 @@
 package main
 
 import (
+	"strings"
+
 	"github.com/go-rel/rel"
 	"github.com/go-rel/rel/where"
 	"github.com/manicar2093/charly_team_api/apperrors"
@@ -42,7 +44,10 @@ func FindUserLikeEmailOrNameOrLastName(
 	if !ok {
 		return nil, apperrors.ValidationError{Field: "data_to_search", Validation: "required"}
 	}
-	filter := where.Like("email", "%"+dataToSearch+"%").OrLike("name", "%"+dataToSearch+"%").OrLike("last_name", "%"+dataToSearch+"%")
+
+	dataToSearch = strings.ToLower(dataToSearch)
+
+	filter := where.Like("LOWER(email)", "%"+dataToSearch+"%").OrLike("LOWER(name)", "%"+dataToSearch+"%").OrLike("LOWER(last_name)", "%"+dataToSearch+"%")
 
 	var usersFound []entities.User
 
