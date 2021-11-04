@@ -17,7 +17,7 @@ type BiotestDetails struct {
 }
 
 type BiotestComparisionResponse struct {
-	FirstBiotest       entities.Biotest `json:"first_biotest,omitempty"`
-	LastBiotest        entities.Biotest `json:"last_biotest,omitempty"`
-	AllBiotestsDetails []BiotestDetails `json:"all_biotests_details,omitempty"`
+	FirstBiotest       *entities.Biotest `json:"first_biotest,omitempty"`
+	LastBiotest        *entities.Biotest `json:"last_biotest,omitempty"`
+	AllBiotestsDetails []BiotestDetails  `json:"all_biotests_details,omitempty"`
 }

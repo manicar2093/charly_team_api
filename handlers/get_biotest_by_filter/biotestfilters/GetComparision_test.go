@@ -328,3 +328,55 @@ func (c *GetComparisionTest) TestGetComparision_ErrorLastBiotest() {
 	c.Equal(err.Error(), c.ordinaryError.Error())
 
 }
+
+func (c *GetComparisionTest) TestGetComparision_LastBiotestNotFound() {
+
+	userUUIDRequest := "an-uuid"
+	userID := int32(1)
+
+	request := map[string]interface{}{
+		"user_uuid": userUUIDRequest,
+	}
+	biotestResponses := []entities.Biotest{
+		{ID: 1, BiotestUUID: "uuid1", CreatedAt: time.Now()},
+		{ID: 2, BiotestUUID: "uuid2", CreatedAt: time.Now()},
+	}
+	biotestDetails := []BiotestDetails{
+		{BiotestUUID: "uuid1", CreatedAt: time.Now()},
+		{BiotestUUID: "uuid2", CreatedAt: time.Now()},
+	}
+
+	c.repo.ExpectFind(
+		where.Eq("user_uuid", userUUIDRequest),
+	).Result(
+		entities.User{
+			ID:       userID,
+			UserUUID: userUUIDRequest,
+		},
+	)
+
+	c.repo.ExpectFindAll(
+		where.Eq("customer_id", userID),
+		rel.Select("biotest_uuid", "created_at").From(entities.BiotestTable),
+	).Result(biotestDetails)
+
+	c.repo.ExpectFind(
+		where.Eq("customer_id", userID),
+		sort.Asc("created_at"),
+	).Result(biotestResponses[0])
+
+	c.repo.ExpectFind(
+		where.Eq("customer_id", userID),
+		sort.Desc("created_at"),
+	).Error(rel.ErrNotFound)
+
+	c.filterParams.Values = request
+
+	got, err := GetBiotestComparision(&c.filterParams)
+
+	c.Nil(err, "return an error")
+
+	gotBiotestComparitionData := got.(BiotestComparisionResponse)
+	c.Nil(gotBiotestComparitionData.LastBiotest, "Should not be lastBiotest data")
+
+}

@@ -53,9 +53,10 @@ func GetBiotestComparision(params *filters.FilterParameters) (interface{}, error
 		}
 	}
 
+	comparisionData.FirstBiotest = &entities.Biotest{}
 	err = params.Repo.Find(
 		params.Ctx,
-		&comparisionData.FirstBiotest,
+		comparisionData.FirstBiotest,
 		where.Eq("customer_id", userID),
 		sort.Asc("created_at"),
 	)
@@ -64,15 +65,19 @@ func GetBiotestComparision(params *filters.FilterParameters) (interface{}, error
 		return nil, err
 	}
 
+	comparisionData.LastBiotest = &entities.Biotest{}
 	err = params.Repo.Find(
 		params.Ctx,
-		&comparisionData.LastBiotest,
+		comparisionData.LastBiotest,
 		where.Eq("customer_id", userID),
 		sort.Desc("created_at"),
 	)
 
-	if _, ok := err.(rel.NotFoundError); err != nil && !ok {
-		return nil, err
+	if err != nil {
+		if _, ok := err.(rel.NotFoundError); !ok {
+			return nil, err
+		}
+		comparisionData.LastBiotest = nil
 	}
 
 	return comparisionData, nil
