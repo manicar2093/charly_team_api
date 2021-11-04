@@ -1,3 +1,9 @@
+## v0.39.0 (2021-11-04)
+
+### Feat
+
+- Add s3 resource form biotest images (#124)
+
 ## v0.38.0 (2021-11-04)
 
 ### Feat
