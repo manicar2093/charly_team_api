@@ -1,3 +1,9 @@
+## v0.38.0 (2021-11-04)
+
+### Feat
+
+- Change code to not return last biotest if not found (#123)
+
 ## v0.37.1 (2021-11-04)
 
 ### Fix
