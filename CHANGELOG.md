@@ -1,3 +1,9 @@
+## v0.40.0 (2021-11-15)
+
+### Feat
+
+- Add cors config into serverles.yml (#126)
+
 ## v0.39.0 (2021-11-04)
 
 ### Feat
