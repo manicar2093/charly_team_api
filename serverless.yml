@@ -136,6 +136,22 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: charly-team-api-dev-biotest-images-bucket
+        CorsConfiguration:
+          CorsRules:
+            - AllowedHeaders:
+              - '*'
+              AllowedMethods:
+                - GET
+                - PUT
+                - POST
+              AllowedOrigins:
+                - '*'
+              ExposedHeaders:
+
+                - Date
+              Id: BasicCORSRule
+              MaxAge: 3600
+            
 
   Outputs:
     UserPoolClientId:
