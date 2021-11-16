@@ -9,3 +9,10 @@ func ValidateIntSQLValid(ID int64) null.Int {
 	}
 	return null.IntFrom(ID)
 }
+
+func ValidateStringSQLValid(value string) null.String {
+	if value == "" {
+		return null.NewString(value, false)
+	}
+	return null.NewString(value, true)
+}

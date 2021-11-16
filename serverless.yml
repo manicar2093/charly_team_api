@@ -90,6 +90,9 @@ functions:
       - cognitoUserPool:
           pool: UserPool
           trigger: PreTokenGeneration
+  
+  save_biotest_images:
+    handler: bin/save_biotest_images
 
 # you can add CloudFormation resource templates here
 resources:
