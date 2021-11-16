@@ -1,3 +1,9 @@
+## v0.41.0 (2021-11-16)
+
+### Feat
+
+- Add handler to save biotest images (#128)
+
 ## v0.40.0 (2021-11-15)
 
 ### Feat
