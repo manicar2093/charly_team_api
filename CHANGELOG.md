@@ -1,3 +1,9 @@
+## v0.43.1 (2021-11-26)
+
+### Fix
+
+- Remove lowercase required on serverless (#133)
+
 ## v0.43.0 (2021-11-26)
 
 ### Feat
