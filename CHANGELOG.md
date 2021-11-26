@@ -1,3 +1,9 @@
+## v0.42.0 (2021-11-26)
+
+### Feat
+
+- Add ordering on AllBiotestDetails
+
 ## v0.41.0 (2021-11-16)
 
 ### Feat
