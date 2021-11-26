@@ -1,6 +1,7 @@
 package biotestfilters
 
 import (
+	"github.com/go-rel/rel/sort"
 	"github.com/go-rel/rel/where"
 	"github.com/manicar2093/charly_team_api/db/entities"
 	"github.com/manicar2093/charly_team_api/db/filters"
@@ -38,6 +39,7 @@ func GetAllUserBiotest(params *filters.FilterParameters) (interface{}, error) {
 		pageSort.SetFiltersQueries(
 			where.Eq("customer_id", userFound.ID),
 			BiotestAsCatalogQuery,
+			sort.Asc("created_at"),
 		)
 		return params.Paginator.CreatePagination(
 			params.Ctx,
@@ -50,6 +52,7 @@ func GetAllUserBiotest(params *filters.FilterParameters) (interface{}, error) {
 	var biotests []entities.Biotest
 	pageSort.SetFiltersQueries(
 		where.Eq("customer_id", userFound.ID),
+		sort.Asc("created_at"),
 	)
 	return params.Paginator.CreatePagination(
 		params.Ctx,
