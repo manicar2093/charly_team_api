@@ -11,6 +11,10 @@ import (
 	"github.com/manicar2093/charly_team_api/db/filters"
 )
 
+var (
+	BiotestAsCatalogQuery = rel.Select("biotest_uuid", "created_at").From(entities.BiotestTable)
+)
+
 func GetBiotestComparision(params *filters.FilterParameters) (interface{}, error) {
 	valuesAsMap := params.Values.(map[string]interface{})
 
@@ -41,6 +45,7 @@ func GetBiotestComparision(params *filters.FilterParameters) (interface{}, error
 		&comparisionData.AllBiotestsDetails,
 		where.Eq("customer_id", userID),
 		BiotestAsCatalogQuery,
+		sort.Asc("created_at"),
 	)
 
 	if err != nil {

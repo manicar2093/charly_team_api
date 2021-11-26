@@ -77,7 +77,8 @@ func (c *GetComparisionTest) TestGetComparision() {
 
 	c.repo.ExpectFindAll(
 		where.Eq("customer_id", userID),
-		rel.Select("biotest_uuid", "created_at").From(entities.BiotestTable),
+		BiotestAsCatalogQuery,
+		sort.Asc("created_at"),
 	).Result(biotestDetails)
 
 	c.repo.ExpectFind(
@@ -186,7 +187,8 @@ func (c *GetComparisionTest) TestGetComparision_UserHasNoBiotest() {
 
 	c.repo.ExpectFindAll(
 		where.Eq("customer_id", userID),
-		rel.Select("biotest_uuid", "created_at").From(entities.BiotestTable),
+		BiotestAsCatalogQuery,
+		sort.Asc("created_at"),
 	).Result(biotestDetails)
 
 	c.filterParams.Values = request
@@ -222,7 +224,8 @@ func (c *GetComparisionTest) TestGetComparision_ErrorBiotestDetails() {
 
 	c.repo.ExpectFindAll(
 		where.Eq("customer_id", userID),
-		rel.Select("biotest_uuid", "created_at").From(entities.BiotestTable),
+		BiotestAsCatalogQuery,
+		sort.Asc("created_at"),
 	).Error(c.ordinaryError)
 
 	c.filterParams.Values = request
@@ -260,7 +263,8 @@ func (c *GetComparisionTest) TestGetComparision_ErrorFirstBiotest() {
 
 	c.repo.ExpectFindAll(
 		where.Eq("customer_id", userID),
-		rel.Select("biotest_uuid", "created_at").From(entities.BiotestTable),
+		BiotestAsCatalogQuery,
+		sort.Asc("created_at"),
 	).Result(biotestDetails)
 
 	c.repo.ExpectFind(
@@ -306,7 +310,8 @@ func (c *GetComparisionTest) TestGetComparision_ErrorLastBiotest() {
 
 	c.repo.ExpectFindAll(
 		where.Eq("customer_id", userID),
-		rel.Select("biotest_uuid", "created_at").From(entities.BiotestTable),
+		BiotestAsCatalogQuery,
+		sort.Asc("created_at"),
 	).Result(biotestDetails)
 
 	c.repo.ExpectFind(
@@ -357,7 +362,8 @@ func (c *GetComparisionTest) TestGetComparision_LastBiotestNotFound() {
 
 	c.repo.ExpectFindAll(
 		where.Eq("customer_id", userID),
-		rel.Select("biotest_uuid", "created_at").From(entities.BiotestTable),
+		BiotestAsCatalogQuery,
+		sort.Asc("created_at"),
 	).Result(biotestDetails)
 
 	c.repo.ExpectFind(
