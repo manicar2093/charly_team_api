@@ -8,6 +8,7 @@ import (
 
 	"github.com/go-rel/rel"
 	"github.com/go-rel/rel/reltest"
+	"github.com/go-rel/rel/sort"
 	"github.com/go-rel/rel/where"
 	"github.com/manicar2093/charly_team_api/apperrors"
 	"github.com/manicar2093/charly_team_api/db/entities"
@@ -102,7 +103,7 @@ func (c *GetAllUserBiotestTest) TestGetAllUserBiotest() {
 	)
 
 	var biotestHolder []entities.Biotest
-	pageSort.SetFiltersQueries(where.Eq("customer_id", userID))
+	pageSort.SetFiltersQueries(where.Eq("customer_id", userID), sort.Asc("created_at"))
 	c.paginator.On(
 		"CreatePagination",
 		c.ctx,
@@ -173,6 +174,7 @@ func (c *GetAllUserBiotestTest) TestGetAllUserBiotest_AsCatalog() {
 	pageSort.SetFiltersQueries(
 		where.Eq("customer_id", userID),
 		BiotestAsCatalogQuery,
+		sort.Asc("created_at"),
 	)
 	c.paginator.On(
 		"CreatePagination",
