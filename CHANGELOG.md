@@ -1,3 +1,9 @@
+## v0.43.0 (2021-11-26)
+
+### Feat
+
+- Add ordering on get all user biotest (#131)
+
 ## v0.42.0 (2021-11-26)
 
 ### Feat
