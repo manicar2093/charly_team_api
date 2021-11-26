@@ -15,6 +15,10 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
+func TestMain(t *testing.T) {
+	suite.Run(t, new(MainTests))
+}
+
 type MainTests struct {
 	suite.Suite
 	userService mocks.UserService
@@ -53,9 +57,9 @@ func (c *MainTests) TestRegistryNewUser_Admin() {
 	c.Equal(res.StatusCode, http.StatusCreated, "http status is not correct")
 	c.Equal(res.Status, http.StatusText(http.StatusCreated), "http status is not correct")
 
-	createUserResponse := res.Body.(*models.UserCreationResponse)
+	createUserResponse := res.Body.(*entities.User)
 
-	c.Equal(createUserResponse.UserID, c.userCreated.ID, "unexpected id user response")
+	c.Equal(createUserResponse.ID, c.userCreated.ID, "unexpected id user response")
 
 }
 
@@ -136,9 +140,9 @@ func (c *MainTests) TestRegistryNewUser_Customer() {
 	c.Equal(res.StatusCode, http.StatusCreated, "http status is not correct")
 	c.Equal(res.Status, http.StatusText(http.StatusCreated), "http status is not correct")
 
-	createUserResponse := res.Body.(*models.UserCreationResponse)
+	createUserResponse := res.Body.(*entities.User)
 
-	c.Equal(createUserResponse.UserID, c.userCreated.ID, "unexpected id user response")
+	c.Equal(createUserResponse.ID, c.userCreated.ID, "unexpected id user response")
 
 }
 
@@ -172,8 +176,4 @@ func (c *MainTests) TestRegistryNewUser_CustomerNoValidReq() {
 	c.True(ok, "error parsing error message")
 	c.Equal(len(errorGot), 3, "error message should not be empty")
 
-}
-
-func TestMain(t *testing.T) {
-	suite.Run(t, new(MainTests))
 }

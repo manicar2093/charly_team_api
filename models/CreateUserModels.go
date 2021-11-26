@@ -2,8 +2,6 @@ package models
 
 import (
 	"time"
-
-	"github.com/manicar2093/charly_team_api/db/entities"
 )
 
 type CreateUserRequest struct {
@@ -26,17 +24,5 @@ func (c CreateUserRequest) GetCustomerValidations() interface{} {
 		GenderID:      c.GenderID,
 		BoneDensityID: c.BoneDensityID,
 		BiotypeID:     c.BiotypeID,
-	}
-}
-
-type UserCreationResponse struct {
-	UserID   int32  `json:"user_id,omitempty"`
-	UserUUID string `json:"user_uuid,omitempty"`
-}
-
-func CreateUserCreationResponseFromUser(user *entities.User) *UserCreationResponse {
-	return &UserCreationResponse{
-		UserID:   user.ID,
-		UserUUID: user.UserUUID,
 	}
 }

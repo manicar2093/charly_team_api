@@ -47,7 +47,7 @@ func CreateLambdaHandlerWDependencies(
 
 		return models.CreateResponse(
 			http.StatusCreated,
-			models.CreateUserCreationResponseFromUser(userCreated),
+			userCreated,
 		), nil
 
 	}
