@@ -1,3 +1,9 @@
+## v0.44.0 (2021-11-26)
+
+### Feat
+
+- Add user data return on response (#135)
+
 ## v0.43.1 (2021-11-26)
 
 ### Fix
