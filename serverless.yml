@@ -118,7 +118,7 @@ resources:
         Policies:
           PasswordPolicy:
               MinimumLength: 8
-              RequireLowercase: true
+              RequireLowercase: false
               RequireNumbers: true
               RequireSymbols: true
               RequireUppercase: true
