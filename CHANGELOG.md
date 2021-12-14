@@ -1,3 +1,9 @@
+## v0.45.0 (2021-12-14)
+
+### Feat
+
+- Add TotalPages to Paginator struct (#139)
+
 ## v0.44.0 (2021-11-26)
 
 ### Feat
