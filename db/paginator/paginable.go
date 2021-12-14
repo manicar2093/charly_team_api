@@ -2,42 +2,11 @@ package paginator
 
 import (
 	"context"
-	"fmt"
-	"net/http"
 
 	"github.com/go-rel/rel"
 	"github.com/manicar2093/charly_team_api/config"
 	"github.com/manicar2093/charly_team_api/models"
 )
-
-type Paginable interface {
-	// Deprecated: CreatePaginator is deprecated. Use CreatePagination instead
-	CreatePaginator(
-		ctx context.Context,
-		tableName string,
-		holder interface{},
-		pageNumber int,
-		queries ...rel.Querier,
-	) (*models.Paginator, error)
-	CreatePagination(
-		ctx context.Context,
-		tableName string,
-		holder interface{},
-		pageSort *PageSort,
-	) (*models.Paginator, error)
-}
-
-type PageError struct {
-	PageNumber int
-}
-
-func (c PageError) Error() string {
-	return fmt.Sprintf("Page %v does not exists", c.PageNumber)
-}
-
-func (c PageError) StatusCode() int {
-	return http.StatusBadRequest
-}
 
 type PaginableImpl struct {
 	repo rel.Repository
@@ -130,6 +99,7 @@ func (c PaginableImpl) CreatePagination(
 		PreviousPage: page - 1,
 		NextPage:     calculateNextPage(page, totalPages),
 		Data:         holder,
+		TotalEntries: config.PageSize,
 	}, nil
 }
 
