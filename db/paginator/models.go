@@ -1,6 +1,9 @@
 package paginator
 
 import (
+	"fmt"
+	"net/http"
+
 	"github.com/go-rel/rel"
 	"github.com/go-rel/rel/sort"
 	"github.com/manicar2093/charly_team_api/config"
@@ -73,4 +76,16 @@ func (c *PageSort) GetItemsPerPage() int {
 }
 func (c *PageSort) GetPage() int {
 	return int(c.Page)
+}
+
+type PageError struct {
+	PageNumber int
+}
+
+func (c PageError) Error() string {
+	return fmt.Sprintf("Page %v does not exists", c.PageNumber)
+}
+
+func (c PageError) StatusCode() int {
+	return http.StatusBadRequest
 }

@@ -2,6 +2,7 @@ package paginator
 
 import (
 	"context"
+	"os"
 	"testing"
 	"time"
 
@@ -10,6 +11,7 @@ import (
 	"github.com/go-rel/rel/where"
 	"github.com/manicar2093/charly_team_api/config"
 	"github.com/manicar2093/charly_team_api/db/entities"
+	"github.com/manicar2093/charly_team_api/testfunc"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -51,6 +53,7 @@ func TestPaginator(t *testing.T) {
 	assert.Equal(t, page.NextPage, nextPageExpected, "next page is not correct")
 	assert.Equal(t, page.PreviousPage, previousPageExpect, "previous page is not correct")
 	assert.Equal(t, page.CurrentPage, pageRequested, "current page is not correct")
+	assert.Equal(t, page.TotalEntries, config.PageSize, "total entries has no correct info")
 
 }
 
@@ -90,6 +93,7 @@ func TestPaginator_LastPage(t *testing.T) {
 	assert.Equal(t, nextPageExpected, page.NextPage, "next page is not correct")
 	assert.Equal(t, previousPageExpect, page.PreviousPage, "previous page is not correct")
 	assert.Equal(t, pageRequested, page.CurrentPage, "current page is not correct")
+	assert.Equal(t, page.TotalEntries, config.PageSize, "total entries has no correct info")
 
 }
 
@@ -156,7 +160,13 @@ func TestPaginator_ReturnOnePageIfEntriesLessThanPageSize(t *testing.T) {
 	assert.Equal(t, page.NextPage, nextPageExpected, "next page is not correct")
 	assert.Equal(t, page.PreviousPage, previousPageExpect, "previous page is not correct")
 	assert.Equal(t, page.CurrentPage, pageRequested, "current page is not correct")
+	assert.Equal(t, page.TotalEntries, config.PageSize, "total entries has no correct info")
 
+}
+
+func TestMain(m *testing.M) {
+	testfunc.LoadEnvFileOrPanic("../../.env")
+	os.Exit(m.Run())
 }
 
 func TestPaginableImpl_CreatePagination__WFilters(t *testing.T) {
@@ -202,6 +212,7 @@ func TestPaginableImpl_CreatePagination__WFilters(t *testing.T) {
 	assert.Equal(t, page.NextPage, nextPageExpected, "next page is not correct")
 	assert.Equal(t, page.PreviousPage, previousPageExpect, "previous page is not correct")
 	assert.Equal(t, page.CurrentPage, pageRequested, "current page is not correct")
+	assert.Equal(t, page.TotalEntries, config.PageSize, "total entries has no correct info")
 
 }
 
@@ -241,6 +252,7 @@ func TestPaginableImpl_CreatePagination__WOFilters(t *testing.T) {
 	assert.Equal(t, page.NextPage, nextPageExpected, "next page is not correct")
 	assert.Equal(t, page.PreviousPage, previousPageExpect, "previous page is not correct")
 	assert.Equal(t, page.CurrentPage, pageRequested, "current page is not correct")
+	assert.Equal(t, page.TotalEntries, config.PageSize, "total entries has no correct info")
 
 }
 
@@ -280,6 +292,7 @@ func TestPaginator_CreatePagination__LastPage(t *testing.T) {
 	assert.Equal(t, nextPageExpected, page.NextPage, "next page is not correct")
 	assert.Equal(t, previousPageExpect, page.PreviousPage, "previous page is not correct")
 	assert.Equal(t, pageRequested, page.CurrentPage, "current page is not correct")
+	assert.Equal(t, page.TotalEntries, config.PageSize, "total entries has no correct info")
 
 }
 
@@ -346,5 +359,6 @@ func TestPaginator_CreatePagination__ReturnOnePageIfEntriesLessThanPageSize(t *t
 	assert.Equal(t, page.NextPage, nextPageExpected, "next page is not correct")
 	assert.Equal(t, page.PreviousPage, previousPageExpect, "previous page is not correct")
 	assert.Equal(t, page.CurrentPage, pageRequested, "current page is not correct")
+	assert.Equal(t, page.TotalEntries, config.PageSize, "total entries has no correct info")
 
 }
