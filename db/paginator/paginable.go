@@ -84,8 +84,10 @@ func (c PaginableImpl) CreatePagination(
 
 	pageLimitQuery := rel.Limit(pageSize)
 	pageOffsetQuery := rel.Offset(createOffsetValue(pageSize, page))
+	sorting := pageSort.GetSortQueries()
 	queries := pageSort.GetFiltersQueries()
 
+	queries = append(queries, sorting...)
 	queries = append(queries, pageLimitQuery, pageOffsetQuery)
 
 	err = c.repo.FindAll(ctx, holder, queries...)
