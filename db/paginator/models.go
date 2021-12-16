@@ -1,6 +1,7 @@
 package paginator
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -11,7 +12,7 @@ import (
 
 // PageSort
 type PageSort struct {
-	Page         float64  `json:"page,omitempty"`
+	Page         float64  `json:"page_number,omitempty"`
 	ItemsPerPage float64  `json:"itemsPerPage,omitempty"`
 	SortBy       []string `json:"sortBy,omitempty"`
 	SortDesc     []bool   `json:"sortDesc,omitempty"`
@@ -23,25 +24,16 @@ type PageSort struct {
 }
 
 func CreatePageSortFromMap(values map[string]interface{}) *PageSort {
-	page, _ := values["page_number"].(float64)
-	items, _ := values["itemsPerPage"].(float64)
-	sortBy, _ := values["sortBy"].([]string)
-	sortDesc, _ := values["sortDesc"].([]bool)
-	groupBy, _ := values["groupBy"].([]string)
-	groupDesc, _ := values["groupDesc"].([]bool)
-	mustSort, _ := values["mustSort"].(bool)
-	multiSort, _ := values["multiSort"].(bool)
+	var res PageSort
 
-	return &PageSort{
-		Page:         page,
-		ItemsPerPage: items,
-		SortBy:       sortBy,
-		SortDesc:     sortDesc,
-		GroupBy:      groupBy,
-		GroupDesc:    groupDesc,
-		MustSort:     mustSort,
-		MultiSort:    multiSort,
+	b, e := json.Marshal(values)
+	if e != nil {
+		panic(e)
 	}
+	if e := json.Unmarshal(b, &res); e != nil {
+		panic(e)
+	}
+	return &res
 }
 
 func (c *PageSort) SetFiltersQueries(queries ...rel.Querier) {
