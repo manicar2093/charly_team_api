@@ -1,3 +1,9 @@
+## v0.47.0 (2021-12-16)
+
+### Feat
+
+- Change way to get data to create pageSort (#144)
+
 ## v0.46.0 (2021-12-16)
 
 ### Feat
