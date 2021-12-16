@@ -1,3 +1,9 @@
+## v0.46.0 (2021-12-16)
+
+### Feat
+
+- Add sort queries on paginator (#142)
+
 ## v0.45.0 (2021-12-14)
 
 ### Feat
