@@ -179,7 +179,11 @@ func TestPaginableImpl_CreatePagination__WFilters(t *testing.T) {
 	nextPageExpected := 2
 	totalPagesExpected := 100
 
-	pageSort := PageSort{Page: float64(pageRequested)}
+	pageSort := PageSort{
+		Page:     float64(pageRequested),
+		SortBy:   []string{"field_one", "field_two"},
+		SortDesc: []bool{true, false},
+	}
 	userUUIDFilter := where.Eq("user_uuid", "an_uuid")
 	userCreatedAtFilter := where.Eq("created_at", time.Now())
 	pageSort.SetFiltersQueries(userUUIDFilter, userCreatedAtFilter)
@@ -192,6 +196,8 @@ func TestPaginableImpl_CreatePagination__WFilters(t *testing.T) {
 	repo.ExpectFindAll(
 		userUUIDFilter,
 		userCreatedAtFilter,
+		rel.NewSortDesc("field_one"),
+		rel.NewSortAsc("field_two"),
 		rel.Limit(config.PageSize),
 		rel.Offset(
 			createOffsetValue(
