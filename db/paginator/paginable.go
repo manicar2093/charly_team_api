@@ -6,7 +6,6 @@ import (
 
 	"github.com/go-rel/rel"
 	"github.com/manicar2093/charly_team_api/config"
-	"github.com/manicar2093/charly_team_api/models"
 )
 
 type PaginableImpl struct {
@@ -23,7 +22,7 @@ func (c PaginableImpl) CreatePaginator(
 	holder interface{},
 	pageNumber int,
 	queries ...rel.Querier,
-) (*models.Paginator, error) {
+) (*Paginator, error) {
 
 	pageLimitQuery := rel.Limit(config.PageSize)
 	pageOffsetQuery := rel.Offset(createOffsetValue(config.PageSize, pageNumber))
@@ -50,7 +49,7 @@ func (c PaginableImpl) CreatePaginator(
 		return nil, err
 	}
 
-	return &models.Paginator{
+	return &Paginator{
 		TotalPages:   totalPages,
 		CurrentPage:  pageNumber,
 		PreviousPage: pageNumber - 1,
@@ -64,7 +63,7 @@ func (c PaginableImpl) CreatePagination(
 	tableName string,
 	holder interface{},
 	pageSort *PageSort,
-) (*models.Paginator, error) {
+) (*Paginator, error) {
 	pageSize := pageSort.GetItemsPerPage()
 	page := pageSort.GetPage()
 
@@ -96,7 +95,7 @@ func (c PaginableImpl) CreatePagination(
 		return nil, err
 	}
 
-	return &models.Paginator{
+	return &Paginator{
 		TotalPages:   totalPages,
 		CurrentPage:  page,
 		PreviousPage: page - 1,

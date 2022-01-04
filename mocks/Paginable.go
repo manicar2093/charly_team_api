@@ -5,10 +5,8 @@ package mocks
 import (
 	context "context"
 
-	models "github.com/manicar2093/charly_team_api/models"
-	mock "github.com/stretchr/testify/mock"
-
 	paginator "github.com/manicar2093/charly_team_api/db/paginator"
+	mock "github.com/stretchr/testify/mock"
 
 	rel "github.com/go-rel/rel"
 )
@@ -19,15 +17,15 @@ type Paginable struct {
 }
 
 // CreatePagination provides a mock function with given fields: ctx, tableName, holder, pageSort
-func (_m *Paginable) CreatePagination(ctx context.Context, tableName string, holder interface{}, pageSort *paginator.PageSort) (*models.Paginator, error) {
+func (_m *Paginable) CreatePagination(ctx context.Context, tableName string, holder interface{}, pageSort *paginator.PageSort) (*paginator.Paginator, error) {
 	ret := _m.Called(ctx, tableName, holder, pageSort)
 
-	var r0 *models.Paginator
-	if rf, ok := ret.Get(0).(func(context.Context, string, interface{}, *paginator.PageSort) *models.Paginator); ok {
+	var r0 *paginator.Paginator
+	if rf, ok := ret.Get(0).(func(context.Context, string, interface{}, *paginator.PageSort) *paginator.Paginator); ok {
 		r0 = rf(ctx, tableName, holder, pageSort)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*models.Paginator)
+			r0 = ret.Get(0).(*paginator.Paginator)
 		}
 	}
 
@@ -42,7 +40,7 @@ func (_m *Paginable) CreatePagination(ctx context.Context, tableName string, hol
 }
 
 // CreatePaginator provides a mock function with given fields: ctx, tableName, holder, pageNumber, queries
-func (_m *Paginable) CreatePaginator(ctx context.Context, tableName string, holder interface{}, pageNumber int, queries ...rel.Querier) (*models.Paginator, error) {
+func (_m *Paginable) CreatePaginator(ctx context.Context, tableName string, holder interface{}, pageNumber int, queries ...rel.Querier) (*paginator.Paginator, error) {
 	_va := make([]interface{}, len(queries))
 	for _i := range queries {
 		_va[_i] = queries[_i]
@@ -52,12 +50,12 @@ func (_m *Paginable) CreatePaginator(ctx context.Context, tableName string, hold
 	_ca = append(_ca, _va...)
 	ret := _m.Called(_ca...)
 
-	var r0 *models.Paginator
-	if rf, ok := ret.Get(0).(func(context.Context, string, interface{}, int, ...rel.Querier) *models.Paginator); ok {
+	var r0 *paginator.Paginator
+	if rf, ok := ret.Get(0).(func(context.Context, string, interface{}, int, ...rel.Querier) *paginator.Paginator); ok {
 		r0 = rf(ctx, tableName, holder, pageNumber, queries...)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*models.Paginator)
+			r0 = ret.Get(0).(*paginator.Paginator)
 		}
 	}
 
