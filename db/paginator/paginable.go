@@ -2,6 +2,7 @@ package paginator
 
 import (
 	"context"
+	"reflect"
 
 	"github.com/go-rel/rel"
 	"github.com/manicar2093/charly_team_api/config"
@@ -101,7 +102,8 @@ func (c PaginableImpl) CreatePagination(
 		PreviousPage: page - 1,
 		NextPage:     calculateNextPage(page, totalPages),
 		Data:         holder,
-		TotalEntries: config.PageSize,
+		TotalEntries: getSliceCount(holder),
+		PageSize:     config.PageSize,
 	}, nil
 }
 
@@ -114,4 +116,21 @@ func calculateNextPage(pageNumber, totalPages int) int {
 		return 1
 	}
 	return pageNumber + 1
+}
+
+func getSliceCount(data interface{}) int {
+	val := reflect.ValueOf(data)
+
+	isSlice := func(val reflect.Value) int {
+		if val.Kind() == reflect.Slice {
+			return val.Len()
+		}
+		return 0
+	}
+	if isPtr := val.Kind() == reflect.Ptr; isPtr {
+		return isSlice(reflect.Indirect(val))
+	}
+
+	return isSlice(val)
+
 }
