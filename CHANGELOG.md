@@ -1,3 +1,9 @@
+## v0.48.0 (2022-01-04)
+
+### Feat
+
+- Add total entries pagination (#145)
+
 ## v0.47.0 (2021-12-16)
 
 ### Feat
