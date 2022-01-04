@@ -8,8 +8,22 @@ import (
 )
 
 type BiotestRepository interface {
-	FindBiotestByUUID(ctx context.Context, biotestUUID string) (*entities.Biotest, error)
-	GetAllUserBiotestByUserUUID(ctx context.Context, userUUID string) (*paginator.Paginator, error)
-	GetAllUserBiotestByUserUUIDAsCatalog(ctx context.Context, userUUID string) (*paginator.Paginator, error)
-	GetComparitionDataByUserUUID(ctx context.Context, userUUID string) (*BiotestComparisionResponse, error)
+	FindBiotestByUUID(
+		ctx context.Context,
+		biotestUUID string,
+	) (*entities.Biotest, error)
+	GetAllUserBiotestByUserUUID(
+		ctx context.Context,
+		pageSort *paginator.PageSort,
+		userUUID string,
+	) (*paginator.Paginator, error)
+	GetAllUserBiotestByUserUUIDAsCatalog(
+		ctx context.Context,
+		pageSort *paginator.PageSort,
+		userUUID string,
+	) (*paginator.Paginator, error)
+	GetComparitionDataByUserUUID(
+		ctx context.Context,
+		userUUID string,
+	) (*BiotestComparisionResponse, error)
 }
