@@ -15,7 +15,6 @@ import (
 	"github.com/manicar2093/charly_team_api/db/filters"
 	"github.com/manicar2093/charly_team_api/db/paginator"
 	"github.com/manicar2093/charly_team_api/mocks"
-	"github.com/manicar2093/charly_team_api/models"
 	"github.com/manicar2093/charly_team_api/validators"
 	"github.com/stretchr/testify/suite"
 )
@@ -78,7 +77,7 @@ func (c *GetAllUserBiotestTest) TestGetAllUserBiotest() {
 		{ID: 2, BiotestUUID: "uuid2", CreatedAt: time.Now()},
 	}
 
-	pageResponse := &models.Paginator{
+	pageResponse := &paginator.Paginator{
 		TotalPages:   2,
 		CurrentPage:  pageNumberAsInt,
 		PreviousPage: 0,
@@ -116,7 +115,7 @@ func (c *GetAllUserBiotestTest) TestGetAllUserBiotest() {
 
 	c.Nil(err, "return an error")
 
-	page, ok := got.(*models.Paginator)
+	page, ok := got.(*paginator.Paginator)
 
 	c.True(ok, "unexpected answare type")
 	c.Equal(2, len(page.Data.([]entities.Biotest)), "Wrong data len")
@@ -146,7 +145,7 @@ func (c *GetAllUserBiotestTest) TestGetAllUserBiotest_AsCatalog() {
 		{BiotestUUID: "uuid2", CreatedAt: time.Now()},
 	}
 
-	pageResponse := &models.Paginator{
+	pageResponse := &paginator.Paginator{
 		TotalPages:   2,
 		CurrentPage:  pageNumberAsInt,
 		PreviousPage: 0,
@@ -188,7 +187,7 @@ func (c *GetAllUserBiotestTest) TestGetAllUserBiotest_AsCatalog() {
 
 	c.Nil(err, "return an error")
 
-	page, ok := got.(*models.Paginator)
+	page, ok := got.(*paginator.Paginator)
 
 	c.True(ok, "unexpected answare type")
 	c.Equal(2, len(page.Data.([]BiotestDetails)), "Wrong data len")

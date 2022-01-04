@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/go-rel/rel"
-	"github.com/manicar2093/charly_team_api/models"
 )
 
 type Paginable interface {
@@ -15,11 +14,11 @@ type Paginable interface {
 		holder interface{},
 		pageNumber int,
 		queries ...rel.Querier,
-	) (*models.Paginator, error)
+	) (*Paginator, error)
 	CreatePagination(
 		ctx context.Context,
 		tableName string,
 		holder interface{},
 		pageSort *PageSort,
-	) (*models.Paginator, error)
+	) (*Paginator, error)
 }

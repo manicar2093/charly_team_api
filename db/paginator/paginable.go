@@ -2,10 +2,10 @@ package paginator
 
 import (
 	"context"
+	"reflect"
 
 	"github.com/go-rel/rel"
 	"github.com/manicar2093/charly_team_api/config"
-	"github.com/manicar2093/charly_team_api/models"
 )
 
 type PaginableImpl struct {
@@ -22,7 +22,7 @@ func (c PaginableImpl) CreatePaginator(
 	holder interface{},
 	pageNumber int,
 	queries ...rel.Querier,
-) (*models.Paginator, error) {
+) (*Paginator, error) {
 
 	pageLimitQuery := rel.Limit(config.PageSize)
 	pageOffsetQuery := rel.Offset(createOffsetValue(config.PageSize, pageNumber))
@@ -49,7 +49,7 @@ func (c PaginableImpl) CreatePaginator(
 		return nil, err
 	}
 
-	return &models.Paginator{
+	return &Paginator{
 		TotalPages:   totalPages,
 		CurrentPage:  pageNumber,
 		PreviousPage: pageNumber - 1,
@@ -63,7 +63,7 @@ func (c PaginableImpl) CreatePagination(
 	tableName string,
 	holder interface{},
 	pageSort *PageSort,
-) (*models.Paginator, error) {
+) (*Paginator, error) {
 	pageSize := pageSort.GetItemsPerPage()
 	page := pageSort.GetPage()
 
@@ -95,13 +95,14 @@ func (c PaginableImpl) CreatePagination(
 		return nil, err
 	}
 
-	return &models.Paginator{
+	return &Paginator{
 		TotalPages:   totalPages,
 		CurrentPage:  page,
 		PreviousPage: page - 1,
 		NextPage:     calculateNextPage(page, totalPages),
 		Data:         holder,
-		TotalEntries: config.PageSize,
+		TotalEntries: getSliceCount(holder),
+		PageSize:     config.PageSize,
 	}, nil
 }
 
@@ -114,4 +115,21 @@ func calculateNextPage(pageNumber, totalPages int) int {
 		return 1
 	}
 	return pageNumber + 1
+}
+
+func getSliceCount(data interface{}) int {
+	val := reflect.ValueOf(data)
+
+	isSlice := func(val reflect.Value) int {
+		if val.Kind() == reflect.Slice {
+			return val.Len()
+		}
+		return 0
+	}
+	if isPtr := val.Kind() == reflect.Ptr; isPtr {
+		return isSlice(reflect.Indirect(val))
+	}
+
+	return isSlice(val)
+
 }

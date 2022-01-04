@@ -13,7 +13,6 @@ import (
 	"github.com/manicar2093/charly_team_api/db/filters"
 	"github.com/manicar2093/charly_team_api/db/paginator"
 	"github.com/manicar2093/charly_team_api/mocks"
-	"github.com/manicar2093/charly_team_api/models"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
 )
@@ -216,7 +215,7 @@ func (c *UserFilterTest) TestFindAllUsers() {
 		entities.UserTable,
 		mock.Anything,
 		&pageSort,
-	).Return(&models.Paginator{}, nil)
+	).Return(&paginator.Paginator{}, nil)
 
 	c.filterParams.Values = request
 
@@ -224,7 +223,7 @@ func (c *UserFilterTest) TestFindAllUsers() {
 
 	c.Nil(err, "FindUserByID return an error")
 
-	_, ok := got.(*models.Paginator)
+	_, ok := got.(*paginator.Paginator)
 	c.True(ok, "unexpected answare type")
 
 }
