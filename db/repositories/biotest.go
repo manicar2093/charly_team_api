@@ -84,7 +84,55 @@ func (c *BiotestRepositoryRel) GetComparitionDataByUserUUID(
 	ctx context.Context,
 	userUUID string,
 ) (*BiotestComparisionResponse, error) {
-	panic("not implemented") // TODO: Implement
+	userFound, err := c.findUser(ctx, userUUID)
+	if err != nil {
+		return nil, err
+	}
+
+	biotestsDetails := []BiotestDetails{}
+	c.repo.FindAll(
+		ctx,
+		&biotestsDetails,
+		where.Eq("customer_id", userFound.ID),
+		rel.Select("biotest_uuid", "created_at").From(entities.BiotestTable),
+		sort.Asc("created_at"),
+	)
+
+	if len(biotestsDetails) == 0 {
+		return nil, NotFoundError{Entity: "BiotestComparitionData", Identifier: userUUID}
+	}
+
+	firstBiotest := entities.Biotest{}
+	c.repo.Find(
+		ctx,
+		&firstBiotest,
+		where.Eq("customer_id", userFound.ID),
+		sort.Asc("created_at"),
+	)
+	lastBiotest := entities.Biotest{}
+	err = c.repo.Find(
+		ctx,
+		&lastBiotest,
+		where.Eq("customer_id", userFound.ID),
+		sort.Desc("created_at"),
+	)
+
+	if err != nil {
+		switch err.(type) {
+		case rel.NotFoundError:
+			return &BiotestComparisionResponse{
+				FirstBiotest:       &firstBiotest,
+				AllBiotestsDetails: &biotestsDetails,
+			}, nil
+		}
+		return nil, err
+	}
+
+	return &BiotestComparisionResponse{
+		FirstBiotest:       &firstBiotest,
+		LastBiotest:        &lastBiotest,
+		AllBiotestsDetails: &biotestsDetails,
+	}, nil
 }
 
 func (c *BiotestRepositoryRel) findUser(ctx context.Context, userUUID string) (*entities.User, error) {
