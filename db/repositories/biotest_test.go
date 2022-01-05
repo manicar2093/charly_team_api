@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"context"
+	"fmt"
 	"testing"
 	"time"
 
@@ -23,6 +24,7 @@ func TestBiotestRepository(t *testing.T) {
 type BiotestRepositoryTest struct {
 	suite.Suite
 	paginator         *mocks.Paginable
+	uuidGen           *mocks.UUIDGenerator
 	repo              *reltest.Repository
 	biotestRepository BiotestRepository
 	ctx               context.Context
@@ -32,7 +34,8 @@ type BiotestRepositoryTest struct {
 func (c *BiotestRepositoryTest) SetupTest() {
 	c.repo = reltest.New()
 	c.paginator = &mocks.Paginable{}
-	c.biotestRepository = NewBiotestRepositoryRel(c.repo, c.paginator)
+	c.uuidGen = &mocks.UUIDGenerator{}
+	c.biotestRepository = NewBiotestRepositoryRel(c.repo, c.paginator, c.uuidGen)
 	c.ctx = context.TODO()
 	c.faker = faker.New()
 }
@@ -41,6 +44,7 @@ func (c *BiotestRepositoryTest) TearDownTest() {
 	t := c.T()
 	c.repo.AssertExpectations(t)
 	c.paginator.AssertExpectations(t)
+	c.uuidGen.AssertExpectations(t)
 }
 
 func (c *BiotestRepositoryTest) TestFindBiotestByUUID() {
@@ -309,4 +313,44 @@ func (c *BiotestRepositoryTest) TestGetComparitionDataByUserUUID_LastBiotestNotF
 	c.Nil(err, "should not be an error")
 	c.NotNil(got, "should response with the correct data")
 	c.Nil(got.LastBiotest, "should not be an error las biotest data")
+}
+
+func (c *BiotestRepositoryTest) TestSaveBiotest() {
+	UUIDForBiotest := c.faker.UUID().V4()
+	c.uuidGen.On("New").Return(UUIDForBiotest)
+	biotestToSave := entities.Biotest{}
+	c.faker.Struct().Fill(&biotestToSave)
+	biotestToSave.ID = 0
+	c.repo.ExpectTransaction(func(r *reltest.Repository) {
+		c.repo.ExpectInsert().ForType("entities.Biotest").Return(nil)
+		c.repo.ExpectInsert().ForType("entities.HigherMuscleDensity").Return(nil)
+		c.repo.ExpectInsert().ForType("entities.LowerMuscleDensity").Return(nil)
+		c.repo.ExpectInsert().ForType("entities.SkinFolds").Return(nil)
+	})
+
+	err := c.biotestRepository.SaveBiotest(c.ctx, &biotestToSave)
+
+	c.Nil(err, "should not return an error")
+	c.NotEmpty(biotestToSave.ID, "biotest was not save")
+	c.Equal(UUIDForBiotest, biotestToSave.BiotestUUID, "not correct uuid on biotest")
+
+}
+
+func (c *BiotestRepositoryTest) TestSaveBiotest_InsertError() {
+	UUIDForBiotest := c.faker.UUID().V4()
+	c.uuidGen.On("New").Return(UUIDForBiotest)
+	biotestToSave := entities.Biotest{}
+	c.faker.Struct().Fill(&biotestToSave)
+	biotestToSave.ID = 0
+	c.repo.ExpectTransaction(func(r *reltest.Repository) {
+		c.repo.ExpectInsert().ForType("entities.Biotest").Error(fmt.Errorf("an error occured"))
+		c.repo.ExpectInsert().ForType("entities.HigherMuscleDensity").Return(nil)
+		c.repo.ExpectInsert().ForType("entities.LowerMuscleDensity").Return(nil)
+		c.repo.ExpectInsert().ForType("entities.SkinFolds").Return(nil)
+	})
+
+	err := c.biotestRepository.SaveBiotest(c.ctx, &biotestToSave)
+
+	c.NotNil(err, "should return an error")
+	c.Empty(biotestToSave.BiotestUUID, "should be empty")
 }
