@@ -8,15 +8,25 @@ import (
 	"github.com/go-rel/rel/where"
 	"github.com/manicar2093/charly_team_api/db/entities"
 	"github.com/manicar2093/charly_team_api/db/paginator"
+	"github.com/manicar2093/charly_team_api/services"
 )
 
 type BiotestRepositoryRel struct {
 	repo      rel.Repository
 	paginator paginator.Paginable
+	uuidGen   services.UUIDGenerator
 }
 
-func NewBiotestRepositoryRel(repo rel.Repository, paginator paginator.Paginable) *BiotestRepositoryRel {
-	return &BiotestRepositoryRel{repo: repo, paginator: paginator}
+func NewBiotestRepositoryRel(
+	repo rel.Repository,
+	paginator paginator.Paginable,
+	uuidGen services.UUIDGenerator,
+) *BiotestRepositoryRel {
+	return &BiotestRepositoryRel{
+		repo:      repo,
+		paginator: paginator,
+		uuidGen:   uuidGen,
+	}
 }
 
 func (c *BiotestRepositoryRel) FindBiotestByUUID(
@@ -137,6 +147,42 @@ func (c *BiotestRepositoryRel) GetComparitionDataByUserUUID(
 		LastBiotest:        &lastBiotest,
 		AllBiotestsDetails: &biotestsDetails,
 	}, nil
+}
+
+func (c *BiotestRepositoryRel) SaveBiotest(
+	ctx context.Context,
+	biotest *entities.Biotest,
+) error {
+	err := c.repo.Transaction(ctx, func(ctx context.Context) error {
+		biotest.BiotestUUID = c.uuidGen.New()
+
+		if err := c.repo.Insert(ctx, &biotest.HigherMuscleDensity); err != nil {
+			return err
+		}
+		biotest.HigherMuscleDensityID = biotest.HigherMuscleDensity.ID
+
+		if err := c.repo.Insert(ctx, &biotest.LowerMuscleDensity); err != nil {
+			return err
+		}
+		biotest.LowerMuscleDensityID = biotest.LowerMuscleDensity.ID
+
+		if err := c.repo.Insert(ctx, &biotest.SkinFolds); err != nil {
+			return err
+		}
+		biotest.SkinFoldsID = biotest.SkinFolds.ID
+
+		if err := c.repo.Insert(ctx, biotest); err != nil {
+			return err
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		biotest.BiotestUUID = ""
+	}
+
+	return err
 }
 
 func (c *BiotestRepositoryRel) findUser(ctx context.Context, userUUID string) (*entities.User, error) {
