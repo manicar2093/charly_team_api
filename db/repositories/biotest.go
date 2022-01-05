@@ -185,6 +185,15 @@ func (c *BiotestRepositoryRel) SaveBiotest(
 	return err
 }
 
+func (c *BiotestRepositoryRel) UpdateBiotest(
+	ctx context.Context,
+	biotest *entities.Biotest,
+) error {
+	return c.repo.Transaction(ctx, func(ctx context.Context) error {
+		return c.repo.Update(ctx, biotest)
+	})
+}
+
 func (c *BiotestRepositoryRel) findUser(ctx context.Context, userUUID string) (*entities.User, error) {
 	userFound := entities.User{}
 
