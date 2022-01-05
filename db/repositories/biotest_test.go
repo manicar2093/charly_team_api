@@ -197,3 +197,117 @@ func (c *BiotestRepositoryTest) TestGetAllUserBiotestByUserUUIDAsCatalog_UserNot
 	c.IsType(err, NotFoundError{}, "error type is not correct")
 	c.Nil(got, "should return a nil paginator")
 }
+
+func (c *BiotestRepositoryTest) TestGetComparitionDataByUserUUID() {
+	expectedUserUUID := c.faker.UUID().V4()
+	expectedUserID := c.faker.Int32()
+	userReturned := entities.User{
+		ID:       expectedUserID,
+		UserUUID: expectedUserUUID,
+	}
+	c.repo.ExpectFind(
+		where.Eq("user_uuid", expectedUserUUID),
+	).Result(userReturned)
+	biotestDetails := []BiotestDetails{
+		{BiotestUUID: "uuid1", CreatedAt: time.Now()},
+		{BiotestUUID: "uuid2", CreatedAt: time.Now()},
+	}
+	c.repo.ExpectFindAll(
+		where.Eq("customer_id", expectedUserID),
+		rel.Select("biotest_uuid", "created_at").From(entities.BiotestTable),
+		sort.Asc("created_at"),
+	).Result(biotestDetails)
+	biotestResponses := []entities.Biotest{
+		{ID: 1, BiotestUUID: "uuid1", CreatedAt: time.Now()},
+		{ID: 2, BiotestUUID: "uuid2", CreatedAt: time.Now()},
+	}
+	c.repo.ExpectFind(
+		where.Eq("customer_id", expectedUserID),
+		sort.Asc("created_at"),
+	).Result(biotestResponses[0])
+	c.repo.ExpectFind(
+		where.Eq("customer_id", expectedUserID),
+		sort.Desc("created_at"),
+	).Result(biotestResponses[1])
+
+	got, err := c.biotestRepository.GetComparitionDataByUserUUID(c.ctx, expectedUserUUID)
+
+	c.Nil(err, "should not be an error")
+	c.NotNil(got, "should response with the correct data")
+	c.Len(*got.AllBiotestsDetails, 2, "all biotest data has not required len")
+
+}
+
+func (c *BiotestRepositoryTest) TestGetComparitionDataByUserUUID_UserNotFound() {
+	expectedUserUUID := c.faker.UUID().V4()
+	c.repo.ExpectFind(
+		where.Eq("user_uuid", expectedUserUUID),
+	).NotFound()
+
+	got, err := c.biotestRepository.GetComparitionDataByUserUUID(c.ctx, expectedUserUUID)
+
+	c.IsType(NotFoundError{}, err, "should not be an error")
+	c.Nil(got, "should not response with comparition data")
+}
+
+func (c *BiotestRepositoryTest) TestGetComparitionDataByUserUUID_UserHasNoBiotest() {
+	expectedUserUUID := c.faker.UUID().V4()
+	expectedUserID := c.faker.Int32()
+	userReturned := entities.User{
+		ID:       expectedUserID,
+		UserUUID: expectedUserUUID,
+	}
+	c.repo.ExpectFind(
+		where.Eq("user_uuid", expectedUserUUID),
+	).Result(userReturned)
+	biotestDetails := []BiotestDetails{}
+	c.repo.ExpectFindAll(
+		where.Eq("customer_id", expectedUserID),
+		rel.Select("biotest_uuid", "created_at").From(entities.BiotestTable),
+		sort.Asc("created_at"),
+	).Result(biotestDetails)
+
+	got, err := c.biotestRepository.GetComparitionDataByUserUUID(c.ctx, expectedUserUUID)
+
+	c.IsType(NotFoundError{}, err, "should be an error of NotFoundError type")
+	c.Nil(got, "should not response with comparition data")
+}
+
+func (c *BiotestRepositoryTest) TestGetComparitionDataByUserUUID_LastBiotestNotFound() {
+	expectedUserUUID := c.faker.UUID().V4()
+	expectedUserID := c.faker.Int32()
+	userReturned := entities.User{
+		ID:       expectedUserID,
+		UserUUID: expectedUserUUID,
+	}
+	c.repo.ExpectFind(
+		where.Eq("user_uuid", expectedUserUUID),
+	).Result(userReturned)
+
+	biotestDetails := []BiotestDetails{
+		{BiotestUUID: "uuid1", CreatedAt: time.Now()},
+	}
+	c.repo.ExpectFindAll(
+		where.Eq("customer_id", expectedUserID),
+		rel.Select("biotest_uuid", "created_at").From(entities.BiotestTable),
+		sort.Asc("created_at"),
+	).Result(biotestDetails)
+	biotestResponses := []entities.Biotest{
+		{ID: 1, BiotestUUID: "uuid1", CreatedAt: time.Now()},
+	}
+	c.repo.ExpectFind(
+		where.Eq("customer_id", expectedUserID),
+		sort.Asc("created_at"),
+	).Result(biotestResponses[0])
+
+	c.repo.ExpectFind(
+		where.Eq("customer_id", expectedUserID),
+		sort.Desc("created_at"),
+	).NotFound()
+
+	got, err := c.biotestRepository.GetComparitionDataByUserUUID(c.ctx, expectedUserUUID)
+
+	c.Nil(err, "should not be an error")
+	c.NotNil(got, "should response with the correct data")
+	c.Nil(got.LastBiotest, "should not be an error las biotest data")
+}
