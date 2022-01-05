@@ -64,7 +64,7 @@ func (c *BiotestRepositoryTest) TestFindBiotestByUUID_NotFound() {
 	expectedBiotest.BiotestUUID = expectedBiotestUUID
 	c.repo.ExpectFind(
 		where.Eq("biotest_uuid", expectedBiotestUUID),
-	).Error(rel.ErrNotFound)
+	).NotFound()
 
 	got, err := c.biotestRepository.FindBiotestByUUID(c.ctx, expectedBiotestUUID)
 
