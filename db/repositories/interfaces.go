@@ -26,4 +26,8 @@ type BiotestRepository interface {
 		ctx context.Context,
 		userUUID string,
 	) (*BiotestComparisionResponse, error)
+	SaveBiotest(
+		ctx context.Context,
+		biotest *entities.Biotest,
+	) error
 }
