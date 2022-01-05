@@ -25,6 +25,10 @@ func (c *BiotestRepositoryRel) FindBiotestByUUID(
 ) (*entities.Biotest, error) {
 	biotest := entities.Biotest{}
 	if err := c.repo.Find(ctx, &biotest, where.Eq("biotest_uuid", biotestUUID)); err != nil {
+		switch err.(type) {
+		case rel.NotFoundError:
+			return nil, NotFoundError{Entity: "Biotest", Identifier: biotestUUID}
+		}
 		return nil, err
 	}
 	return &biotest, nil

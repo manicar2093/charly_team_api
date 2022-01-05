@@ -69,8 +69,7 @@ func (c *BiotestRepositoryTest) TestFindBiotestByUUID_NotFound() {
 	got, err := c.biotestRepository.FindBiotestByUUID(c.ctx, expectedBiotestUUID)
 
 	c.Nil(got, "FindBiotestByUUID a entities.Biotest instance")
-	_, ok := err.(rel.NotFoundError)
-	c.True(ok, "unexpected answare type")
+	c.IsType(NotFoundError{}, err, "should be an NotFoundError type")
 
 }
 
