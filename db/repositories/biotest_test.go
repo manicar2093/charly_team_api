@@ -354,3 +354,14 @@ func (c *BiotestRepositoryTest) TestSaveBiotest_InsertError() {
 	c.NotNil(err, "should return an error")
 	c.Empty(biotestToSave.BiotestUUID, "should be empty")
 }
+
+func (c *BiotestRepositoryTest) TestUpdateBiotest() {
+	biotestToUpdate := entities.Biotest{}
+	c.repo.ExpectTransaction(func(r *reltest.Repository) {
+		r.ExpectUpdate().ForType("entities.Biotest").Return(nil)
+	})
+
+	err := c.biotestRepository.UpdateBiotest(c.ctx, &biotestToUpdate)
+	c.T().Log(err)
+	c.Nil(err, "should not return an error")
+}
