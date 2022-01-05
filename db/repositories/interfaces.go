@@ -30,4 +30,8 @@ type BiotestRepository interface {
 		ctx context.Context,
 		biotest *entities.Biotest,
 	) error
+	UpdateBiotest(
+		ctx context.Context,
+		biotest *entities.Biotest,
+	) error
 }
