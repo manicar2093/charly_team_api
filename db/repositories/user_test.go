@@ -183,7 +183,6 @@ func (c *UserRepositoryTest) TestSaveUser_UnexpectedError() {
 	expectedUserToSave := entities.User{
 		UserUUID: expectedUserUUID,
 	}
-
 	c.repo.ExpectTransaction(func(r *reltest.Repository) {
 		r.ExpectInsert().For(&expectedUserToSave).Error(
 			fmt.Errorf("a generic error"),
@@ -191,6 +190,36 @@ func (c *UserRepositoryTest) TestSaveUser_UnexpectedError() {
 	})
 
 	err := c.userRepository.SaveUser(c.ctx, &expectedUserToSave)
+
+	c.NotNil(err, "should return error")
+}
+
+func (c *UserRepositoryTest) TestUpdateUser() {
+	expectedUserUUID := c.faker.UUID().V4()
+	expectedUserToUpdate := entities.User{
+		UserUUID: expectedUserUUID,
+	}
+	c.repo.ExpectTransaction(func(r *reltest.Repository) {
+		r.ExpectUpdate().For(&expectedUserToUpdate)
+	})
+
+	err := c.userRepository.UpdateUser(c.ctx, &expectedUserToUpdate)
+
+	c.Nil(err, "should not return error")
+}
+
+func (c *UserRepositoryTest) TestUpdateUser_UnexpectedError() {
+	expectedUserUUID := c.faker.UUID().V4()
+	expectedUserToUpdate := entities.User{
+		UserUUID: expectedUserUUID,
+	}
+	c.repo.ExpectTransaction(func(r *reltest.Repository) {
+		r.ExpectUpdate().For(&expectedUserToUpdate).Error(
+			fmt.Errorf("a generic error"),
+		)
+	})
+
+	err := c.userRepository.UpdateUser(c.ctx, &expectedUserToUpdate)
 
 	c.NotNil(err, "should return error")
 }
