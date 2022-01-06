@@ -11,12 +11,14 @@ import (
 )
 
 type UserRepositoryRel struct {
-	repo rel.Repository
+	repo      rel.Repository
+	paginator paginator.Paginable
 }
 
-func NewUserRepositoryRel(repo rel.Repository) *UserRepositoryRel {
+func NewUserRepositoryRel(repo rel.Repository, paginator paginator.Paginable) *UserRepositoryRel {
 	return &UserRepositoryRel{
-		repo: repo,
+		repo:      repo,
+		paginator: paginator,
 	}
 }
 
@@ -52,7 +54,8 @@ func (c *UserRepositoryRel) FindUserLikeEmailOrNameOrLastName(ctx context.Contex
 }
 
 func (c *UserRepositoryRel) FindAllUsers(ctx context.Context, pageSort *paginator.PageSort) (*paginator.Paginator, error) {
-	panic("not implemented") // TODO: Implement
+	usersFound := []entities.User{}
+	return c.paginator.CreatePagination(ctx, entities.UserTable, &usersFound, pageSort)
 }
 
 func (c *UserRepositoryRel) SaveUser(ctx context.Context, user *entities.User) error {
