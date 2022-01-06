@@ -59,7 +59,9 @@ func (c *UserRepositoryRel) FindAllUsers(ctx context.Context, pageSort *paginato
 }
 
 func (c *UserRepositoryRel) SaveUser(ctx context.Context, user *entities.User) error {
-	panic("not implemented") // TODO: Implement
+	return c.repo.Transaction(ctx, func(ctx context.Context) error {
+		return c.repo.Insert(ctx, user)
+	})
 }
 
 func (c *UserRepositoryRel) UpdateUser(ctx context.Context, user *entities.User) error {
