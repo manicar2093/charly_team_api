@@ -35,3 +35,26 @@ type BiotestRepository interface {
 		biotest *entities.Biotest,
 	) error
 }
+
+type UserRepository interface {
+	FindUserByUUID(
+		ctx context.Context,
+		userUUID string,
+	) (*entities.User, error)
+	FindUserLikeEmailOrNameOrLastName(
+		ctx context.Context,
+		parameter string,
+	) (*[]entities.User, error)
+	FindAllUsers(
+		ctx context.Context,
+		pageSort *paginator.PageSort,
+	) (*paginator.Paginator, error)
+	SaveUser(
+		ctx context.Context,
+		user *entities.User,
+	) error
+	UpdateUser(
+		ctx context.Context,
+		user *entities.User,
+	) error
+}
