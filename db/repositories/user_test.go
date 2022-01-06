@@ -3,6 +3,7 @@ package repositories
 import (
 	"context"
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/go-rel/rel/reltest"
@@ -87,6 +88,38 @@ func (c *UserRepositoryTest) TestFilterUserByUUID_UnexpectedError() {
 	c.Nil(got, "user should has no data")
 }
 
-func (c *UserRepositoryTest) TestFindUserLikeEmailOrNameOrLastName() {}
+func (c *UserRepositoryTest) TestFindUserLikeEmailOrNameOrLastName() {
+	expectedSearchParam := "expectedSearchParam"
+	expectSearchParamLower := strings.ToLower(expectedSearchParam)
+	usersReturned := []entities.User{
+		{},
+		{},
+		{},
+		{},
+	}
+	expectedFilter := where.Like("LOWER(email)", "%"+expectSearchParamLower+"%").OrLike("LOWER(name)", "%"+expectSearchParamLower+"%").OrLike("LOWER(last_name)", "%"+expectSearchParamLower+"%")
+	c.repo.ExpectFindAll(expectedFilter).Result(usersReturned)
+
+	got, err := c.userRepository.FindUserLikeEmailOrNameOrLastName(c.ctx, expectedSearchParam)
+
+	c.Nil(err, "should not return an error")
+	c.NotNil(got, "should return data")
+	c.Len(*got, len(usersReturned), "data len is incorrect")
+
+}
+
+func (c *UserRepositoryTest) TestFindUserLikeEmailOrNameOrLastName_UnexpectedError() {
+	expectedSearchParam := "expectedSearchParam"
+	expectSearchParamLower := strings.ToLower(expectedSearchParam)
+
+	expectedFilter := where.Like("LOWER(email)", "%"+expectSearchParamLower+"%").OrLike("LOWER(name)", "%"+expectSearchParamLower+"%").OrLike("LOWER(last_name)", "%"+expectSearchParamLower+"%")
+	c.repo.ExpectFindAll(expectedFilter).Error(fmt.Errorf("a generic error"))
+
+	got, err := c.userRepository.FindUserLikeEmailOrNameOrLastName(c.ctx, expectedSearchParam)
+
+	c.NotNil(err, "should return an error")
+	c.Nil(got, "should not return data")
+
+}
 
 func (c *UserRepositoryTest) TestFindAllUsers() {}
