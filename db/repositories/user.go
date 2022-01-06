@@ -65,5 +65,7 @@ func (c *UserRepositoryRel) SaveUser(ctx context.Context, user *entities.User) e
 }
 
 func (c *UserRepositoryRel) UpdateUser(ctx context.Context, user *entities.User) error {
-	panic("not implemented") // TODO: Implement
+	return c.repo.Transaction(ctx, func(ctx context.Context) error {
+		return c.repo.Update(ctx, user)
+	})
 }
