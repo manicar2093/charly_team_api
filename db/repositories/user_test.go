@@ -161,3 +161,36 @@ func (c *UserRepositoryTest) TestFindAllUsers_CreatePaginationError() {
 	c.NotNil(err, "should return error")
 	c.Nil(got, "should not return a paginator instance")
 }
+
+func (c *UserRepositoryTest) TestSaveUser() {
+	expectedUserUUID := c.faker.UUID().V4()
+	expectedUserToSave := entities.User{
+		UserUUID: expectedUserUUID,
+	}
+
+	c.repo.ExpectTransaction(func(r *reltest.Repository) {
+		r.ExpectInsert().For(&expectedUserToSave)
+	})
+
+	err := c.userRepository.SaveUser(c.ctx, &expectedUserToSave)
+
+	c.Nil(err, "should not return error")
+
+}
+
+func (c *UserRepositoryTest) TestSaveUser_UnexpectedError() {
+	expectedUserUUID := c.faker.UUID().V4()
+	expectedUserToSave := entities.User{
+		UserUUID: expectedUserUUID,
+	}
+
+	c.repo.ExpectTransaction(func(r *reltest.Repository) {
+		r.ExpectInsert().For(&expectedUserToSave).Error(
+			fmt.Errorf("a generic error"),
+		)
+	})
+
+	err := c.userRepository.SaveUser(c.ctx, &expectedUserToSave)
+
+	c.NotNil(err, "should return error")
+}
