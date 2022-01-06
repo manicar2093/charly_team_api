@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"context"
+	"strings"
 
 	"github.com/go-rel/rel"
 	"github.com/go-rel/rel/where"
@@ -32,7 +33,22 @@ func (c *UserRepositoryRel) FindUserByUUID(ctx context.Context, userUUID string)
 }
 
 func (c *UserRepositoryRel) FindUserLikeEmailOrNameOrLastName(ctx context.Context, parameter string) (*[]entities.User, error) {
-	panic("not implemented") // TODO: Implement
+	parameterLower := strings.ToLower(parameter)
+
+	filter := where.Like(
+		"LOWER(email)", "%"+parameterLower+"%",
+	).OrLike(
+		"LOWER(name)", "%"+parameterLower+"%",
+	).OrLike(
+		"LOWER(last_name)", "%"+parameterLower+"%",
+	)
+
+	usersFound := []entities.User{}
+	if err := c.repo.FindAll(ctx, &usersFound, filter); err != nil {
+		return nil, err
+	}
+
+	return &usersFound, nil
 }
 
 func (c *UserRepositoryRel) FindAllUsers(ctx context.Context, pageSort *paginator.PageSort) (*paginator.Paginator, error) {
