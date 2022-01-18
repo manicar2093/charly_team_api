@@ -8,7 +8,7 @@ import (
 
 	"github.com/manicar2093/charly_team_api/apperrors"
 	"github.com/manicar2093/charly_team_api/db/entities"
-	"github.com/manicar2093/charly_team_api/mocks"
+	"github.com/manicar2093/charly_team_api/db/repositories"
 	"github.com/manicar2093/charly_team_api/models"
 	"github.com/manicar2093/charly_team_api/validators"
 	"github.com/stretchr/testify/mock"
@@ -17,16 +17,16 @@ import (
 
 type MainTests struct {
 	suite.Suite
-	catalogRepo    mocks.CatalogRepository
-	validator      mocks.ValidatorService
+	catalogRepo    repositories.MockCatalogRepository
+	validator      validators.MockValidatorService
 	ctx            context.Context
 	biotypesReturn []entities.Biotype
 	rolesReturn    []entities.Role
 }
 
 func (c *MainTests) SetupTest() {
-	c.catalogRepo = mocks.CatalogRepository{}
-	c.validator = mocks.ValidatorService{}
+	c.catalogRepo = repositories.MockCatalogRepository{}
+	c.validator = validators.MockValidatorService{}
 	c.ctx = context.Background()
 	c.biotypesReturn = []entities.Biotype{
 		{ID: 1, Description: "biotype1", CreatedAt: time.Now()},

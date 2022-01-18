@@ -10,9 +10,11 @@ import (
 
 	"github.com/aws/aws-sdk-go/service/cognitoidentityprovider"
 	"github.com/go-rel/rel/reltest"
+	"github.com/manicar2093/charly_team_api/aws"
 	"github.com/manicar2093/charly_team_api/config"
 	"github.com/manicar2093/charly_team_api/db/entities"
-	"github.com/manicar2093/charly_team_api/mocks"
+	"github.com/manicar2093/charly_team_api/services"
+
 	"github.com/manicar2093/charly_team_api/models"
 	"github.com/manicar2093/charly_team_api/validators/nullsql"
 	"github.com/stretchr/testify/mock"
@@ -25,9 +27,9 @@ func TestUserService(t *testing.T) {
 
 type UserAppTest struct {
 	suite.Suite
-	providerMock                                           *mocks.CongitoClient
-	passGenMock                                            *mocks.PassGen
-	uuidGen                                                *mocks.UUIDGenerator
+	providerMock                                           *aws.MockCongitoClient
+	passGenMock                                            *services.MockPassGen
+	uuidGen                                                *services.MockUUIDGenerator
 	repoMock                                               *reltest.Repository
 	username                                               string
 	temporaryPass                                          string
@@ -69,10 +71,10 @@ func (u *UserAppTest) SetupTest() {
 		GenderID: 1,
 	}
 
-	u.providerMock = &mocks.CongitoClient{}
+	u.providerMock = &aws.MockCongitoClient{}
 	u.repoMock = reltest.New()
-	u.passGenMock = &mocks.PassGen{}
-	u.uuidGen = &mocks.UUIDGenerator{}
+	u.passGenMock = &services.MockPassGen{}
+	u.uuidGen = &services.MockUUIDGenerator{}
 	u.uuidGen.On("New").Return(u.uuidReturned)
 	u.adminCreateUserReq = cognitoidentityprovider.AdminCreateUserInput{
 		UserPoolId:        &config.CognitoPoolID,

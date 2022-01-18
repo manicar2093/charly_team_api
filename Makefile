@@ -29,7 +29,7 @@ db_testing_rollback:
 	@ rm -r testing.db
 
 mocking:
-	@ mockery --all
+	@ mockery --all --inpackage
 
 test:
 	@ - make db_testing_fill

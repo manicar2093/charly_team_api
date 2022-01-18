@@ -11,7 +11,6 @@ import (
 	"github.com/jaswdr/faker"
 	"github.com/manicar2093/charly_team_api/db/entities"
 	"github.com/manicar2093/charly_team_api/db/paginator"
-	"github.com/manicar2093/charly_team_api/mocks"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -21,7 +20,7 @@ func TestUserRepository(t *testing.T) {
 
 type UserRepositoryTest struct {
 	suite.Suite
-	paginator      *mocks.Paginable
+	paginator      *paginator.MockPaginable
 	repo           *reltest.Repository
 	userRepository UserRepository
 	ctx            context.Context
@@ -30,7 +29,7 @@ type UserRepositoryTest struct {
 
 func (c *UserRepositoryTest) SetupTest() {
 	c.repo = reltest.New()
-	c.paginator = &mocks.Paginable{}
+	c.paginator = &paginator.MockPaginable{}
 	c.userRepository = NewUserRepositoryRel(c.repo, c.paginator)
 	c.ctx = context.TODO()
 	c.faker = faker.New()

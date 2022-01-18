@@ -13,7 +13,7 @@ import (
 	"github.com/manicar2093/charly_team_api/apperrors"
 	"github.com/manicar2093/charly_team_api/db/entities"
 	"github.com/manicar2093/charly_team_api/db/filters"
-	"github.com/manicar2093/charly_team_api/mocks"
+	"github.com/manicar2093/charly_team_api/db/paginator"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -24,7 +24,7 @@ func TestGetComparision(t *testing.T) {
 type GetComparisionTest struct {
 	suite.Suite
 	repo                         *reltest.Repository
-	paginator                    *mocks.Paginable
+	paginator                    *paginator.MockPaginable
 	ctx                          context.Context
 	filterParams                 filters.FilterParameters
 	notFoundError, ordinaryError error
@@ -32,7 +32,7 @@ type GetComparisionTest struct {
 
 func (c *GetComparisionTest) SetupTest() {
 	c.repo = reltest.New()
-	c.paginator = &mocks.Paginable{}
+	c.paginator = &paginator.MockPaginable{}
 	c.ctx = context.Background()
 	c.ordinaryError = errors.New("An ordinary error :O")
 	c.filterParams = filters.FilterParameters{

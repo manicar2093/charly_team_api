@@ -12,7 +12,7 @@ import (
 	"github.com/manicar2093/charly_team_api/db/entities"
 	"github.com/manicar2093/charly_team_api/db/filters"
 	"github.com/manicar2093/charly_team_api/db/paginator"
-	"github.com/manicar2093/charly_team_api/mocks"
+
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
 )
@@ -20,7 +20,7 @@ import (
 type UserFilterTest struct {
 	suite.Suite
 	repo                         *reltest.Repository
-	paginator                    *mocks.Paginable
+	paginator                    *paginator.MockPaginable
 	ctx                          context.Context
 	filterParams                 filters.FilterParameters
 	notFoundError, ordinaryError error
@@ -30,7 +30,7 @@ func (c *UserFilterTest) SetupTest() {
 	c.repo = reltest.New()
 	c.ctx = context.Background()
 	c.ordinaryError = errors.New("An ordinary error :O")
-	c.paginator = &mocks.Paginable{}
+	c.paginator = &paginator.MockPaginable{}
 	c.filterParams = filters.FilterParameters{
 		Ctx:       c.ctx,
 		Repo:      c.repo,

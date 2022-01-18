@@ -14,7 +14,6 @@ import (
 	"github.com/manicar2093/charly_team_api/db/entities"
 	"github.com/manicar2093/charly_team_api/db/filters"
 	"github.com/manicar2093/charly_team_api/db/paginator"
-	"github.com/manicar2093/charly_team_api/mocks"
 	"github.com/manicar2093/charly_team_api/validators"
 	"github.com/stretchr/testify/suite"
 )
@@ -26,8 +25,8 @@ func TestGetAlluserBiotest(t *testing.T) {
 type GetAllUserBiotestTest struct {
 	suite.Suite
 	repo                         *reltest.Repository
-	paginator                    *mocks.Paginable
-	validator                    *mocks.ValidatorService
+	paginator                    *paginator.MockPaginable
+	validator                    *validators.MockValidatorService
 	ctx                          context.Context
 	filterParams                 filters.FilterParameters
 	notFoundError, ordinaryError error
@@ -35,8 +34,8 @@ type GetAllUserBiotestTest struct {
 
 func (c *GetAllUserBiotestTest) SetupTest() {
 	c.repo = reltest.New()
-	c.paginator = &mocks.Paginable{}
-	c.validator = &mocks.ValidatorService{}
+	c.paginator = &paginator.MockPaginable{}
+	c.validator = &validators.MockValidatorService{}
 	c.ctx = context.Background()
 	c.ordinaryError = errors.New("An ordinary error :O")
 	c.filterParams = filters.FilterParameters{
