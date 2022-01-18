@@ -9,8 +9,8 @@ import (
 	"github.com/go-rel/rel/reltest"
 	"github.com/manicar2093/charly_team_api/apperrors"
 	"github.com/manicar2093/charly_team_api/db/entities"
-	"github.com/manicar2093/charly_team_api/mocks"
 	"github.com/manicar2093/charly_team_api/models"
+	"github.com/manicar2093/charly_team_api/services"
 	"github.com/manicar2093/charly_team_api/validators"
 	"github.com/stretchr/testify/suite"
 )
@@ -18,16 +18,16 @@ import (
 type MainTests struct {
 	suite.Suite
 	repo          *reltest.Repository
-	validator     mocks.ValidatorService
-	uuidGen       mocks.UUIDGenerator
+	validator     validators.MockValidatorService
+	uuidGen       services.MockUUIDGenerator
 	ctx           context.Context
 	ordinaryError error
 }
 
 func (c *MainTests) SetupTest() {
 	c.repo = reltest.New()
-	c.validator = mocks.ValidatorService{}
-	c.uuidGen = mocks.UUIDGenerator{}
+	c.validator = validators.MockValidatorService{}
+	c.uuidGen = services.MockUUIDGenerator{}
 	c.uuidGen.On("New").Return("an generated uuid")
 	c.ctx = context.Background()
 	c.ordinaryError = errors.New("An ordinary error :O")

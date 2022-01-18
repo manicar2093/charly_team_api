@@ -9,7 +9,8 @@ import (
 
 	"github.com/manicar2093/charly_team_api/apperrors"
 	"github.com/manicar2093/charly_team_api/db/entities"
-	"github.com/manicar2093/charly_team_api/mocks"
+	"github.com/manicar2093/charly_team_api/db/filters"
+
 	"github.com/manicar2093/charly_team_api/models"
 	"github.com/manicar2093/charly_team_api/validators"
 	"github.com/stretchr/testify/suite"
@@ -18,15 +19,15 @@ import (
 
 type MainTests struct {
 	suite.Suite
-	userFilter                         *mocks.Filterable
-	validator                          *mocks.ValidatorService
+	userFilter                         *filters.MockFilterable
+	validator                          *validators.MockValidatorService
 	ctx                                context.Context
 	ordinaryError, filterNotFoundError error
 }
 
 func (c *MainTests) SetupTest() {
-	c.userFilter = &mocks.Filterable{}
-	c.validator = &mocks.ValidatorService{}
+	c.userFilter = &filters.MockFilterable{}
+	c.validator = &validators.MockValidatorService{}
 	c.ctx = context.Background()
 	c.ordinaryError = errors.New("An ordinary error :O")
 	c.filterNotFoundError = apperrors.BadRequestError{Message: "not exists"}

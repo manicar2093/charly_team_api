@@ -9,7 +9,6 @@ import (
 	"github.com/go-rel/rel/reltest"
 	"github.com/manicar2093/charly_team_api/apperrors"
 	"github.com/manicar2093/charly_team_api/db/entities"
-	"github.com/manicar2093/charly_team_api/mocks"
 	"github.com/manicar2093/charly_team_api/validators"
 	"github.com/stretchr/testify/suite"
 )
@@ -21,14 +20,14 @@ func TestMain(t *testing.T) {
 type MainTests struct {
 	suite.Suite
 	repo          *reltest.Repository
-	validator     mocks.ValidatorService
+	validator     validators.MockValidatorService
 	ctx           context.Context
 	ordinaryError error
 }
 
 func (c *MainTests) SetupTest() {
 	c.repo = reltest.New()
-	c.validator = mocks.ValidatorService{}
+	c.validator = validators.MockValidatorService{}
 	c.ctx = context.Background()
 	c.ordinaryError = errors.New("An ordinary error :O")
 

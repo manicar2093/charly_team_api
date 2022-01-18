@@ -13,7 +13,7 @@ import (
 	"github.com/jaswdr/faker"
 	"github.com/manicar2093/charly_team_api/db/entities"
 	"github.com/manicar2093/charly_team_api/db/paginator"
-	"github.com/manicar2093/charly_team_api/mocks"
+	"github.com/manicar2093/charly_team_api/services"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -23,8 +23,8 @@ func TestBiotestRepository(t *testing.T) {
 
 type BiotestRepositoryTest struct {
 	suite.Suite
-	paginator         *mocks.Paginable
-	uuidGen           *mocks.UUIDGenerator
+	paginator         *paginator.MockPaginable
+	uuidGen           *services.MockUUIDGenerator
 	repo              *reltest.Repository
 	biotestRepository BiotestRepository
 	ctx               context.Context
@@ -33,8 +33,8 @@ type BiotestRepositoryTest struct {
 
 func (c *BiotestRepositoryTest) SetupTest() {
 	c.repo = reltest.New()
-	c.paginator = &mocks.Paginable{}
-	c.uuidGen = &mocks.UUIDGenerator{}
+	c.paginator = &paginator.MockPaginable{}
+	c.uuidGen = &services.MockUUIDGenerator{}
 	c.biotestRepository = NewBiotestRepositoryRel(c.repo, c.paginator, c.uuidGen)
 	c.ctx = context.TODO()
 	c.faker = faker.New()

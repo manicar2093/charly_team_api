@@ -9,7 +9,7 @@ import (
 
 	"github.com/manicar2093/charly_team_api/apperrors"
 	"github.com/manicar2093/charly_team_api/db/entities"
-	"github.com/manicar2093/charly_team_api/mocks"
+
 	"github.com/manicar2093/charly_team_api/models"
 	"github.com/manicar2093/charly_team_api/validators"
 	"github.com/stretchr/testify/suite"
@@ -21,15 +21,15 @@ func TestMain(t *testing.T) {
 
 type MainTests struct {
 	suite.Suite
-	userService mocks.UserService
-	validator   mocks.ValidatorService
+	userService MockUserService
+	validator   validators.MockValidatorService
 	ctx         context.Context
 	userCreated *entities.User
 }
 
 func (c *MainTests) SetupTest() {
-	c.userService = mocks.UserService{}
-	c.validator = mocks.ValidatorService{}
+	c.userService = MockUserService{}
+	c.validator = validators.MockValidatorService{}
 	c.ctx = context.Background()
 	c.userCreated = &entities.User{ID: int32(1)}
 

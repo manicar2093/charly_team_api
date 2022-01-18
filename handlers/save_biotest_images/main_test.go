@@ -8,7 +8,6 @@ import (
 	"github.com/go-rel/rel/reltest"
 	"github.com/go-rel/rel/where"
 	"github.com/manicar2093/charly_team_api/db/entities"
-	"github.com/manicar2093/charly_team_api/mocks"
 	"github.com/manicar2093/charly_team_api/validators"
 	"github.com/stretchr/testify/suite"
 	"gopkg.in/guregu/null.v4"
@@ -20,7 +19,7 @@ func TestSaveBiotestImage(t *testing.T) {
 
 type SaveBiotestImagesTest struct {
 	suite.Suite
-	validator                                                 *mocks.ValidatorService
+	validator                                                 *validators.MockValidatorService
 	repo                                                      reltest.Repository
 	biotestUUID, frontImage, backImage, leftImage, rightImage string
 	biotestExpectedUpdateCall, biotestFound                   entities.Biotest
@@ -29,7 +28,7 @@ type SaveBiotestImagesTest struct {
 }
 
 func (c *SaveBiotestImagesTest) SetupTest() {
-	c.validator = &mocks.ValidatorService{}
+	c.validator = &validators.MockValidatorService{}
 	c.repo = *reltest.New()
 	c.biotestUUID = "biotest_uuid"
 	c.frontImage = "front/image/path"
