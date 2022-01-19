@@ -28,12 +28,16 @@ func CreateResponse(httpStatus int, body interface{}) *Response {
 // func to build error. If does not returns a InternalServerError http status
 func CreateResponseFromError(err error) *Response {
 	var (
-		statusCode   int    = http.StatusInternalServerError
-		errorMessage string = err.Error()
+		statusCode   int         = http.StatusInternalServerError
+		errorMessage interface{} = err.Error()
 	)
 
 	if handledErr, ok := err.(apperrors.HandableErrors); ok {
 		statusCode = handledErr.StatusCode()
+	}
+
+	if handledError, ok := err.(apperrors.ValidationErrors); ok {
+		errorMessage = handledError
 	}
 
 	return CreateResponse(

@@ -5,5 +5,5 @@ package models
 // Example:
 // {"error". "This is an error"}
 type ErrorReponse struct {
-	Error string `json:"error,omitempty"`
+	Error interface{} `json:"error,omitempty"`
 }
