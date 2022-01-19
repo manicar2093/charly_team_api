@@ -1,3 +1,9 @@
+## v0.51.0 (2022-01-19)
+
+### Feat
+
+- add update user handler and aws lambda controller (#152)
+
 ## v0.50.1 (2022-01-18)
 
 ### Refactor
