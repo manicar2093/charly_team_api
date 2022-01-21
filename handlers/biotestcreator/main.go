@@ -66,5 +66,5 @@ func (c *BiotestCreatorImpl) Run(ctx context.Context, req *entities.Biotest) (*B
 	if err != nil {
 		return nil, err
 	}
-	return &BiotestCreatorResponse{BiotestUpdated: req}, nil
+	return &BiotestCreatorResponse{BiotestCreated: req}, nil
 }

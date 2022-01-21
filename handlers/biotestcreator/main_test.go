@@ -57,7 +57,7 @@ func (c *MainTests) TestCreateNewBiotest() {
 
 	c.Nil(err)
 	c.NotNil(res)
-	c.NotEmpty(res.BiotestUpdated.ID, "unexpected id biotest response")
+	c.NotEmpty(res.BiotestCreated.ID, "unexpected id biotest response")
 
 }
 
