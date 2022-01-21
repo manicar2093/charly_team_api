@@ -1,3 +1,9 @@
+## v0.53.0 (2022-01-21)
+
+### Feat
+
+- Add create biotest aws lambda controller and implementation (#154)
+
 ## v0.52.0 (2022-01-20)
 
 ### Feat
