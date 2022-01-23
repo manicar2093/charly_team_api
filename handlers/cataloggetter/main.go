@@ -11,7 +11,7 @@ type CatalogGetter interface {
 	Run(ctx context.Context, catalogs *CatalogGetterRequest) (*CatalogGetterResponse, error)
 }
 
-type catalogGetteImpl struct {
+type catalogGetterImpl struct {
 	catalogsRepository repositories.CatalogRepository
 	validator          validators.ValidatorService
 }
@@ -19,14 +19,14 @@ type catalogGetteImpl struct {
 func NewCatalogGetterImpl(
 	catalogsRepository repositories.CatalogRepository,
 	validator validators.ValidatorService,
-) *catalogGetteImpl {
-	return &catalogGetteImpl{
+) *catalogGetterImpl {
+	return &catalogGetterImpl{
 		catalogsRepository: catalogsRepository,
 		validator:          validator,
 	}
 }
 
-func (c *catalogGetteImpl) Run(ctx context.Context, catalogs *CatalogGetterRequest) (*CatalogGetterResponse, error) {
+func (c *catalogGetterImpl) Run(ctx context.Context, catalogs *CatalogGetterRequest) (*CatalogGetterResponse, error) {
 	validation := c.validator.Validate(catalogs)
 	if !validation.IsValid {
 		return nil, validation.Err
@@ -44,7 +44,7 @@ func (c *catalogGetteImpl) Run(ctx context.Context, catalogs *CatalogGetterReque
 
 // CatalogFactory check if catalog exists.
 // If exists creates the need catalog response, otherwise return a NotCatalogFound
-func (c *catalogGetteImpl) CatalogFactory(
+func (c *catalogGetterImpl) CatalogFactory(
 	ctx context.Context,
 	catalog string,
 ) (interface{}, error) {
@@ -59,7 +59,7 @@ func (c *catalogGetteImpl) CatalogFactory(
 }
 
 // CatalogFactoryLoop creates all catalog response from a slice of requested catalogs
-func (c *catalogGetteImpl) CatalogFactoryLoop(
+func (c *catalogGetterImpl) CatalogFactoryLoop(
 	ctx context.Context,
 	catalogs *CatalogGetterRequest,
 ) (*CatalogGetterResponse, error) {
