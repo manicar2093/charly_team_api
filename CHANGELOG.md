@@ -1,3 +1,9 @@
+## v0.54.0 (2022-01-23)
+
+### Feat
+
+- add creation user aws lambda handler (#155)
+
 ## v0.53.0 (2022-01-21)
 
 ### Feat
