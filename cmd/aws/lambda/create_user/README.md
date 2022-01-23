@@ -1,4 +1,4 @@
-# Register New User
+# Create User AWS Lambda
 
 ## Request
 
