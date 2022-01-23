@@ -171,7 +171,7 @@ func (c *UserCreatorTests) TestUserCreator_PassGenError() {
 
 	c.NotNil(err)
 	c.Nil(res)
-	c.Equal(generationPassError, err)
+	c.Equal(errGenerationPass, err)
 
 }
 
@@ -198,7 +198,7 @@ func (c *UserCreatorTests) TestUserCreator_AWSCognitoError() {
 
 	c.NotNil(err)
 	c.Nil(res)
-	c.Equal(savingUserAWSError, err)
+	c.Equal(errSavingUserAWS, err)
 
 }
 
@@ -233,6 +233,6 @@ func (c *UserCreatorTests) TestUserCreator_SaveUserDBError() {
 
 	c.NotNil(err)
 	c.Nil(res)
-	c.Equal(savingUserDBError, err)
+	c.Equal(errSavingUserDB, err)
 
 }

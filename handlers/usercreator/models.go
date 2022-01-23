@@ -14,10 +14,10 @@ const (
 )
 
 var (
-	emailAttributeName  string = "email"
-	generationPassError        = errors.New("error generating temporary password")
-	savingUserDBError          = errors.New("error saving user into db")
-	savingUserAWSError         = errors.New("error saving user into cognito")
+	emailAttributeName string = "email"
+	errGenerationPass         = errors.New("error generating temporary password")
+	errSavingUserDB           = errors.New("error saving user into db")
+	errSavingUserAWS          = errors.New("error saving user into cognito")
 )
 
 type UserCreatorRequest struct {

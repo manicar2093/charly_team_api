@@ -52,7 +52,7 @@ func (c *userCreatorImpl) Run(ctx context.Context, user *UserCreatorRequest) (*U
 	pass, err := c.passGen.Generate()
 	if err != nil {
 		log.Println(err)
-		return nil, generationPassError
+		return nil, errGenerationPass
 	}
 
 	requestData := cognitoidentityprovider.AdminCreateUserInput{
@@ -70,7 +70,7 @@ func (c *userCreatorImpl) Run(ctx context.Context, user *UserCreatorRequest) (*U
 	userOutput, err := c.authProvider.AdminCreateUser(&requestData)
 	if err != nil {
 		log.Println(err)
-		return nil, savingUserAWSError
+		return nil, errSavingUserAWS
 	}
 
 	userEntity := entities.User{
@@ -91,7 +91,7 @@ func (c *userCreatorImpl) Run(ctx context.Context, user *UserCreatorRequest) (*U
 
 	if err != nil {
 		log.Println(err)
-		return nil, savingUserDBError
+		return nil, errSavingUserDB
 	}
 
 	return &UserCreatorResponse{UserCreated: &userEntity}, nil
