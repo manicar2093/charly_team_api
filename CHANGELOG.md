@@ -1,3 +1,9 @@
+## v0.55.0 (2022-01-23)
+
+### Feat
+
+- add get catalogs aws lambda controller (#156)
+
 ## v0.54.0 (2022-01-23)
 
 ### Feat
