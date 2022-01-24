@@ -1,6 +1,6 @@
-# Cognito Token Gen
+# Token Claims Generator
 
-This app is trigger when a user has been authenticated from the app through Cognito. This is intended to add some data to the user object:
+Response contains a map[string]string with the next keys:
 
 - name_to_show: This is the name will be show in the app
 - avatar_url: The url to get the user avatar
