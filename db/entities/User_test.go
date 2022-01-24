@@ -5,12 +5,12 @@ import (
 	"testing"
 	"time"
 
+	"github.com/go-rel/rel/where"
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/guregu/null.v4"
 )
 
 func TestCustomerEntity(t *testing.T) {
-
 	user := User{
 		BiotypeID:     null.IntFrom(1),
 		BoneDensityID: null.IntFrom(1),
@@ -22,16 +22,35 @@ func TestCustomerEntity(t *testing.T) {
 		Email:         "test@test.com",
 		Birthday:      time.Now(),
 	}
-
 	ctx := context.Background()
 
 	DB.Insert(ctx, &user)
 
 	assert.NotEmpty(t, user.ID, "ID should not be empty. Customer was not created")
-
-	DB.Preload(ctx, &user, "role")
-	assert.NotEmpty(t, user.Role.Description, "Role was not load correctly")
-	t.Log(user)
 	DB.Delete(ctx, &user)
+
+}
+
+func TestCustomerEntity_RoleLoad(t *testing.T) {
+	ctx := context.Background()
+	userToSave := User{
+		BiotypeID:     null.IntFrom(1),
+		BoneDensityID: null.IntFrom(1),
+		RoleID:        1,
+		GenderID:      null.IntFrom(1),
+		UserUUID:      "an_uuid_testing",
+		Name:          "Test",
+		LastName:      "Test",
+		Email:         "test@test.com",
+		Birthday:      time.Now(),
+	}
+	DB.Insert(ctx, &userToSave)
+	var userFound User
+
+	DB.Find(ctx, &userFound, where.Eq("id", userToSave.ID))
+
+	assert.NotEmpty(t, userFound.Role.Description, "Role was not load correctly")
+	DB.Delete(ctx, &userToSave)
+	DB.Delete(ctx, &userFound)
 
 }
