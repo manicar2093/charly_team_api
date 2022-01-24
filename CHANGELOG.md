@@ -1,3 +1,9 @@
+## v0.57.0 (2022-01-24)
+
+### Feat
+
+- add generate token aws lambda controller (#158)
+
 ## v0.56.0 (2022-01-24)
 
 ### Feat
