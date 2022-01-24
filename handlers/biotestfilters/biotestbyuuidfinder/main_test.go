@@ -1,4 +1,4 @@
-package biotestbyuuid
+package biotestbyuuidfinder
 
 import (
 	"context"
