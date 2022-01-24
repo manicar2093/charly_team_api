@@ -1,3 +1,9 @@
+## v0.56.0 (2022-01-24)
+
+### Feat
+
+- add aws lambda for biotest image saver (#157)
+
 ## v0.55.0 (2022-01-23)
 
 ### Feat
