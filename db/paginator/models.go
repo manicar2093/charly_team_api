@@ -12,7 +12,7 @@ import (
 
 // PageSort
 type PageSort struct {
-	Page         float64  `json:"page_number,omitempty"`
+	Page         float64  `validate:"required,gt=0" json:"page_number,omitempty"`
 	ItemsPerPage float64  `json:"itemsPerPage,omitempty"`
 	SortBy       []string `json:"sortBy,omitempty"`
 	SortDesc     []bool   `json:"sortDesc,omitempty"`

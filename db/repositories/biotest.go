@@ -80,7 +80,7 @@ func (c *BiotestRepositoryRel) GetAllUserBiotestByUserUUIDAsCatalog(
 	if err != nil {
 		return nil, err
 	}
-	biotestsFoundHolder := []entities.Biotest{}
+	biotestsFoundHolder := []BiotestDetails{}
 	pageSort.SetFiltersQueries(
 		where.Eq("customer_id", userFound.ID),
 		sort.Asc("created_at"),

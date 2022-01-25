@@ -16,7 +16,6 @@ import (
 
 var biotestFiltersRegistered = []filters.FilterRegistrationData{
 	{Name: "get_biotest_comparision", Func: biotestfilters.GetBiotestComparision},
-	{Name: "get_all_user_biotests", Func: biotestfilters.GetAllUserBiotest},
 }
 
 func main() {

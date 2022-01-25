@@ -168,7 +168,7 @@ func (c *BiotestRepositoryTest) TestGetAllUserBiotestByUserUUIDAsCatalog() {
 		NextPage:     2,
 		Data:         biotestPaginatorResponse,
 	}
-	biotestHolder := []entities.Biotest{}
+	biotestHolder := []BiotestDetails{}
 	c.paginator.On(
 		"CreatePagination",
 		c.ctx,
