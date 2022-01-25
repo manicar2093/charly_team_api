@@ -1,3 +1,9 @@
+## v0.60.0 (2022-01-25)
+
+### Feat
+
+- add biotest comparition data aws lambda (#161)
+
 ## v0.59.0 (2022-01-25)
 
 ### Feat
