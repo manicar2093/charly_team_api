@@ -1,3 +1,9 @@
+## v0.59.0 (2022-01-25)
+
+### Feat
+
+- add all biotest by user uuid aws lambda (#160)
+
 ## v0.58.0 (2022-01-24)
 
 ### Feat
