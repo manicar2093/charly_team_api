@@ -1,3 +1,9 @@
+## v0.61.0 (2022-01-26)
+
+### Feat
+
+- add user by uuid aws lambda (#162)
+
 ## v0.60.0 (2022-01-25)
 
 ### Feat
