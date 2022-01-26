@@ -1,3 +1,9 @@
+## v0.62.0 (2022-01-26)
+
+### Feat
+
+- add users like name aws lambda impl (#163)
+
 ## v0.61.0 (2022-01-26)
 
 ### Feat
