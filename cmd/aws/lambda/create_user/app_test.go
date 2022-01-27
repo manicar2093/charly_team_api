@@ -10,7 +10,6 @@ import (
 	"github.com/manicar2093/charly_team_api/db/entities"
 	"github.com/manicar2093/charly_team_api/handlers/usercreator"
 	"github.com/manicar2093/charly_team_api/models"
-	"github.com/manicar2093/charly_team_api/testfunc"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -49,7 +48,7 @@ func (c *CreateUserAWSLambdaTests) TestHandler() {
 	)
 
 	res, err := c.createUserAWSLambda.Handler(c.ctx, c.userCreateReq)
-	testfunc.PrintJsonIndented(res)
+
 	c.Nil(err, "should not return an error")
 	c.Equal(http.StatusCreated, res.StatusCode, "status code not correct")
 	c.IsType(&entities.User{}, res.Body, "body is not correct type")

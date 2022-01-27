@@ -11,7 +11,6 @@ import (
 	"github.com/manicar2093/charly_team_api/db/paginator"
 	"github.com/manicar2093/charly_team_api/handlers/biotestfilters/biotestsbyuseruuidfinder"
 	"github.com/manicar2093/charly_team_api/models"
-	"github.com/manicar2093/charly_team_api/testfunc"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -64,8 +63,6 @@ func (c *GetAllBiotestByUserUUIDAWSLambdaTest) TestsHandler_ValidationError() {
 	c.biotestsByUserUUIDFinder.On("Run", c.ctx, &request).Return(nil, validationErrors)
 
 	got, err := c.getAllBiotestsByUserUUIDAWSLambda.Handler(c.ctx, request)
-
-	testfunc.PrintJsonIndented(got)
 
 	c.Nil(err)
 	c.NotNil(got)
