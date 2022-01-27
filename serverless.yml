@@ -60,7 +60,32 @@ provider:
 
 package:
   patterns:
-    - ./bin/**
+    - ./bin/aws/lambda/**
+    - '!.github/**'
+    - '!./apperrors/**'
+    - '!./aws/**'
+    - '!./cmd/**'
+    - '!./config/**'
+    - '!./db/**'
+    - '!./handlers/**'
+    - '!./models/**'
+    - '!./node_modules/**'
+    - '!./services/**'
+    - '!./testfunc/**'
+    - '!./validators/**'
+    - '!.env**'
+    - '!compiler.sh'
+    - '!dev_kit.yml'
+    - '!go.**'
+    - '!Makefile'
+    - '!serverless.yml'
+    - '!.cz.toml'
+    - '!CHANGELOG.md'
+    - '!knexfile.js'
+    - '!package.json'
+    - '!package-lock.json'
+    - '!README.md'
+
 
 functions:
   create_biotest:
