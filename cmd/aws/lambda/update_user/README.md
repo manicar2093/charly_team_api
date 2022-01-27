@@ -1,5 +1,20 @@
 # Update User
 
+## Request
+
+```JSON
+{
+    "biotype_id": null,
+    "bone_density_id": null,
+    "gender_id": null,
+    "user_uuid": "",
+    "avatar_url": "",
+    "birthday": "0001-01-01T00:00:00Z",
+    "created_at": "0001-01-01T00:00:00Z",
+    "updated_at": "0001-01-01T00:00:00Z"
+}
+```
+
 ## Updated
 
 ```JSON

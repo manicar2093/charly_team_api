@@ -1,5 +1,16 @@
 # Get Catalogs
 
+## Request
+
+```JSON
+{
+    "catalog_names": [
+        "biotest",
+        "roles"
+    ]
+}
+```
+
 ## OK. Get Catalogs
 
 ```JSON
