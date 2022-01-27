@@ -1,4 +1,4 @@
-# Update Biotest
+# Create Biotest
 
 ## Request
 
@@ -61,50 +61,5 @@
     "left_side_picture": null,
     "next_evaluation": null,
     "created_at": "0001-01-01T00:00:00Z"
-}
-```
-
-## Updated
-
-```JSON
-{
-    "code": 200,
-    "status": "OK"
-}
-```
-
-## Without id
-
-```JSON
-{
-    "code": 400,
-    "status": "Bad Request",
-    "body": [
-        {
-        "tag": "id",
-        "validation": "required"
-        }
-    ]
-}
-```
-
-## Validation Errors
-
-```JSON
-{
-    "code": 400,
-    "status": "Bad Request",
-    "body": {
-        "error": [
-            {
-                "tag": "weight",
-                "validation": "required"
-            },
-            {
-                "tag": "height",
-                "validation": "required"
-            }
-        ]
-    }
 }
 ```

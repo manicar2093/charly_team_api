@@ -19,6 +19,7 @@ service: charly-team-api
 # You can pin your service to only deploy with a specific Serverless version
 # Check out our docs for more details
 frameworkVersion: '2'
+useDotenv: false
 
 plugins:
   - serverless-prune-plugin
@@ -60,51 +61,76 @@ provider:
 
 package:
   patterns:
-    - ./bin/**
+    - ./bin/aws/lambda/**
+    - '!.github/**'
+    - '!./apperrors/**'
+    - '!./aws/**'
+    - '!./cmd/**'
+    - '!./config/**'
+    - '!./db/**'
+    - '!./handlers/**'
+    - '!./models/**'
+    - '!./node_modules/**'
+    - '!./services/**'
+    - '!./testfunc/**'
+    - '!./validators/**'
+    - '!.env**'
+    - '!compiler.sh'
+    - '!dev_kit.yml'
+    - '!go.**'
+    - '!Makefile'
+    - '!serverless.yml'
+    - '!.cz.toml'
+    - '!CHANGELOG.md'
+    - '!knexfile.js'
+    - '!package.json'
+    - '!package-lock.json'
+    - '!README.md'
+
 
 functions:
   create_biotest:
-    handler: bin/create_biotest
+    handler: bin/aws/lambda/create_biotest
 
   create_user:
-    handler: bin/create_user
+    handler: bin/aws/lambda/create_user
 
   find_biotest_by_uuid:
-    handler: bin/find_biotest_by_uuid
+    handler: bin/aws/lambda/find_biotest_by_uuid
 
   generate_cognito_token_claims:
-    handler: bin/generate_cognito_token_claims
+    handler: bin/aws/lambda/generate_cognito_token_claims
     events:
       - cognitoUserPool:
-          pool: UserPool
+          pool: CharlyTeamAppUserPool
           trigger: PreTokenGeneration
 
   get_all_biotests_by_user_uuid:
-    handler: bin/get_all_biotests_by_user_uuid
+    handler: bin/aws/lambda/get_all_biotests_by_user_uuid
 
   get_all_users:
-    handler: bin/get_all_users
+    handler: bin/aws/lambda/get_all_users
 
   get_biotest_comparition_data:
-    handler: bin/get_biotest_comparition_data
+    handler: bin/aws/lambda/get_biotest_comparition_data
 
   get_catalogs:
-    handler: bin/get_catalogs
+    handler: bin/aws/lambda/get_catalogs
 
   get_user_by_uuid:
-    handler: bin/get_user_by_uuid
+    handler: bin/aws/lambda/get_user_by_uuid
 
   get_users_like_email_or_name:
-    handler: bin/get_users_like_email_or_name
+    handler: bin/aws/lambda/get_users_like_email_or_name
 
   save_biotest_images:
-    handler: bin/save_biotest_images
+    handler: bin/aws/lambda/save_biotest_images
 
   update_biotest:
-    handler: bin/update_biotest
+    handler: bin/aws/lambda/update_biotest
 
   update_user: 
-    handler: bin/update_user
+    handler: bin/aws/lambda/update_user
 
 # you can add CloudFormation resource templates here
 resources:
@@ -168,9 +194,4 @@ resources:
               MaxAge: 3600
             
 
-  Outputs:
-    UserPoolClientId:
-      Value: !Ref CharlyTeamAppUserPoolClient
-      Export:
-        Name: UserPoolClientID
 

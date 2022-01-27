@@ -9,7 +9,6 @@ import (
 	"github.com/manicar2093/charly_team_api/apperrors"
 	"github.com/manicar2093/charly_team_api/db/entities"
 	"github.com/manicar2093/charly_team_api/handlers/userupdater"
-	"github.com/manicar2093/charly_team_api/testfunc"
 
 	"github.com/manicar2093/charly_team_api/models"
 	"github.com/stretchr/testify/suite"
@@ -48,7 +47,7 @@ func (c *UpdateUserAWSLambdaTests) TestHandler() {
 	)
 
 	res, err := c.updateUserAWSLambda.Handler(c.ctx, c.user)
-	testfunc.PrintJsonIndented(res)
+
 	c.Nil(err, "should not return an error")
 	c.Equal(http.StatusOK, res.StatusCode, "status code not correct")
 	c.IsType(&entities.User{}, res.Body, "body is not correct type")

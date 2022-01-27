@@ -10,7 +10,6 @@ import (
 	"github.com/manicar2093/charly_team_api/db/entities"
 	"github.com/manicar2093/charly_team_api/handlers/biotestcreator"
 	"github.com/manicar2093/charly_team_api/models"
-	"github.com/manicar2093/charly_team_api/testfunc"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -51,7 +50,7 @@ func (c *CreateBiotestAWSLambdaTests) TestHandler() {
 	)
 
 	res, err := c.updateUserAWSLambda.Handler(c.ctx, c.biotest)
-	testfunc.PrintJsonIndented(res)
+
 	c.Nil(err, "should not return an error")
 	c.Equal(http.StatusCreated, res.StatusCode, "status code not correct")
 	c.IsType(&CreateBiotestResponse{}, res.Body, "body is not correct type")

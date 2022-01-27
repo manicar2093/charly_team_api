@@ -1,6 +1,8 @@
-build_deploy:
-	./compiler.sh
+build_deploy: compile_aws
 	serverless deploy --aws-profile charly_team_api_dev
+
+compile_aws:
+	./compiler.sh cmd/aws/lambda bin/aws/lambda/
 
 init_dev_env:
 	@ echo "Installing all NPM packages need"
@@ -50,3 +52,4 @@ coverage_html:
 clean:
 	@ - rm -r ./dist
 	@ - rm -r coverage.out
+	@ - rm -r ./bin

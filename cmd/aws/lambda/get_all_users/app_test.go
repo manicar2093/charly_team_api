@@ -9,7 +9,6 @@ import (
 	"github.com/manicar2093/charly_team_api/db/paginator"
 	"github.com/manicar2093/charly_team_api/handlers/userfilters/allusersfinder"
 	"github.com/manicar2093/charly_team_api/models"
-	"github.com/manicar2093/charly_team_api/testfunc"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -43,8 +42,6 @@ func (c *FindBiotestByUUIDAWSLambdaTests) TestHandler() {
 	c.allUsersFinder.On("Run", c.ctx, &request).Return(&allUsersRunReturned, nil)
 
 	got, err := c.getAllusersAWSLambda.Handler(c.ctx, request)
-
-	testfunc.PrintJsonIndented(got)
 
 	c.Nil(err)
 	c.NotNil(got)

@@ -27,5 +27,4 @@ require (
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 	gopkg.in/guregu/null.v4 v4.0.0
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
-	gorm.io/gorm v1.21.12
 )
