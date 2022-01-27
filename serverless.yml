@@ -63,36 +63,48 @@ package:
     - ./bin/**
 
 functions:
-  create_new_biotest:
-    handler: bin/create_new_biotest
+  create_biotest:
+    handler: bin/create_biotest
 
-  get_biotest_by_filter:
-    handler: bin/get_biotest_by_filter
+  create_user:
+    handler: bin/create_user
+
+  find_biotest_by_uuid:
+    handler: bin/find_biotest_by_uuid
+
+  generate_cognito_token_claims:
+    handler: bin/generate_cognito_token_claims
+    events:
+      - cognitoUserPool:
+          pool: UserPool
+          trigger: PreTokenGeneration
+
+  get_all_biotests_by_user_uuid:
+    handler: bin/get_all_biotests_by_user_uuid
+
+  get_all_users:
+    handler: bin/get_all_users
+
+  get_biotest_comparition_data:
+    handler: bin/get_biotest_comparition_data
 
   get_catalogs:
     handler: bin/get_catalogs
 
-  get_user_by_filter:
-    handler: bin/get_user_by_filter
+  get_user_by_uuid:
+    handler: bin/get_user_by_uuid
 
-  registry_new_user:
-    handler: bin/registry_new_user
-  
+  get_users_like_email_or_name:
+    handler: bin/get_users_like_email_or_name
+
+  save_biotest_images:
+    handler: bin/save_biotest_images
+
   update_biotest:
     handler: bin/update_biotest
 
   update_user: 
     handler: bin/update_user
-
-  cognito_token_gen:
-    handler: bin/cognito_token_gen
-    events:
-      - cognitoUserPool:
-          pool: UserPool
-          trigger: PreTokenGeneration
-  
-  save_biotest_images:
-    handler: bin/save_biotest_images
 
 # you can add CloudFormation resource templates here
 resources:
