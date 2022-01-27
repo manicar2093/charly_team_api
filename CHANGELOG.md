@@ -1,3 +1,9 @@
+## v0.63.0 (2022-01-27)
+
+### Feat
+
+- add all users finder aws lambda (#164)
+
 ## v0.62.0 (2022-01-26)
 
 ### Feat
