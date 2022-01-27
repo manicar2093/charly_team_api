@@ -194,9 +194,4 @@ resources:
               MaxAge: 3600
             
 
-  Outputs:
-    UserPoolClientId:
-      Value: !Ref CharlyTeamAppUserPoolClient
-      Export:
-        Name: UserPoolClientID
 
