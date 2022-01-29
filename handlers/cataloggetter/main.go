@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/manicar2093/charly_team_api/db/repositories"
+	"github.com/manicar2093/charly_team_api/internal/logger"
 	"github.com/manicar2093/charly_team_api/validators"
 )
 
@@ -27,14 +28,17 @@ func NewCatalogGetterImpl(
 }
 
 func (c *catalogGetterImpl) Run(ctx context.Context, catalogs *CatalogGetterRequest) (*CatalogGetterResponse, error) {
+	logger.Info(catalogs)
 	validation := c.validator.Validate(catalogs)
 	if !validation.IsValid {
+		logger.Error(validation.Err)
 		return nil, validation.Err
 	}
 
 	gotCatalogs, err := c.CatalogFactoryLoop(ctx, catalogs)
 
 	if err != nil {
+		logger.Error(err)
 		return nil, err
 	}
 

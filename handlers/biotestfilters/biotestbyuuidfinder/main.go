@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/manicar2093/charly_team_api/db/repositories"
+	"github.com/manicar2093/charly_team_api/internal/logger"
 	"github.com/manicar2093/charly_team_api/validators"
 )
 
@@ -21,15 +22,18 @@ func NewBiotestByUUIDImpl(biotestRepo repositories.BiotestRepository, validator 
 }
 
 func (c *biotestByUUIDImpl) Run(ctx context.Context, req *BiotestByUUIDRequest) (*BiotestByUUIDResponse, error) {
+	logger.Info(req)
 	validation := c.validator.Validate(req)
 
 	if !validation.IsValid {
+		logger.Error(validation.Err)
 		return nil, validation.Err
 	}
 
 	biotest, err := c.biotestRepo.FindBiotestByUUID(ctx, req.UUID)
 
 	if err != nil {
+		logger.Error(err)
 		return nil, err
 	}
 

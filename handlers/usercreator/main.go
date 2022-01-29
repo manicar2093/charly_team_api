@@ -3,13 +3,13 @@ package usercreator
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/aws/aws-sdk-go/service/cognitoidentityprovider"
 	"github.com/manicar2093/charly_team_api/aws"
 	"github.com/manicar2093/charly_team_api/config"
 	"github.com/manicar2093/charly_team_api/db/entities"
 	"github.com/manicar2093/charly_team_api/db/repositories"
+	"github.com/manicar2093/charly_team_api/internal/logger"
 	"github.com/manicar2093/charly_team_api/services"
 	"github.com/manicar2093/charly_team_api/validators"
 	"github.com/manicar2093/charly_team_api/validators/nullsql"
@@ -44,14 +44,15 @@ func NewUserCreatorImpl(
 }
 
 func (c *userCreatorImpl) Run(ctx context.Context, user *UserCreatorRequest) (*UserCreatorResponse, error) {
-
+	logger.Info(user)
 	if err := c.isValidRequest(user); err != nil {
+		logger.Error(err)
 		return nil, err
 	}
 
 	pass, err := c.passGen.Generate()
 	if err != nil {
-		log.Println(err)
+		logger.Error(err)
 		return nil, errGenerationPass
 	}
 
@@ -69,7 +70,7 @@ func (c *userCreatorImpl) Run(ctx context.Context, user *UserCreatorRequest) (*U
 
 	userOutput, err := c.authProvider.AdminCreateUser(&requestData)
 	if err != nil {
-		log.Println(err)
+		logger.Error(err)
 		return nil, errSavingUserAWS
 	}
 
@@ -90,7 +91,7 @@ func (c *userCreatorImpl) Run(ctx context.Context, user *UserCreatorRequest) (*U
 	err = c.userRepo.SaveUser(ctx, &userEntity)
 
 	if err != nil {
-		log.Println(err)
+		logger.Error(err)
 		return nil, errSavingUserDB
 	}
 
