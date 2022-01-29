@@ -5,8 +5,8 @@ import (
 	"fmt"
 
 	"github.com/go-rel/rel"
-	"github.com/manicar2093/charly_team_api/apperrors"
 	"github.com/manicar2093/charly_team_api/db/paginator"
+	"github.com/manicar2093/charly_team_api/internal/apperrors"
 	"github.com/manicar2093/charly_team_api/validators"
 )
 

@@ -6,8 +6,8 @@ import (
 	"testing"
 
 	"github.com/go-rel/rel/reltest"
-	"github.com/manicar2093/charly_team_api/apperrors"
 	"github.com/manicar2093/charly_team_api/db/entities"
+	"github.com/manicar2093/charly_team_api/internal/apperrors"
 	"github.com/manicar2093/charly_team_api/services"
 	"github.com/manicar2093/charly_team_api/validators"
 	"github.com/stretchr/testify/suite"

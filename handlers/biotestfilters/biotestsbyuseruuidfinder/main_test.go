@@ -5,10 +5,10 @@ import (
 	"testing"
 
 	"github.com/jaswdr/faker"
-	"github.com/manicar2093/charly_team_api/apperrors"
 	"github.com/manicar2093/charly_team_api/db/entities"
 	"github.com/manicar2093/charly_team_api/db/paginator"
 	"github.com/manicar2093/charly_team_api/db/repositories"
+	"github.com/manicar2093/charly_team_api/internal/apperrors"
 	"github.com/manicar2093/charly_team_api/validators"
 	"github.com/stretchr/testify/suite"
 )

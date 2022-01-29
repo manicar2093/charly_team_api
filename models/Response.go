@@ -3,7 +3,7 @@ package models
 import (
 	"net/http"
 
-	"github.com/manicar2093/charly_team_api/apperrors"
+	"github.com/manicar2093/charly_team_api/internal/apperrors"
 )
 
 const ValidationErrorMessage = "Request body does not satisfy needs. Please check documentation"
