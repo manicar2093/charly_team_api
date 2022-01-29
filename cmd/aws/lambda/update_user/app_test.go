@@ -6,11 +6,11 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/manicar2093/charly_team_api/apperrors"
 	"github.com/manicar2093/charly_team_api/db/entities"
-	"github.com/manicar2093/charly_team_api/handlers/userupdater"
+	"github.com/manicar2093/charly_team_api/internal/apperrors"
+	"github.com/manicar2093/charly_team_api/internal/handlers/userupdater"
 
-	"github.com/manicar2093/charly_team_api/models"
+	"github.com/manicar2093/charly_team_api/internal/models"
 	"github.com/stretchr/testify/suite"
 )
 

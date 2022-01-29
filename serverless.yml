@@ -63,17 +63,10 @@ package:
   patterns:
     - ./bin/aws/lambda/**
     - '!.github/**'
-    - '!./apperrors/**'
-    - '!./aws/**'
     - '!./cmd/**'
-    - '!./config/**'
     - '!./db/**'
-    - '!./handlers/**'
-    - '!./models/**'
+    - '!./internal/**'
     - '!./node_modules/**'
-    - '!./services/**'
-    - '!./testfunc/**'
-    - '!./validators/**'
     - '!.env**'
     - '!compiler.sh'
     - '!dev_kit.yml'

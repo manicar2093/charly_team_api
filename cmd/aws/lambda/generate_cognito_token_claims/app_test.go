@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/aws/aws-lambda-go/events"
-	"github.com/manicar2093/charly_team_api/handlers/tokenclaimsgenerator"
+	"github.com/manicar2093/charly_team_api/internal/handlers/tokenclaimsgenerator"
 	"github.com/stretchr/testify/assert"
 )
 

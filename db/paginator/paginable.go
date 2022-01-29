@@ -5,7 +5,7 @@ import (
 	"reflect"
 
 	"github.com/go-rel/rel"
-	"github.com/manicar2093/charly_team_api/config"
+	"github.com/manicar2093/charly_team_api/internal/config"
 )
 
 type PaginableImpl struct {

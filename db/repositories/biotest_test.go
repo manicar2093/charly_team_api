@@ -13,7 +13,7 @@ import (
 	"github.com/jaswdr/faker"
 	"github.com/manicar2093/charly_team_api/db/entities"
 	"github.com/manicar2093/charly_team_api/db/paginator"
-	"github.com/manicar2093/charly_team_api/services"
+	"github.com/manicar2093/charly_team_api/internal/services"
 	"github.com/stretchr/testify/suite"
 )
 

@@ -4,7 +4,7 @@ import (
 	"github.com/go-rel/rel"
 	"github.com/go-rel/rel/adapter/postgres"
 	_ "github.com/lib/pq"
-	"github.com/manicar2093/charly_team_api/config"
+	"github.com/manicar2093/charly_team_api/internal/config"
 )
 
 func PostgressConnection() rel.Repository {

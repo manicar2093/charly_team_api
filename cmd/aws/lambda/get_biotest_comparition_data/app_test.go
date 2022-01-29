@@ -8,7 +8,7 @@ import (
 	"github.com/jaswdr/faker"
 	"github.com/manicar2093/charly_team_api/db/entities"
 	"github.com/manicar2093/charly_team_api/db/repositories"
-	"github.com/manicar2093/charly_team_api/handlers/biotestfilters/biotestcomparitiondatafinder"
+	"github.com/manicar2093/charly_team_api/internal/handlers/biotestfilters/biotestcomparitiondatafinder"
 	"github.com/stretchr/testify/suite"
 )
 
