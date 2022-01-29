@@ -3,8 +3,8 @@ package main
 import (
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/manicar2093/charly_team_api/db/connections"
-	"github.com/manicar2093/charly_team_api/handlers/biotestcreator"
 	"github.com/manicar2093/charly_team_api/internal/config"
+	"github.com/manicar2093/charly_team_api/internal/handlers/biotestcreator"
 	"github.com/manicar2093/charly_team_api/internal/services"
 	"github.com/manicar2093/charly_team_api/internal/validators"
 )

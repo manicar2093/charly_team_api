@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/aws/aws-lambda-go/events"
-	"github.com/manicar2093/charly_team_api/handlers/tokenclaimsgenerator"
+	"github.com/manicar2093/charly_team_api/internal/handlers/tokenclaimsgenerator"
 )
 
 type GenerateCognitoTokenClaimsAWSLambda struct {

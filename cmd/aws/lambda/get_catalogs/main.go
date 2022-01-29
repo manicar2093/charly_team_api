@@ -4,8 +4,8 @@ import (
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/manicar2093/charly_team_api/db/connections"
 	"github.com/manicar2093/charly_team_api/db/repositories"
-	"github.com/manicar2093/charly_team_api/handlers/cataloggetter"
 	"github.com/manicar2093/charly_team_api/internal/config"
+	"github.com/manicar2093/charly_team_api/internal/handlers/cataloggetter"
 	"github.com/manicar2093/charly_team_api/internal/validators"
 )
 

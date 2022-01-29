@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/manicar2093/charly_team_api/handlers/biotestfilters/biotestbyuuidfinder"
+	"github.com/manicar2093/charly_team_api/internal/handlers/biotestfilters/biotestbyuuidfinder"
 	"github.com/manicar2093/charly_team_api/internal/models"
 )
 

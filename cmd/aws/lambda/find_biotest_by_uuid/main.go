@@ -5,8 +5,8 @@ import (
 	"github.com/manicar2093/charly_team_api/db/connections"
 	"github.com/manicar2093/charly_team_api/db/paginator"
 	"github.com/manicar2093/charly_team_api/db/repositories"
-	"github.com/manicar2093/charly_team_api/handlers/biotestfilters/biotestbyuuidfinder"
 	"github.com/manicar2093/charly_team_api/internal/config"
+	"github.com/manicar2093/charly_team_api/internal/handlers/biotestfilters/biotestbyuuidfinder"
 	"github.com/manicar2093/charly_team_api/internal/services"
 	"github.com/manicar2093/charly_team_api/internal/validators"
 )
