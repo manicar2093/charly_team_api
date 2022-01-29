@@ -5,6 +5,7 @@ import (
 
 	"github.com/go-rel/rel"
 	"github.com/manicar2093/charly_team_api/db/entities"
+	"github.com/manicar2093/charly_team_api/internal/logger"
 	"github.com/manicar2093/charly_team_api/services"
 	"github.com/manicar2093/charly_team_api/validators"
 )
@@ -32,9 +33,11 @@ func NewBiotestCreator(
 }
 
 func (c *BiotestCreatorImpl) Run(ctx context.Context, req *entities.Biotest) (*BiotestCreatorResponse, error) {
+	logger.Info(req)
 	validation := c.validator.Validate(req)
 
 	if !validation.IsValid {
+		logger.Error(validation.Err)
 		return nil, validation.Err
 	}
 
@@ -42,21 +45,25 @@ func (c *BiotestCreatorImpl) Run(ctx context.Context, req *entities.Biotest) (*B
 		req.BiotestUUID = c.uuidGen.New()
 
 		if err := c.repo.Insert(ctx, &req.HigherMuscleDensity); err != nil {
+			logger.Error(err)
 			return err
 		}
 		req.HigherMuscleDensityID = req.HigherMuscleDensity.ID
 
 		if err := c.repo.Insert(ctx, &req.LowerMuscleDensity); err != nil {
+			logger.Error(err)
 			return err
 		}
 		req.LowerMuscleDensityID = req.LowerMuscleDensity.ID
 
 		if err := c.repo.Insert(ctx, &req.SkinFolds); err != nil {
+			logger.Error(err)
 			return err
 		}
 		req.SkinFoldsID = req.SkinFolds.ID
 
 		if err := c.repo.Insert(ctx, req); err != nil {
+			logger.Error(err)
 			return err
 		}
 
@@ -64,6 +71,7 @@ func (c *BiotestCreatorImpl) Run(ctx context.Context, req *entities.Biotest) (*B
 	})
 
 	if err != nil {
+		logger.Error(err)
 		return nil, err
 	}
 	return &BiotestCreatorResponse{BiotestCreated: req}, nil

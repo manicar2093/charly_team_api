@@ -4,11 +4,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log"
 	"strconv"
 	"strings"
 
 	"github.com/manicar2093/charly_team_api/db/repositories"
+	"github.com/manicar2093/charly_team_api/internal/logger"
 )
 
 type TokenClaimsGenerator interface {
@@ -27,11 +27,11 @@ func (c *tokenClaimsGeneratorImpl) Run(
 	ctx context.Context,
 	req *TokenClaimsGeneratorRequest,
 ) (*TokenClaimsGeneratorResponse, error) {
-
+	logger.Info(req)
 	userToSign, err := c.userRepo.FindUserByUUID(ctx, req.UserUUID)
 
 	if err != nil {
-		log.Println(err)
+		logger.Error(err)
 		return nil, errors.New("user was not found")
 	}
 

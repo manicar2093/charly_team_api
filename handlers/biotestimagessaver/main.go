@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/manicar2093/charly_team_api/db/repositories"
+	"github.com/manicar2093/charly_team_api/internal/logger"
 	"github.com/manicar2093/charly_team_api/validators"
 	"github.com/manicar2093/charly_team_api/validators/nullsql"
 )
@@ -22,15 +23,18 @@ func NewBiotestImagesSaverImpl(biotestRepo repositories.BiotestRepository, valid
 }
 
 func (c *biotestImagesSaverImpl) Run(ctx context.Context, biotestImages *BiotestImagesSaverRequest) (*BiotestImagesSaverResponse, error) {
+	logger.Info(biotestImages)
 	validation := c.validator.Validate(biotestImages)
 
 	if !validation.IsValid {
+		logger.Error(validation.Err)
 		return nil, validation.Err
 	}
 
 	biotest, err := c.biotestRepo.FindBiotestByUUID(ctx, biotestImages.BiotestUUID)
 
 	if err != nil {
+		logger.Error(err)
 		return nil, err
 	}
 
@@ -40,8 +44,11 @@ func (c *biotestImagesSaverImpl) Run(ctx context.Context, biotestImages *Biotest
 	biotest.RightSidePicture = nullsql.ValidateStringSQLValid(biotestImages.RightSidePicture)
 
 	if err := c.biotestRepo.UpdateBiotest(ctx, biotest); err != nil {
+		logger.Error(err)
 		return nil, err
 	}
+
+	logger.Info(biotestImages)
 
 	return &BiotestImagesSaverResponse{BiotestImagesSaved: biotestImages}, nil
 }
