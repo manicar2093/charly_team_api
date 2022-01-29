@@ -8,10 +8,10 @@ import (
 
 	"github.com/aws/aws-sdk-go/service/cognitoidentityprovider"
 	"github.com/jaswdr/faker"
-	"github.com/manicar2093/charly_team_api/aws"
 	"github.com/manicar2093/charly_team_api/db/entities"
 	"github.com/manicar2093/charly_team_api/db/repositories"
 	"github.com/manicar2093/charly_team_api/internal/apperrors"
+	"github.com/manicar2093/charly_team_api/internal/aws"
 	"github.com/manicar2093/charly_team_api/services"
 
 	"github.com/manicar2093/charly_team_api/validators"

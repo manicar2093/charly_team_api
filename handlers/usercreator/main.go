@@ -5,10 +5,10 @@ import (
 	"fmt"
 
 	"github.com/aws/aws-sdk-go/service/cognitoidentityprovider"
-	"github.com/manicar2093/charly_team_api/aws"
 	"github.com/manicar2093/charly_team_api/config"
 	"github.com/manicar2093/charly_team_api/db/entities"
 	"github.com/manicar2093/charly_team_api/db/repositories"
+	"github.com/manicar2093/charly_team_api/internal/aws"
 	"github.com/manicar2093/charly_team_api/internal/logger"
 	"github.com/manicar2093/charly_team_api/services"
 	"github.com/manicar2093/charly_team_api/validators"
