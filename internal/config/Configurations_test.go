@@ -10,7 +10,7 @@ import (
 
 func TestMain(m *testing.M) {
 
-	godotenv.Load("../.env.example")
+	godotenv.Load("../../.env.example")
 	StartConfig()
 
 	os.Exit(m.Run())

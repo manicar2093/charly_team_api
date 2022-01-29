@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
-	"github.com/manicar2093/charly_team_api/config"
+	"github.com/manicar2093/charly_team_api/internal/config"
 )
 
 // LoadEnvFileOrPanic loads the requested env file and start config. If file does not exist

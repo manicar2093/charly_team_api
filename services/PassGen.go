@@ -1,7 +1,7 @@
 package services
 
 import (
-	"github.com/manicar2093/charly_team_api/config"
+	"github.com/manicar2093/charly_team_api/internal/config"
 	"github.com/sethvargo/go-password/password"
 )
 

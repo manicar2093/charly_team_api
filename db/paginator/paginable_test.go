@@ -9,8 +9,8 @@ import (
 	"github.com/go-rel/rel"
 	"github.com/go-rel/rel/reltest"
 	"github.com/go-rel/rel/where"
-	"github.com/manicar2093/charly_team_api/config"
 	"github.com/manicar2093/charly_team_api/db/entities"
+	"github.com/manicar2093/charly_team_api/internal/config"
 	"github.com/manicar2093/charly_team_api/testfunc"
 	"github.com/stretchr/testify/assert"
 )
