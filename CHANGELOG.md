@@ -1,3 +1,9 @@
+## v0.65.0 (2022-01-29)
+
+### Feat
+
+- Change items order on catalog seed (#169)
+
 ## v0.64.0 (2022-01-29)
 
 ### Feat
