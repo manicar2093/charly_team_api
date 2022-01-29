@@ -7,7 +7,7 @@ import (
 	"github.com/jaswdr/faker"
 	"github.com/manicar2093/charly_team_api/db/repositories"
 	"github.com/manicar2093/charly_team_api/internal/apperrors"
-	"github.com/manicar2093/charly_team_api/validators"
+	"github.com/manicar2093/charly_team_api/internal/validators"
 	"github.com/stretchr/testify/suite"
 )
 

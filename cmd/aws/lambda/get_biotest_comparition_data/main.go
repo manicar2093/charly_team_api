@@ -8,7 +8,7 @@ import (
 	"github.com/manicar2093/charly_team_api/handlers/biotestfilters/biotestcomparitiondatafinder"
 	"github.com/manicar2093/charly_team_api/internal/config"
 	"github.com/manicar2093/charly_team_api/internal/services"
-	"github.com/manicar2093/charly_team_api/validators"
+	"github.com/manicar2093/charly_team_api/internal/validators"
 )
 
 func main() {

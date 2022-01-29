@@ -11,8 +11,8 @@ import (
 	"github.com/manicar2093/charly_team_api/internal/config"
 	"github.com/manicar2093/charly_team_api/internal/logger"
 	"github.com/manicar2093/charly_team_api/internal/services"
-	"github.com/manicar2093/charly_team_api/validators"
-	"github.com/manicar2093/charly_team_api/validators/nullsql"
+	"github.com/manicar2093/charly_team_api/internal/validators"
+	"github.com/manicar2093/charly_team_api/internal/validators/nullsql"
 )
 
 type UserCreator interface {
