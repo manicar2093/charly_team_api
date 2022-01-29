@@ -18,6 +18,7 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.8
 	github.com/rogpeppe/go-internal v1.8.0 // indirect
 	github.com/sethvargo/go-password v0.2.0
+	github.com/sirupsen/logrus v1.8.1
 	github.com/stretchr/objx v0.2.0 // indirect
 	github.com/stretchr/testify v1.7.0
 	github.com/tencentyun/scf-go-lib v0.0.0-20200624065115-ba679e2ec9c9
