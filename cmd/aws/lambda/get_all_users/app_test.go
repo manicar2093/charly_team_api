@@ -8,7 +8,7 @@ import (
 	"github.com/manicar2093/charly_team_api/db/entities"
 	"github.com/manicar2093/charly_team_api/db/paginator"
 	"github.com/manicar2093/charly_team_api/handlers/userfilters/allusersfinder"
-	"github.com/manicar2093/charly_team_api/models"
+	"github.com/manicar2093/charly_team_api/internal/models"
 	"github.com/stretchr/testify/suite"
 )
 
