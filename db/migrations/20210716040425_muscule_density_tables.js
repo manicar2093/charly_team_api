@@ -2,6 +2,7 @@
 exports.up = function(knex) {
     const higherMuscleDensity = () => knex.schema.createTable('HigherMuscleDensity', t => {
         t.increments('id').primary()
+        t.integer('biotest_id').notNullable().references('Biotest.id');
         t.decimal('neck');
         t.decimal('shoulders');
         t.decimal('back');
@@ -20,6 +21,7 @@ exports.up = function(knex) {
 
     const lowerMuscleDensity = () => knex.schema.createTable('LowerMuscleDensity', t => {
         t.increments('id').primary()
+        t.integer('biotest_id').notNullable().references('Biotest.id');
         t.decimal('hips');
         t.decimal('right_leg');
         t.decimal('left_leg');
@@ -29,6 +31,7 @@ exports.up = function(knex) {
 
     const skinFolds = () => knex.schema.createTable('SkinFolds', t => {
         t.increments('id').primary()
+        t.integer('biotest_id').notNullable().references('Biotest.id');
         t.integer('subscapular');
         t.integer('suprailiac');
         t.integer('bicipital');
