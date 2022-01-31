@@ -1,3 +1,9 @@
+## v0.67.0 (2022-01-31)
+
+### Feat
+
+- Change biotest relation (#171)
+
 ## v0.66.0 (2022-01-29)
 
 ### Feat
