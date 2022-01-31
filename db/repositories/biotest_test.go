@@ -319,8 +319,6 @@ func (c *BiotestRepositoryTest) TestSaveBiotest() {
 	UUIDForBiotest := c.faker.UUID().V4()
 	c.uuidGen.On("New").Return(UUIDForBiotest)
 	biotestToSave := entities.Biotest{}
-	c.faker.Struct().Fill(&biotestToSave)
-	biotestToSave.ID = 0
 	c.repo.ExpectTransaction(func(r *reltest.Repository) {
 		c.repo.ExpectInsert().ForType("entities.Biotest").Return(nil)
 		c.repo.ExpectInsert().ForType("entities.HigherMuscleDensity").Return(nil)
@@ -340,13 +338,8 @@ func (c *BiotestRepositoryTest) TestSaveBiotest_InsertError() {
 	UUIDForBiotest := c.faker.UUID().V4()
 	c.uuidGen.On("New").Return(UUIDForBiotest)
 	biotestToSave := entities.Biotest{}
-	c.faker.Struct().Fill(&biotestToSave)
-	biotestToSave.ID = 0
 	c.repo.ExpectTransaction(func(r *reltest.Repository) {
 		c.repo.ExpectInsert().ForType("entities.Biotest").Error(fmt.Errorf("an error occured"))
-		c.repo.ExpectInsert().ForType("entities.HigherMuscleDensity").Return(nil)
-		c.repo.ExpectInsert().ForType("entities.LowerMuscleDensity").Return(nil)
-		c.repo.ExpectInsert().ForType("entities.SkinFolds").Return(nil)
 	})
 
 	err := c.biotestRepository.SaveBiotest(c.ctx, &biotestToSave)
@@ -359,6 +352,9 @@ func (c *BiotestRepositoryTest) TestUpdateBiotest() {
 	biotestToUpdate := entities.Biotest{}
 	c.repo.ExpectTransaction(func(r *reltest.Repository) {
 		r.ExpectUpdate().ForType("entities.Biotest").Return(nil)
+		r.ExpectUpdate().ForType("entities.HigherMuscleDensity").Return(nil)
+		r.ExpectUpdate().ForType("entities.LowerMuscleDensity").Return(nil)
+		r.ExpectUpdate().ForType("entities.SkinFolds").Return(nil)
 	})
 
 	err := c.biotestRepository.UpdateBiotest(c.ctx, &biotestToUpdate)
