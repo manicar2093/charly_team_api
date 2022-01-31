@@ -9,7 +9,9 @@ import (
 )
 
 func TestSkinFoldsEntity(t *testing.T) {
+	biotestID := int32(1)
 	skinFold := SkinFolds{
+		BiotestID:   &biotestID,
 		Subscapular: null.IntFrom(12),
 		Suprailiac:  null.IntFrom(12),
 		Bicipital:   null.IntFrom(12),

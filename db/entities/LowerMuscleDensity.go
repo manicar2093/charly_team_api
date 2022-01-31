@@ -5,6 +5,8 @@ import "gopkg.in/guregu/null.v4"
 // LowerMuscleDensity is an info wrapper
 type LowerMuscleDensity struct {
 	ID        int32      `db:",primary" json:"id,omitempty"`
+	Biotest   *Biotest   `json:"biotest,omitempty"`
+	BiotestID *int32     `json:"biotest_id,omitempty"`
 	Hips      null.Float `json:"hips,omitempty"`
 	RightLeg  null.Float `json:"right_leg,omitempty"`
 	LeftLeg   null.Float `json:"left_leg,omitempty"`

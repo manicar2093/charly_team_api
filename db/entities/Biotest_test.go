@@ -47,51 +47,10 @@ func TestBiotestEntity(t *testing.T) {
 	DB.Insert(context.Background(), &creator)
 	assert.NotEmpty(t, creator.ID, "ID should not be empty")
 
-	higherMuscleDensity = HigherMuscleDensity{
-		Neck:                 null.FloatFrom(10.0),
-		Shoulders:            null.FloatFrom(42.5),
-		Back:                 null.FloatFrom(25.0),
-		Chest:                null.FloatFrom(20.0),
-		BackChest:            null.FloatFrom(46.3),
-		RightRelaxedBicep:    null.FloatFrom(15.3),
-		RightContractedBicep: null.FloatFrom(14.2),
-		LeftRelaxedBicep:     null.FloatFrom(12.2),
-		LeftContractedBicep:  null.FloatFrom(11.6),
-		RightForearm:         null.FloatFrom(12.5),
-		LeftForearm:          null.FloatFrom(12.6),
-		Wrists:               null.FloatFrom(18.5),
-		HighAbdomen:          null.FloatFrom(106.5),
-		LowerAbdomen:         null.FloatFrom(106.0),
-	}
-
-	DB.Insert(context.Background(), &higherMuscleDensity)
-	assert.NotEmpty(t, higherMuscleDensity.ID, "ID should not be empty")
-
-	lowerMuscleDensity = LowerMuscleDensity{
-		Hips:      null.FloatFrom(45.0),
-		RightLeg:  null.FloatFrom(24.6),
-		LeftLeg:   null.FloatFrom(24.1),
-		RightCalf: null.FloatFrom(15.3),
-		LeftCalf:  null.FloatFrom(15.0),
-	}
-
-	DB.Insert(context.Background(), &lowerMuscleDensity)
-	assert.NotEmpty(t, lowerMuscleDensity.ID, "ID should not be empty")
-
-	skinFolds = SkinFolds{
-		Subscapular: null.IntFrom(32),
-		Suprailiac:  null.IntFrom(100),
-		Bicipital:   null.IntFrom(150),
-		Tricipital:  null.IntFrom(200),
-	}
-
-	DB.Insert(context.Background(), &skinFolds)
-	assert.NotEmpty(t, skinFolds.ID, "ID should not be empty")
-
 	biotest = Biotest{
-		LowerMuscleDensityID:    lowerMuscleDensity.ID,
-		SkinFoldsID:             skinFolds.ID,
-		HigherMuscleDensityID:   higherMuscleDensity.ID,
+		HigherMuscleDensity:     higherMuscleDensity,
+		LowerMuscleDensity:      lowerMuscleDensity,
+		SkinFolds:               skinFolds,
 		WeightClasificationID:   4,
 		HeartHealthID:           1,
 		CustomerID:              customer.ID,
@@ -117,6 +76,50 @@ func TestBiotestEntity(t *testing.T) {
 
 	err := DB.Insert(context.Background(), &biotest)
 	assert.Nil(t, err, "Unexpected error")
+
+	higherMuscleDensity = HigherMuscleDensity{
+		BiotestID:            &biotest.ID,
+		Neck:                 null.FloatFrom(10.0),
+		Shoulders:            null.FloatFrom(42.5),
+		Back:                 null.FloatFrom(25.0),
+		Chest:                null.FloatFrom(20.0),
+		BackChest:            null.FloatFrom(46.3),
+		RightRelaxedBicep:    null.FloatFrom(15.3),
+		RightContractedBicep: null.FloatFrom(14.2),
+		LeftRelaxedBicep:     null.FloatFrom(12.2),
+		LeftContractedBicep:  null.FloatFrom(11.6),
+		RightForearm:         null.FloatFrom(12.5),
+		LeftForearm:          null.FloatFrom(12.6),
+		Wrists:               null.FloatFrom(18.5),
+		HighAbdomen:          null.FloatFrom(106.5),
+		LowerAbdomen:         null.FloatFrom(106.0),
+	}
+
+	DB.Insert(context.Background(), &higherMuscleDensity)
+	assert.NotEmpty(t, higherMuscleDensity.ID, "ID should not be empty")
+
+	lowerMuscleDensity = LowerMuscleDensity{
+		BiotestID: &biotest.ID,
+		Hips:      null.FloatFrom(45.0),
+		RightLeg:  null.FloatFrom(24.6),
+		LeftLeg:   null.FloatFrom(24.1),
+		RightCalf: null.FloatFrom(15.3),
+		LeftCalf:  null.FloatFrom(15.0),
+	}
+
+	DB.Insert(context.Background(), &lowerMuscleDensity)
+	assert.NotEmpty(t, lowerMuscleDensity.ID, "ID should not be empty")
+
+	skinFolds = SkinFolds{
+		BiotestID:   &biotest.ID,
+		Subscapular: null.IntFrom(32),
+		Suprailiac:  null.IntFrom(100),
+		Bicipital:   null.IntFrom(150),
+		Tricipital:  null.IntFrom(200),
+	}
+
+	DB.Insert(context.Background(), &skinFolds)
+	assert.NotEmpty(t, skinFolds.ID, "ID should not be empty")
 
 	var biotestFound Biotest
 	DB.Find(context.Background(), &biotestFound, where.Eq("id", biotest.ID))

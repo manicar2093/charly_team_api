@@ -15,9 +15,6 @@ exports.up = function(knex) {
 
     const biotest = () => knex.schema.createTable('Biotest', t => {
         t.increments('id').primary();
-        t.integer('higher_muscle_density_id').notNullable().references('HigherMuscleDensity.id');
-        t.integer('lower_muscle_density_id').notNullable().references('LowerMuscleDensity.id');
-        t.integer('skin_folds_id').notNullable().references('SkinFolds.id');
         t.integer('weight_clasification_id').notNullable().references('WeightClasifications.id');
         t.integer('heart_health_id').nullable().references('HeartHealths.id');
         t.integer('customer_id').notNullable().references('User.id').comment('It refers to whom is this biotest');

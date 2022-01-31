@@ -156,26 +156,28 @@ func (c *BiotestRepositoryRel) SaveBiotest(
 	err := c.repo.Transaction(ctx, func(ctx context.Context) error {
 		biotest.BiotestUUID = c.uuidGen.New()
 
-		if err := c.repo.Insert(ctx, &biotest.HigherMuscleDensity); err != nil {
-			return err
-		}
-		biotest.HigherMuscleDensityID = biotest.HigherMuscleDensity.ID
-
-		if err := c.repo.Insert(ctx, &biotest.LowerMuscleDensity); err != nil {
-			return err
-		}
-		biotest.LowerMuscleDensityID = biotest.LowerMuscleDensity.ID
-
-		if err := c.repo.Insert(ctx, &biotest.SkinFolds); err != nil {
-			return err
-		}
-		biotest.SkinFoldsID = biotest.SkinFolds.ID
-
 		if err := c.repo.Insert(ctx, biotest); err != nil {
 			return err
 		}
 
+		biotest.HigherMuscleDensity.BiotestID = &biotest.ID
+		biotest.LowerMuscleDensity.BiotestID = &biotest.ID
+		biotest.SkinFolds.BiotestID = &biotest.ID
+
+		if err := c.repo.Insert(ctx, &biotest.HigherMuscleDensity); err != nil {
+			return err
+		}
+
+		if err := c.repo.Insert(ctx, &biotest.LowerMuscleDensity); err != nil {
+			return err
+		}
+
+		if err := c.repo.Insert(ctx, &biotest.SkinFolds); err != nil {
+			return err
+		}
+
 		return nil
+
 	})
 
 	if err != nil {
@@ -190,7 +192,21 @@ func (c *BiotestRepositoryRel) UpdateBiotest(
 	biotest *entities.Biotest,
 ) error {
 	return c.repo.Transaction(ctx, func(ctx context.Context) error {
-		return c.repo.Update(ctx, biotest)
+		if err := c.repo.Update(ctx, &biotest.HigherMuscleDensity); err != nil {
+			return err
+		}
+
+		if err := c.repo.Update(ctx, &biotest.LowerMuscleDensity); err != nil {
+			return err
+		}
+
+		if err := c.repo.Update(ctx, &biotest.SkinFolds); err != nil {
+			return err
+		}
+		if err := c.repo.Update(ctx, biotest); err != nil {
+			return err
+		}
+		return nil
 	})
 }
 

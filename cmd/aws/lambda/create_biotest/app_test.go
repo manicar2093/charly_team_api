@@ -10,6 +10,7 @@ import (
 	"github.com/manicar2093/charly_team_api/internal/apperrors"
 	"github.com/manicar2093/charly_team_api/internal/handlers/biotestcreator"
 	"github.com/manicar2093/charly_team_api/internal/models"
+	"github.com/manicar2093/charly_team_api/internal/testfunc"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -44,6 +45,7 @@ func (c *CreateBiotestAWSLambdaTests) TestHandler() {
 	biotestUUID := "uuid"
 	c.biotest.ID = biotestID
 	c.biotest.BiotestUUID = biotestUUID
+	testfunc.PrintJsonIndented(c.biotest)
 	c.biotestCreator.On("Run", c.ctx, &c.biotest).Return(
 		&biotestcreator.BiotestCreatorResponse{BiotestCreated: &c.biotest},
 		nil,

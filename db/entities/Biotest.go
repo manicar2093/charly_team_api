@@ -12,11 +12,8 @@ const BiotestTable = "Biotest"
 type Biotest struct {
 	ID                      int32               `db:",primary" json:"id,omitempty"`
 	HigherMuscleDensity     HigherMuscleDensity `auto:"true" json:"higher_muscle_density,omitempty"`
-	HigherMuscleDensityID   int32               `json:"higher_muscle_density_id"`
 	LowerMuscleDensity      LowerMuscleDensity  `auto:"true" json:"lower_muscle_density,omitempty"`
-	LowerMuscleDensityID    int32               `json:"lower_muscle_density_id"`
 	SkinFolds               SkinFolds           `auto:"true" json:"skin_folds,omitempty"`
-	SkinFoldsID             int32               `json:"skin_folds_id"`
 	WeightClasification     WeightClasification `json:"-"`
 	WeightClasificationID   int32               `validate:"required,gt=0" json:"weight_clasification_id,omitempty"`
 	HeartHealth             HeartHealth         `json:"-"`

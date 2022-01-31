@@ -3,8 +3,8 @@ package biotestcreator
 import (
 	"context"
 
-	"github.com/go-rel/rel"
 	"github.com/manicar2093/charly_team_api/db/entities"
+	"github.com/manicar2093/charly_team_api/db/repositories"
 	"github.com/manicar2093/charly_team_api/internal/logger"
 	"github.com/manicar2093/charly_team_api/internal/services"
 	"github.com/manicar2093/charly_team_api/internal/validators"
@@ -15,20 +15,20 @@ type BiotestCreator interface {
 }
 
 type BiotestCreatorImpl struct {
-	repo      rel.Repository
-	validator validators.ValidatorService
-	uuidGen   services.UUIDGenerator
+	biotestRepo repositories.BiotestRepository
+	validator   validators.ValidatorService
+	uuidGen     services.UUIDGenerator
 }
 
 func NewBiotestCreator(
-	repo rel.Repository,
+	biotestRepo repositories.BiotestRepository,
 	validator validators.ValidatorService,
 	uuidGen services.UUIDGenerator,
 ) *BiotestCreatorImpl {
 	return &BiotestCreatorImpl{
-		repo:      repo,
-		validator: validator,
-		uuidGen:   uuidGen,
+		biotestRepo: biotestRepo,
+		validator:   validator,
+		uuidGen:     uuidGen,
 	}
 }
 
@@ -41,34 +41,7 @@ func (c *BiotestCreatorImpl) Run(ctx context.Context, req *entities.Biotest) (*B
 		return nil, validation.Err
 	}
 
-	err := c.repo.Transaction(ctx, func(ctx context.Context) error {
-		req.BiotestUUID = c.uuidGen.New()
-
-		if err := c.repo.Insert(ctx, &req.HigherMuscleDensity); err != nil {
-			logger.Error(err)
-			return err
-		}
-		req.HigherMuscleDensityID = req.HigherMuscleDensity.ID
-
-		if err := c.repo.Insert(ctx, &req.LowerMuscleDensity); err != nil {
-			logger.Error(err)
-			return err
-		}
-		req.LowerMuscleDensityID = req.LowerMuscleDensity.ID
-
-		if err := c.repo.Insert(ctx, &req.SkinFolds); err != nil {
-			logger.Error(err)
-			return err
-		}
-		req.SkinFoldsID = req.SkinFolds.ID
-
-		if err := c.repo.Insert(ctx, req); err != nil {
-			logger.Error(err)
-			return err
-		}
-
-		return nil
-	})
+	err := c.biotestRepo.SaveBiotest(ctx, req)
 
 	if err != nil {
 		logger.Error(err)

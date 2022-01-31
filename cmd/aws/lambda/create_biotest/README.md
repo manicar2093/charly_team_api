@@ -21,7 +21,6 @@
         "high_abdomen": null,
         "lower_abdomen": null
     },
-    "higher_muscle_density_id": 0,
     "lower_muscle_density": {
         "hips": null,
         "right_leg": null,
@@ -29,14 +28,12 @@
         "right_calf": null,
         "left_calf": null
     },
-    "lower_muscle_density_id": 0,
     "skin_folds": {
         "subscapular": null,
         "suprailiac": null,
         "bicipital": null,
         "tricipital": null
     },
-    "skin_folds_id": 0,
     "customer": {
         "biotype_id": null,
         "bone_density_id": null,
