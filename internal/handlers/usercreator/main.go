@@ -15,6 +15,12 @@ import (
 	"github.com/manicar2093/charly_team_api/internal/validators/nullsql"
 )
 
+var (
+	emailAttributeName          string = "email"
+	emailVerifiedAttributeName  string = "email_verified"
+	emailVerifiedAttributeValue string = "true"
+)
+
 type UserCreator interface {
 	Run(ctx context.Context, user *UserCreatorRequest) (*UserCreatorResponse, error)
 }
@@ -61,10 +67,8 @@ func (c *userCreatorImpl) Run(ctx context.Context, user *UserCreatorRequest) (*U
 		Username:          &user.Email,
 		TemporaryPassword: &pass,
 		UserAttributes: []*cognitoidentityprovider.AttributeType{
-			{
-				Name:  &emailAttributeName,
-				Value: &user.Email,
-			},
+			{Name: &emailAttributeName, Value: &user.Email},
+			{Name: &emailVerifiedAttributeName, Value: &emailVerifiedAttributeValue},
 		},
 	}
 
