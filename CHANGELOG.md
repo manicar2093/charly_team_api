@@ -1,3 +1,9 @@
+## v0.68.0 (2022-02-02)
+
+### Feat
+
+- Add new user attribute to user creation (#175)
+
 ## v0.67.0 (2022-01-31)
 
 ### Feat
