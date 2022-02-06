@@ -30,6 +30,18 @@ If not exists, last_biotest will not be in the answere
 }
 ```
 
+## NotFound Response
+
+```JSON
+{
+    "code": 404,
+    "status": "Not Found",
+    "body": {
+        "error": "BiotestComparitionData with identifier 214dde36ed1a437baff06f515633048c not found"
+    }
+}
+```
+
 ## BadRequest Response
 
 ```JSON
