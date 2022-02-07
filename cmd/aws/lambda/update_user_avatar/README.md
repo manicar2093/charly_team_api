@@ -1,5 +1,14 @@
 # Update user avatar
 
+## Request
+
+```JSON
+{
+    "user_uuid": "a_uuid",
+    "avatar_url": "avatar/url"
+}
+```
+
 ## Ok Response
 
 ```JSON
