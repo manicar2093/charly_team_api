@@ -125,6 +125,9 @@ functions:
   update_user: 
     handler: bin/aws/lambda/update_user
 
+  update_user_avatar:
+    handler: bin/aws/lambda/update_user_avatar
+
 # you can add CloudFormation resource templates here
 resources:
   Resources:
