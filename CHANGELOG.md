@@ -1,3 +1,9 @@
+## v0.69.0 (2022-02-07)
+
+### Feat
+
+- Add update user avatar function (#178)
+
 ## v0.68.0 (2022-02-02)
 
 ### Feat
