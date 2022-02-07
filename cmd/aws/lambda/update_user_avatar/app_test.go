@@ -8,7 +8,6 @@ import (
 	"github.com/manicar2093/charly_team_api/internal/apperrors"
 	"github.com/manicar2093/charly_team_api/internal/handlers/user"
 	"github.com/manicar2093/charly_team_api/internal/models"
-	"github.com/manicar2093/charly_team_api/internal/testfunc"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -34,7 +33,7 @@ func (c *UpdateUserAWSLambdaTests) TearDownTest() {
 }
 
 func (c *UpdateUserAWSLambdaTests) TestHandler() {
-	req := user.AvatarUpdaterRequest{}
+	req := user.AvatarUpdaterRequest{UserUUID: "a_uuid", AvatarURL: "avatar/url"}
 	userRes := &entities.User{ID: int32(1)}
 	res := user.AvatarUpdaterResponse{UserUpdated: userRes}
 	c.userAvatarUpdater.On("Run", c.ctx, &req).Return(&res, nil)
@@ -53,7 +52,6 @@ func (c *UpdateUserAWSLambdaTests) TestHandler_ValidationError() {
 	c.userAvatarUpdater.On("Run", c.ctx, &req).Return(nil, validationErr)
 
 	got, err := c.updateUserAWSLambda.Handler(c.ctx, req)
-	testfunc.PrintJsonIndented(got)
 
 	c.Nil(err)
 	c.NotNil(got)
