@@ -1,3 +1,9 @@
+## v0.69.1 (2022-02-08)
+
+### Fix
+
+- Add logger and config start (#179)
+
 ## v0.69.0 (2022-02-07)
 
 ### Feat
