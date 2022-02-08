@@ -5,6 +5,7 @@ import (
 
 	"github.com/manicar2093/charly_team_api/db/entities"
 	"github.com/manicar2093/charly_team_api/db/repositories"
+	"github.com/manicar2093/charly_team_api/internal/logger"
 	"github.com/manicar2093/charly_team_api/internal/validators"
 )
 
@@ -33,18 +34,21 @@ func NewUserAvatarUpdater(
 }
 
 func (c *userAvatarUpdaterImpl) Run(ctx context.Context, req *AvatarUpdaterRequest) (*AvatarUpdaterResponse, error) {
+	logger.Info(req)
 	if validation := c.validator.Validate(req); !validation.IsValid {
 		return nil, validation.Err
 	}
 
 	user, err := c.userRepo.FindUserByUUID(ctx, req.UserUUID)
 	if err != nil {
+		logger.Error(err)
 		return nil, err
 	}
 
 	user.AvatarUrl = req.AvatarURL
 
 	if err := c.userRepo.UpdateUser(ctx, user); err != nil {
+		logger.Error(err)
 		return nil, err
 	}
 
