@@ -1,3 +1,9 @@
+## v0.70.0 (2022-02-11)
+
+### Feat
+
+- Add delete method on biotest bucket (#181)
+
 ## v0.69.1 (2022-02-08)
 
 ### Fix
