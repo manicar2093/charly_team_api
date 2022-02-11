@@ -181,10 +181,10 @@ resources:
                 - GET
                 - PUT
                 - POST
+                - DELETE
               AllowedOrigins:
                 - '*'
               ExposedHeaders:
-
                 - Date
               Id: BasicCORSRule
               MaxAge: 3600
