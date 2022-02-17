@@ -16,16 +16,7 @@ jobs:
         node-version: [ 14.16.x ]
     runs-on: ${{ matrix.os }}
     env:
-        DB_HOST: ${{ secrets.DB_HOST_DEV }}
-        DB_PORT: ${{ secrets.DB_PORT_DEV }}
-        DB_NAME: ${{ secrets.DB_NAME_DEV }}
-        DB_USER: ${{ secrets.DB_USER_DEV }}
-        DB_URL: ${{ secrets.DB_URL_DEV }}
-        DB_PASSWORD: ${{ secrets.DB_PASSWORD_DEV }}
-        AWS_REGION: ${{ secrets.AWS_REGION_DEV }}
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
-        COGNITO_POOL_ID: ${{ secrets.COGNITO_POOL_ID_DEV }}
+        DB_URL: ${{ secrets.DB_URL_TEST }}
 
     services:
       postgres:
@@ -33,9 +24,9 @@ jobs:
         ports:
           - 3456:5432
         env:
-          POSTGRES_USER: ${{ secrets.DB_USER_DEV }}
-          POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD_DEV }}
-          POSTGRES_DB: ${{ secrets.DB_NAME_DEV }}
+          POSTGRES_USER: ${{ secrets.DB_USER_TEST }}testing
+          POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD_TEST }}
+          POSTGRES_DB: ${{ secrets.DB_NAME_TEST }}
 
     steps:
     
