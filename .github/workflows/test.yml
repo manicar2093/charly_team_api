@@ -11,9 +11,9 @@ jobs:
     name: Run Test
     strategy:
       matrix:
-        go-version: [ 1.16.x ]
+        go-version: [ 1.17.x ]
         os: [ ubuntu-latest ]
-        node-version: [ 14.16.x ]
+        node-version: [ 16.14.x ]
     runs-on: ${{ matrix.os }}
     env:
         DB_URL: ${{ secrets.DB_URL_TEST }}
@@ -29,7 +29,6 @@ jobs:
           POSTGRES_DB: ${{ secrets.DB_NAME_TEST }}
 
     steps:
-    
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
