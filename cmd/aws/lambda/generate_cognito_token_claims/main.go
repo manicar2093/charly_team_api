@@ -6,7 +6,7 @@ import (
 	"github.com/manicar2093/charly_team_api/internal/db/connections"
 	"github.com/manicar2093/charly_team_api/internal/db/paginator"
 	"github.com/manicar2093/charly_team_api/internal/db/repositories"
-	"github.com/manicar2093/charly_team_api/internal/handlers/tokenclaimsgenerator"
+	"github.com/manicar2093/charly_team_api/internal/handlers/token"
 )
 
 func main() {
@@ -14,7 +14,7 @@ func main() {
 	conn := connections.PostgressConnection()
 	paginator := paginator.NewPaginable(conn)
 	userRepo := repositories.NewUserRepositoryRel(conn, paginator)
-	service := tokenclaimsgenerator.NewTokenClaimsGeneratorImpl(userRepo)
+	service := token.NewTokenClaimsGeneratorImpl(userRepo)
 	lambda.Start(
 		NewGenerateCognitoTokenClaimsAWSLambda(service).Handler,
 	)

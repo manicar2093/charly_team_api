@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/manicar2093/charly_team_api/internal/handlers/cataloggetter"
+	"github.com/manicar2093/charly_team_api/internal/handlers/catalog"
 	"github.com/manicar2093/charly_team_api/pkg/apperrors"
 	"github.com/manicar2093/charly_team_api/pkg/models"
 	"github.com/stretchr/testify/suite"
@@ -19,14 +19,14 @@ func TestMain(t *testing.T) {
 type GetCatalogsAWSLambdaTests struct {
 	suite.Suite
 	ctx                  context.Context
-	catalogGetter        *cataloggetter.MockCatalogGetter
+	catalogGetter        *catalog.MockCatalogGetter
 	getCatalogsAWSLambda *GetCatalogsAWSLambda
 	ordinaryError        error
 }
 
 func (c *GetCatalogsAWSLambdaTests) SetupTest() {
 	c.ctx = context.Background()
-	c.catalogGetter = &cataloggetter.MockCatalogGetter{}
+	c.catalogGetter = &catalog.MockCatalogGetter{}
 	c.getCatalogsAWSLambda = NewGetCatalogsAWSLambda(c.catalogGetter)
 	c.ordinaryError = errors.New("An ordinary error :O")
 
@@ -37,7 +37,7 @@ func (c *GetCatalogsAWSLambdaTests) TearDownTest() {
 }
 
 func (c *GetCatalogsAWSLambdaTests) TestHandler() {
-	request := cataloggetter.CatalogGetterRequest{
+	request := catalog.CatalogGetterRequest{
 		CatalogNames: []string{"biotest", "roles"},
 	}
 	response := map[string]interface{}{
@@ -45,7 +45,7 @@ func (c *GetCatalogsAWSLambdaTests) TestHandler() {
 		"roles":   []interface{}{},
 	}
 	c.catalogGetter.On("Run", c.ctx, &request).Return(
-		&cataloggetter.CatalogGetterResponse{Catalogs: response},
+		&catalog.CatalogGetterResponse{Catalogs: response},
 		nil,
 	)
 
@@ -57,7 +57,7 @@ func (c *GetCatalogsAWSLambdaTests) TestHandler() {
 }
 
 func (c *GetCatalogsAWSLambdaTests) TestHandler_ValidationError() {
-	request := cataloggetter.CatalogGetterRequest{
+	request := catalog.CatalogGetterRequest{
 		CatalogNames: []string{"biotest", "roles"},
 	}
 	validationErrors := apperrors.ValidationErrors{
@@ -78,7 +78,7 @@ func (c *GetCatalogsAWSLambdaTests) TestHandler_ValidationError() {
 }
 
 func (c *GetCatalogsAWSLambdaTests) TestHandler_UnhandledError() {
-	request := cataloggetter.CatalogGetterRequest{
+	request := catalog.CatalogGetterRequest{
 		CatalogNames: []string{"biotest", "roles"},
 	}
 	c.catalogGetter.On("Run", c.ctx, &request).Return(
@@ -96,10 +96,10 @@ func (c *GetCatalogsAWSLambdaTests) TestHandler_UnhandledError() {
 
 func (c *GetCatalogsAWSLambdaTests) TestHandler_NoCatalogsFoundErr() {
 	notExistCatalog := "no_exists"
-	request := cataloggetter.CatalogGetterRequest{
+	request := catalog.CatalogGetterRequest{
 		CatalogNames: []string{"biotest", notExistCatalog},
 	}
-	errorReturned := cataloggetter.NoCatalogFound{CatalogName: notExistCatalog}
+	errorReturned := catalog.NoCatalogFound{CatalogName: notExistCatalog}
 	c.catalogGetter.On("Run", c.ctx, &request).Return(
 		nil,
 		errorReturned,

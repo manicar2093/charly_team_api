@@ -4,19 +4,19 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/manicar2093/charly_team_api/internal/handlers/usercreator"
+	"github.com/manicar2093/charly_team_api/internal/handlers/user"
 	"github.com/manicar2093/charly_team_api/pkg/models"
 )
 
 type CreateUserAWSLambda struct {
-	userCreator usercreator.UserCreator
+	userCreator user.UserCreator
 }
 
-func NewUserCreatorAWSLambda(userCreator usercreator.UserCreator) *CreateUserAWSLambda {
+func NewUserCreatorAWSLambda(userCreator user.UserCreator) *CreateUserAWSLambda {
 	return &CreateUserAWSLambda{userCreator: userCreator}
 }
 
-func (c *CreateUserAWSLambda) Handler(ctx context.Context, req usercreator.UserCreatorRequest) (*models.Response, error) {
+func (c *CreateUserAWSLambda) Handler(ctx context.Context, req user.UserCreatorRequest) (*models.Response, error) {
 	res, err := c.userCreator.Run(ctx, &req)
 
 	if err != nil {

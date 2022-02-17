@@ -4,19 +4,19 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/manicar2093/charly_team_api/internal/handlers/biotestimagessaver"
+	"github.com/manicar2093/charly_team_api/internal/handlers/biotest"
 	"github.com/manicar2093/charly_team_api/pkg/models"
 )
 
 type SaveBiotestImagesAWSLambda struct {
-	biotestImageSaver biotestimagessaver.BiotestImagesSaver
+	biotestImageSaver biotest.BiotestImagesSaver
 }
 
-func NewSaveBiotestImagesAWSLambda(biotestImageSaver biotestimagessaver.BiotestImagesSaver) *SaveBiotestImagesAWSLambda {
+func NewSaveBiotestImagesAWSLambda(biotestImageSaver biotest.BiotestImagesSaver) *SaveBiotestImagesAWSLambda {
 	return &SaveBiotestImagesAWSLambda{biotestImageSaver: biotestImageSaver}
 }
 
-func (c *SaveBiotestImagesAWSLambda) Handler(ctx context.Context, biotestImages biotestimagessaver.BiotestImagesSaverRequest) (*models.Response, error) {
+func (c *SaveBiotestImagesAWSLambda) Handler(ctx context.Context, biotestImages biotest.BiotestImagesSaverRequest) (*models.Response, error) {
 	_, err := c.biotestImageSaver.Run(ctx, &biotestImages)
 
 	if err != nil {

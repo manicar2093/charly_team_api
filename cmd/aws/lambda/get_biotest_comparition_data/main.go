@@ -6,7 +6,7 @@ import (
 	"github.com/manicar2093/charly_team_api/internal/db/connections"
 	"github.com/manicar2093/charly_team_api/internal/db/paginator"
 	"github.com/manicar2093/charly_team_api/internal/db/repositories"
-	"github.com/manicar2093/charly_team_api/internal/handlers/biotestfilters/biotestcomparitiondatafinder"
+	"github.com/manicar2093/charly_team_api/internal/handlers/biotestfilters"
 	"github.com/manicar2093/charly_team_api/internal/services"
 	"github.com/manicar2093/charly_team_api/pkg/validators"
 )
@@ -21,7 +21,7 @@ func main() {
 		paginator,
 		services.UUIDGeneratorImpl{},
 	)
-	service := biotestcomparitiondatafinder.NewBiotestComparitionDataFinderImpl(
+	service := biotestfilters.NewBiotestComparitionDataFinderImpl(
 		biotestRepo,
 		validators.NewStructValidator(),
 	)

@@ -5,16 +5,16 @@ import (
 	"net/http"
 
 	"github.com/manicar2093/charly_team_api/internal/db/entities"
-	"github.com/manicar2093/charly_team_api/internal/handlers/biotestcreator"
+	"github.com/manicar2093/charly_team_api/internal/handlers/biotest"
 	"github.com/manicar2093/charly_team_api/pkg/models"
 )
 
 type CreateBiotestAWSLambda struct {
-	biotestCreator biotestcreator.BiotestCreator
+	biotestCreator biotest.BiotestCreator
 }
 
 func NewCreateBiotestAWSLambda(
-	biotestCreator biotestcreator.BiotestCreator,
+	biotestCreator biotest.BiotestCreator,
 ) *CreateBiotestAWSLambda {
 	return &CreateBiotestAWSLambda{
 		biotestCreator: biotestCreator,

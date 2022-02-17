@@ -8,7 +8,7 @@ import (
 	"github.com/jaswdr/faker"
 	"github.com/manicar2093/charly_team_api/internal/db/entities"
 	"github.com/manicar2093/charly_team_api/internal/db/paginator"
-	"github.com/manicar2093/charly_team_api/internal/handlers/biotestfilters/biotestsbyuseruuidfinder"
+	"github.com/manicar2093/charly_team_api/internal/handlers/biotestfilters"
 	"github.com/manicar2093/charly_team_api/pkg/apperrors"
 	"github.com/manicar2093/charly_team_api/pkg/models"
 	"github.com/stretchr/testify/suite"
@@ -21,14 +21,14 @@ func TestMain(t *testing.T) {
 type GetAllBiotestByUserUUIDAWSLambdaTest struct {
 	suite.Suite
 	ctx                               context.Context
-	biotestsByUserUUIDFinder          *biotestsbyuseruuidfinder.MockBiotestByUserUUID
+	biotestsByUserUUIDFinder          *biotestfilters.MockBiotestByUserUUID
 	getAllBiotestsByUserUUIDAWSLambda *GetAllBiotestByUserUUIDAWSLambda
 	faker                             faker.Faker
 }
 
 func (c *GetAllBiotestByUserUUIDAWSLambdaTest) SetupTest() {
 	c.ctx = context.Background()
-	c.biotestsByUserUUIDFinder = &biotestsbyuseruuidfinder.MockBiotestByUserUUID{}
+	c.biotestsByUserUUIDFinder = &biotestfilters.MockBiotestByUserUUID{}
 	c.getAllBiotestsByUserUUIDAWSLambda = NewGetAllBiotestByUserUUIDAWSLambda(c.biotestsByUserUUIDFinder)
 	c.faker = faker.New()
 }
@@ -39,9 +39,9 @@ func (c *GetAllBiotestByUserUUIDAWSLambdaTest) TearDownTest() {
 
 func (c *GetAllBiotestByUserUUIDAWSLambdaTest) TestsHandler() {
 	userUUID := c.faker.UUID().V4()
-	request := biotestsbyuseruuidfinder.BiotestByUserUUIDRequest{PageSort: paginator.PageSort{}, UserUUID: userUUID}
+	request := biotestfilters.BiotestByUserUUIDRequest{PageSort: paginator.PageSort{}, UserUUID: userUUID}
 	pageReturned := paginator.Paginator{Data: &[]entities.Biotest{{}, {}}}
-	response := biotestsbyuseruuidfinder.BiotestByUserUUIDResponse{FoundBiotests: &pageReturned}
+	response := biotestfilters.BiotestByUserUUIDResponse{FoundBiotests: &pageReturned}
 	c.biotestsByUserUUIDFinder.On("Run", c.ctx, &request).Return(&response, nil)
 
 	got, err := c.getAllBiotestsByUserUUIDAWSLambda.Handler(c.ctx, request)
@@ -55,7 +55,7 @@ func (c *GetAllBiotestByUserUUIDAWSLambdaTest) TestsHandler() {
 
 func (c *GetAllBiotestByUserUUIDAWSLambdaTest) TestsHandler_ValidationError() {
 	userUUID := c.faker.UUID().V4()
-	request := biotestsbyuseruuidfinder.BiotestByUserUUIDRequest{PageSort: paginator.PageSort{}, UserUUID: userUUID}
+	request := biotestfilters.BiotestByUserUUIDRequest{PageSort: paginator.PageSort{}, UserUUID: userUUID}
 	validationErrors := apperrors.ValidationErrors{
 		{Field: "name", Validation: "required"},
 		{Field: "last_name", Validation: "required"},

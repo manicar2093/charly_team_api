@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/aws/aws-lambda-go/events"
-	"github.com/manicar2093/charly_team_api/internal/handlers/tokenclaimsgenerator"
+	"github.com/manicar2093/charly_team_api/internal/handlers/token"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -17,11 +17,11 @@ func TestCognitoTokenGen(t *testing.T) {
 			UserName: userUUID,
 		},
 	}
-	tokenClaimsGenerator := tokenclaimsgenerator.MockTokenClaimsGenerator{}
+	tokenClaimsGenerator := token.MockTokenClaimsGenerator{}
 	returnedClaims := map[string]string{"data": "data"}
-	expectedRunCall := tokenclaimsgenerator.TokenClaimsGeneratorRequest{UserUUID: userUUID}
+	expectedRunCall := token.TokenClaimsGeneratorRequest{UserUUID: userUUID}
 	tokenClaimsGenerator.On("Run", ctx, &expectedRunCall).Return(
-		&tokenclaimsgenerator.TokenClaimsGeneratorResponse{Claims: returnedClaims},
+		&token.TokenClaimsGeneratorResponse{Claims: returnedClaims},
 		nil,
 	)
 	service := NewGenerateCognitoTokenClaimsAWSLambda(&tokenClaimsGenerator)

@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/manicar2093/charly_team_api/internal/db/entities"
-	"github.com/manicar2093/charly_team_api/internal/handlers/usercreator"
+	"github.com/manicar2093/charly_team_api/internal/handlers/user"
 	"github.com/manicar2093/charly_team_api/pkg/apperrors"
 	"github.com/manicar2093/charly_team_api/pkg/models"
 	"github.com/stretchr/testify/suite"
@@ -20,18 +20,18 @@ func TestMain(t *testing.T) {
 type CreateUserAWSLambdaTests struct {
 	suite.Suite
 	user                entities.User
-	userCreateReq       usercreator.UserCreatorRequest
+	userCreateReq       user.UserCreatorRequest
 	ctx                 context.Context
-	userCreator         *usercreator.MockUserCreator
+	userCreator         *user.MockUserCreator
 	createUserAWSLambda *CreateUserAWSLambda
 	ordinaryError       error
 }
 
 func (c *CreateUserAWSLambdaTests) SetupTest() {
 	c.user = entities.User{}
-	c.userCreateReq = usercreator.UserCreatorRequest{}
+	c.userCreateReq = user.UserCreatorRequest{}
 	c.ctx = context.Background()
-	c.userCreator = &usercreator.MockUserCreator{}
+	c.userCreator = &user.MockUserCreator{}
 	c.createUserAWSLambda = NewUserCreatorAWSLambda(c.userCreator)
 	c.ordinaryError = errors.New("An ordinary error :O")
 
@@ -43,7 +43,7 @@ func (c *CreateUserAWSLambdaTests) TearDownTest() {
 
 func (c *CreateUserAWSLambdaTests) TestHandler() {
 	c.userCreator.On("Run", c.ctx, &c.userCreateReq).Return(
-		&usercreator.UserCreatorResponse{UserCreated: &c.user},
+		&user.UserCreatorResponse{UserCreated: &c.user},
 		nil,
 	)
 

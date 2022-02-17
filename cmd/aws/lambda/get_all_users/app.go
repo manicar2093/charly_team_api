@@ -4,21 +4,21 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/manicar2093/charly_team_api/internal/handlers/userfilters/allusersfinder"
+	"github.com/manicar2093/charly_team_api/internal/handlers/userfilters"
 	"github.com/manicar2093/charly_team_api/pkg/models"
 )
 
 type GetAllUsersAWSLambda struct {
-	allUsersFinder allusersfinder.AllUsersFinder
+	allUsersFinder userfilters.AllUsersFinder
 }
 
-func NewGetAllUsersAWSLambda(allUsersFinder allusersfinder.AllUsersFinder) *GetAllUsersAWSLambda {
+func NewGetAllUsersAWSLambda(allUsersFinder userfilters.AllUsersFinder) *GetAllUsersAWSLambda {
 	return &GetAllUsersAWSLambda{allUsersFinder: allUsersFinder}
 }
 
 func (c *GetAllUsersAWSLambda) Handler(
 	ctx context.Context,
-	req allusersfinder.AllUsersFinderRequest,
+	req userfilters.AllUsersFinderRequest,
 ) (*models.Response, error) {
 	res, err := c.allUsersFinder.Run(ctx, &req)
 

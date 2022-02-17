@@ -5,15 +5,15 @@ import (
 	"net/http"
 
 	"github.com/manicar2093/charly_team_api/internal/db/entities"
-	"github.com/manicar2093/charly_team_api/internal/handlers/userupdater"
+	"github.com/manicar2093/charly_team_api/internal/handlers/user"
 	"github.com/manicar2093/charly_team_api/pkg/models"
 )
 
 type UpdateUserAWSLambda struct {
-	userUpdater userupdater.UserUpdater
+	userUpdater user.UserUpdater
 }
 
-func NewUpdateUserAWSLambda(userUpdater userupdater.UserUpdater) *UpdateUserAWSLambda {
+func NewUpdateUserAWSLambda(userUpdater user.UserUpdater) *UpdateUserAWSLambda {
 	return &UpdateUserAWSLambda{userUpdater}
 }
 

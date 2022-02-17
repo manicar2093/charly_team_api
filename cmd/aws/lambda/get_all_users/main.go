@@ -6,7 +6,7 @@ import (
 	"github.com/manicar2093/charly_team_api/internal/db/connections"
 	"github.com/manicar2093/charly_team_api/internal/db/paginator"
 	"github.com/manicar2093/charly_team_api/internal/db/repositories"
-	"github.com/manicar2093/charly_team_api/internal/handlers/userfilters/allusersfinder"
+	"github.com/manicar2093/charly_team_api/internal/handlers/userfilters"
 	"github.com/manicar2093/charly_team_api/pkg/validators"
 )
 
@@ -16,7 +16,7 @@ func main() {
 	conn := connections.PostgressConnection()
 	paginator := paginator.NewPaginable(conn)
 	userRepo := repositories.NewUserRepositoryRel(conn, paginator)
-	service := allusersfinder.NewAllUsersFinderImpl(
+	service := userfilters.NewAllUsersFinderImpl(
 		userRepo,
 		validators.NewStructValidator(),
 	)

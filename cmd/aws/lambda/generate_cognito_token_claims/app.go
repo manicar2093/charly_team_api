@@ -4,14 +4,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-lambda-go/events"
-	"github.com/manicar2093/charly_team_api/internal/handlers/tokenclaimsgenerator"
+	"github.com/manicar2093/charly_team_api/internal/handlers/token"
 )
 
 type GenerateCognitoTokenClaimsAWSLambda struct {
-	tokenClaimsGenerator tokenclaimsgenerator.TokenClaimsGenerator
+	tokenClaimsGenerator token.TokenClaimsGenerator
 }
 
-func NewGenerateCognitoTokenClaimsAWSLambda(tokenClaimsGenerator tokenclaimsgenerator.TokenClaimsGenerator) *GenerateCognitoTokenClaimsAWSLambda {
+func NewGenerateCognitoTokenClaimsAWSLambda(tokenClaimsGenerator token.TokenClaimsGenerator) *GenerateCognitoTokenClaimsAWSLambda {
 	return &GenerateCognitoTokenClaimsAWSLambda{tokenClaimsGenerator: tokenClaimsGenerator}
 }
 
@@ -19,7 +19,7 @@ func (c *GenerateCognitoTokenClaimsAWSLambda) Handler(ctx context.Context, event
 
 	response, err := c.tokenClaimsGenerator.Run(
 		ctx,
-		&tokenclaimsgenerator.TokenClaimsGeneratorRequest{
+		&token.TokenClaimsGeneratorRequest{
 			UserUUID: event.UserName,
 		},
 	)

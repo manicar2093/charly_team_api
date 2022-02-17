@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/manicar2093/charly_team_api/internal/db/entities"
-	"github.com/manicar2093/charly_team_api/internal/handlers/biotestcreator"
+	"github.com/manicar2093/charly_team_api/internal/handlers/biotest"
 	"github.com/manicar2093/charly_team_api/pkg/apperrors"
 	"github.com/manicar2093/charly_team_api/pkg/models"
 	"github.com/manicar2093/charly_team_api/pkg/testfunc"
@@ -22,7 +22,7 @@ type CreateBiotestAWSLambdaTests struct {
 	suite.Suite
 	biotest             entities.Biotest
 	ctx                 context.Context
-	biotestCreator      *biotestcreator.MockBiotestCreator
+	biotestCreator      *biotest.MockBiotestCreator
 	updateUserAWSLambda *CreateBiotestAWSLambda
 	ordinaryError       error
 }
@@ -30,7 +30,7 @@ type CreateBiotestAWSLambdaTests struct {
 func (c *CreateBiotestAWSLambdaTests) SetupTest() {
 	c.biotest = entities.Biotest{}
 	c.ctx = context.Background()
-	c.biotestCreator = &biotestcreator.MockBiotestCreator{}
+	c.biotestCreator = &biotest.MockBiotestCreator{}
 	c.updateUserAWSLambda = NewCreateBiotestAWSLambda(c.biotestCreator)
 	c.ordinaryError = errors.New("An ordinary error :O")
 
@@ -47,7 +47,7 @@ func (c *CreateBiotestAWSLambdaTests) TestHandler() {
 	c.biotest.BiotestUUID = biotestUUID
 	testfunc.PrintJsonIndented(c.biotest)
 	c.biotestCreator.On("Run", c.ctx, &c.biotest).Return(
-		&biotestcreator.BiotestCreatorResponse{BiotestCreated: &c.biotest},
+		&biotest.BiotestCreatorResponse{BiotestCreated: &c.biotest},
 		nil,
 	)
 

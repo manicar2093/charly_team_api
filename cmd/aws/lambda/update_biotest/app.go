@@ -5,15 +5,15 @@ import (
 	"net/http"
 
 	"github.com/manicar2093/charly_team_api/internal/db/entities"
-	"github.com/manicar2093/charly_team_api/internal/handlers/biotestupdater"
+	"github.com/manicar2093/charly_team_api/internal/handlers/biotest"
 	"github.com/manicar2093/charly_team_api/pkg/models"
 )
 
 type UpdateBiotestAWSLambda struct {
-	biotestUpdater biotestupdater.BiotestUpdater
+	biotestUpdater biotest.BiotestUpdater
 }
 
-func NewUpdateBiotestAWSLambda(biotestUpdater biotestupdater.BiotestUpdater) *UpdateBiotestAWSLambda {
+func NewUpdateBiotestAWSLambda(biotestUpdater biotest.BiotestUpdater) *UpdateBiotestAWSLambda {
 	return &UpdateBiotestAWSLambda{biotestUpdater: biotestUpdater}
 }
 

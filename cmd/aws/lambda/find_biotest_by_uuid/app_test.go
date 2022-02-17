@@ -7,7 +7,7 @@ import (
 	"github.com/jaswdr/faker"
 	"github.com/manicar2093/charly_team_api/internal/db/entities"
 	"github.com/manicar2093/charly_team_api/internal/db/repositories"
-	"github.com/manicar2093/charly_team_api/internal/handlers/biotestfilters/biotestbyuuidfinder"
+	"github.com/manicar2093/charly_team_api/internal/handlers/biotestfilters"
 	"github.com/manicar2093/charly_team_api/pkg/models"
 	"github.com/stretchr/testify/suite"
 )
@@ -19,14 +19,14 @@ func TestMain(t *testing.T) {
 type FindBiotestByUUIDAWSLambdaTest struct {
 	suite.Suite
 	ctx                        context.Context
-	biotestByUUIDDFinder       *biotestbyuuidfinder.MockBiotestByUUID
+	biotestByUUIDDFinder       *biotestfilters.MockBiotestByUUID
 	findBiotestByUUIDAWSLambda *FindBiotestByUUIDAWSLambda
 	faker                      faker.Faker
 }
 
 func (c *FindBiotestByUUIDAWSLambdaTest) SetupTest() {
 	c.ctx = context.Background()
-	c.biotestByUUIDDFinder = &biotestbyuuidfinder.MockBiotestByUUID{}
+	c.biotestByUUIDDFinder = &biotestfilters.MockBiotestByUUID{}
 	c.findBiotestByUUIDAWSLambda = NewFindBiotestByUUIDAWSLambda(c.biotestByUUIDDFinder)
 	c.faker = faker.New()
 }
@@ -37,9 +37,9 @@ func (c *FindBiotestByUUIDAWSLambdaTest) TearDownTest() {
 
 func (c *FindBiotestByUUIDAWSLambdaTest) TestHandler() {
 	biotestUUID := c.faker.UUID().V4()
-	req := biotestbyuuidfinder.BiotestByUUIDRequest{UUID: biotestUUID}
+	req := biotestfilters.BiotestByUUIDRequest{UUID: biotestUUID}
 	biotestFound := entities.Biotest{BiotestUUID: biotestUUID}
-	biotestByUUIDFinderReturn := biotestbyuuidfinder.BiotestByUUIDResponse{Biotest: &biotestFound}
+	biotestByUUIDFinderReturn := biotestfilters.BiotestByUUIDResponse{Biotest: &biotestFound}
 	c.biotestByUUIDDFinder.On("Run", c.ctx, &req).Return(&biotestByUUIDFinderReturn, nil)
 
 	got, err := c.findBiotestByUUIDAWSLambda.Handler(c.ctx, req)
@@ -51,7 +51,7 @@ func (c *FindBiotestByUUIDAWSLambdaTest) TestHandler() {
 
 func (c *FindBiotestByUUIDAWSLambdaTest) TestHandler_NotFound() {
 	biotestUUID := c.faker.UUID().V4()
-	req := biotestbyuuidfinder.BiotestByUUIDRequest{UUID: biotestUUID}
+	req := biotestfilters.BiotestByUUIDRequest{UUID: biotestUUID}
 	c.biotestByUUIDDFinder.On("Run", c.ctx, &req).Return(nil, repositories.NotFoundError{Entity: "Biotest", Identifier: biotestUUID})
 
 	got, err := c.findBiotestByUUIDAWSLambda.Handler(c.ctx, req)
@@ -63,7 +63,7 @@ func (c *FindBiotestByUUIDAWSLambdaTest) TestHandler_NotFound() {
 
 func (c *FindBiotestByUUIDAWSLambdaTest) TestHandler_ValidationError() {
 	biotestUUID := c.faker.UUID().V4()
-	req := biotestbyuuidfinder.BiotestByUUIDRequest{UUID: biotestUUID}
+	req := biotestfilters.BiotestByUUIDRequest{UUID: biotestUUID}
 	c.biotestByUUIDDFinder.On("Run", c.ctx, &req).Return(nil, repositories.NotFoundError{Entity: "Biotest", Identifier: biotestUUID})
 
 	got, err := c.findBiotestByUUIDAWSLambda.Handler(c.ctx, req)

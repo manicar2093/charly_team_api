@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/manicar2093/charly_team_api/internal/handlers/biotestimagessaver"
+	"github.com/manicar2093/charly_team_api/internal/handlers/biotest"
 	"github.com/manicar2093/charly_team_api/pkg/apperrors"
 	"github.com/manicar2093/charly_team_api/pkg/models"
 	"github.com/stretchr/testify/suite"
@@ -19,23 +19,23 @@ func TestMain(t *testing.T) {
 type SaveBiotestImagesAWSLambdaTests struct {
 	suite.Suite
 	ctx                                                       context.Context
-	biotestImagesSaver                                        *biotestimagessaver.MockBiotestImagesSaver
+	biotestImagesSaver                                        *biotest.MockBiotestImagesSaver
 	saveBiotestImagesAWSLambda                                *SaveBiotestImagesAWSLambda
-	request                                                   biotestimagessaver.BiotestImagesSaverRequest
+	request                                                   biotest.BiotestImagesSaverRequest
 	biotestUUID, frontImage, backImage, leftImage, rightImage string
 	ordinaryError                                             error
 }
 
 func (c *SaveBiotestImagesAWSLambdaTests) SetupTest() {
 	c.ctx = context.Background()
-	c.biotestImagesSaver = &biotestimagessaver.MockBiotestImagesSaver{}
+	c.biotestImagesSaver = &biotest.MockBiotestImagesSaver{}
 	c.saveBiotestImagesAWSLambda = NewSaveBiotestImagesAWSLambda(c.biotestImagesSaver)
 	c.biotestUUID = "biotest_uuid"
 	c.frontImage = "front/image/path"
 	c.backImage = "back/image/path"
 	c.leftImage = "left/image/path"
 	c.rightImage = "right/image/path"
-	c.request = biotestimagessaver.BiotestImagesSaverRequest{
+	c.request = biotest.BiotestImagesSaverRequest{
 		BiotestUUID:      c.biotestUUID,
 		FrontPicture:     c.frontImage,
 		BackPicture:      c.backImage,
@@ -51,7 +51,7 @@ func (c *SaveBiotestImagesAWSLambdaTests) TearDownTest() {
 }
 
 func (c *SaveBiotestImagesAWSLambdaTests) TestHandler() {
-	response := biotestimagessaver.BiotestImagesSaverResponse{
+	response := biotest.BiotestImagesSaverResponse{
 		BiotestImagesSaved: &c.request,
 	}
 	c.biotestImagesSaver.On("Run", c.ctx, &c.request).Return(
