@@ -6,13 +6,14 @@ import (
 
 	"github.com/go-rel/rel"
 	"github.com/manicar2093/charly_team_api/db/connections"
+	"github.com/manicar2093/charly_team_api/internal/testfunc"
 )
 
 var DB rel.Repository
 
 func TestMain(m *testing.M) {
-
-	db := connections.SQLiteConnection()
+	testfunc.LoadEnvFileOrPanic("../../.env")
+	db := connections.PostgressConnection()
 	DB = db
 	os.Exit(m.Run())
 

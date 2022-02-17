@@ -3,8 +3,7 @@
     "dotenv": "^10.0.0",
     "knex": "^0.95.7",
     "pg": "^8.6.0",
-    "serverless-prune-plugin": "^1.6.1",
-    "sqlite3": "^4.2.0"
+    "serverless-prune-plugin": "^1.6.1"
   },
   "name": "charly-team-api"
 }
