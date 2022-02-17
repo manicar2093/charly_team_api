@@ -7,7 +7,7 @@ import (
 	"github.com/jaswdr/faker"
 	"github.com/manicar2093/charly_team_api/internal/db/entities"
 	"github.com/manicar2093/charly_team_api/internal/db/repositories"
-	"github.com/manicar2093/charly_team_api/internal/handlers/userfilters/userbyuuidfinder"
+	"github.com/manicar2093/charly_team_api/internal/handlers/userfilters"
 	"github.com/manicar2093/charly_team_api/pkg/models"
 	"github.com/stretchr/testify/suite"
 )
@@ -19,14 +19,14 @@ func TestMain(t *testing.T) {
 type GetUserByUUIDAWSLambdaTest struct {
 	suite.Suite
 	ctx                    context.Context
-	userByUUIDFinder       *userbyuuidfinder.MockUserByUUIDFinder
+	userByUUIDFinder       *userfilters.MockUserByUUIDFinder
 	getUserByUUIDAWSLambda *GetUserByUUIDAWSLambda
 	faker                  faker.Faker
 }
 
 func (c *GetUserByUUIDAWSLambdaTest) SetupTest() {
 	c.ctx = context.Background()
-	c.userByUUIDFinder = &userbyuuidfinder.MockUserByUUIDFinder{}
+	c.userByUUIDFinder = &userfilters.MockUserByUUIDFinder{}
 	c.getUserByUUIDAWSLambda = NewGetUserByUUIDAWSLambda(c.userByUUIDFinder)
 	c.faker = faker.New()
 }
@@ -37,9 +37,9 @@ func (c *GetUserByUUIDAWSLambdaTest) TearDownTest() {
 
 func (c *GetUserByUUIDAWSLambdaTest) TestHandler() {
 	userUUID := c.faker.UUID().V4()
-	request := userbyuuidfinder.UserByUUIDFinderRequest{UserUUID: userUUID}
+	request := userfilters.UserByUUIDFinderRequest{UserUUID: userUUID}
 	userFound := entities.User{UserUUID: userUUID}
-	userByUUIDFinderReturn := userbyuuidfinder.UserByUUIDFinderResponse{UserFound: &userFound}
+	userByUUIDFinderReturn := userfilters.UserByUUIDFinderResponse{UserFound: &userFound}
 	c.userByUUIDFinder.On("Run", c.ctx, &request).Return(&userByUUIDFinderReturn, nil)
 
 	got, err := c.getUserByUUIDAWSLambda.Handler(c.ctx, request)
@@ -51,7 +51,7 @@ func (c *GetUserByUUIDAWSLambdaTest) TestHandler() {
 
 func (c *GetUserByUUIDAWSLambdaTest) TestHandler_UserNotFound() {
 	userUUID := c.faker.UUID().V4()
-	request := userbyuuidfinder.UserByUUIDFinderRequest{UserUUID: userUUID}
+	request := userfilters.UserByUUIDFinderRequest{UserUUID: userUUID}
 	errorReturned := repositories.NotFoundError{Entity: "User", Identifier: userUUID}
 	c.userByUUIDFinder.On("Run", c.ctx, &request).Return(nil, errorReturned)
 

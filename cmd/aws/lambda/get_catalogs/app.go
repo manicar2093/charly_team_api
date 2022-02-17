@@ -4,19 +4,19 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/manicar2093/charly_team_api/internal/handlers/cataloggetter"
+	"github.com/manicar2093/charly_team_api/internal/handlers/catalog"
 	"github.com/manicar2093/charly_team_api/pkg/models"
 )
 
 type GetCatalogsAWSLambda struct {
-	catalogsGetter cataloggetter.CatalogGetter
+	catalogsGetter catalog.CatalogGetter
 }
 
-func NewGetCatalogsAWSLambda(catalogsGetter cataloggetter.CatalogGetter) *GetCatalogsAWSLambda {
+func NewGetCatalogsAWSLambda(catalogsGetter catalog.CatalogGetter) *GetCatalogsAWSLambda {
 	return &GetCatalogsAWSLambda{catalogsGetter: catalogsGetter}
 }
 
-func (c *GetCatalogsAWSLambda) Handler(ctx context.Context, catalogs cataloggetter.CatalogGetterRequest) (*models.Response, error) {
+func (c *GetCatalogsAWSLambda) Handler(ctx context.Context, catalogs catalog.CatalogGetterRequest) (*models.Response, error) {
 	res, err := c.catalogsGetter.Run(ctx, &catalogs)
 
 	if err != nil {

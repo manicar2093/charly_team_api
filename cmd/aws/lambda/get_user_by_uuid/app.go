@@ -4,23 +4,23 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/manicar2093/charly_team_api/internal/handlers/userfilters/userbyuuidfinder"
+	"github.com/manicar2093/charly_team_api/internal/handlers/userfilters"
 	"github.com/manicar2093/charly_team_api/pkg/models"
 )
 
 type GetUserByUUIDAWSLambda struct {
-	userByUUIDFinder userbyuuidfinder.UserByUUIDFinder
+	userByUUIDFinder userfilters.UserByUUIDFinder
 }
 
 func NewGetUserByUUIDAWSLambda(
-	userByUUIDFinder userbyuuidfinder.UserByUUIDFinder,
+	userByUUIDFinder userfilters.UserByUUIDFinder,
 ) *GetUserByUUIDAWSLambda {
 	return &GetUserByUUIDAWSLambda{userByUUIDFinder: userByUUIDFinder}
 }
 
 func (c *GetUserByUUIDAWSLambda) Handler(
 	ctx context.Context,
-	req userbyuuidfinder.UserByUUIDFinderRequest,
+	req userfilters.UserByUUIDFinderRequest,
 ) (*models.Response, error) {
 	res, err := c.userByUUIDFinder.Run(ctx, &req)
 	if err != nil {

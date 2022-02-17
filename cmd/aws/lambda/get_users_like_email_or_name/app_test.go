@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/manicar2093/charly_team_api/internal/db/entities"
-	"github.com/manicar2093/charly_team_api/internal/handlers/userfilters/userlikeemailornamefinder"
+	"github.com/manicar2093/charly_team_api/internal/handlers/userfilters"
 	"github.com/manicar2093/charly_team_api/pkg/models"
 	"github.com/stretchr/testify/suite"
 )
@@ -18,13 +18,13 @@ func TestMain(t *testing.T) {
 type GetUsersLikeEmailOrNameAWSLambdaTests struct {
 	suite.Suite
 	ctx                              context.Context
-	userLikeEmailOrNameFinder        *userlikeemailornamefinder.MockUserLikeEmailOrNameFinder
+	userLikeEmailOrNameFinder        *userfilters.MockUserLikeEmailOrNameFinder
 	getUsersLikeEmailOrNameAWSLambda *GetUsersLikeEmailOrNameAWSLambda
 }
 
 func (c *GetUsersLikeEmailOrNameAWSLambdaTests) SetupTest() {
 	c.ctx = context.Background()
-	c.userLikeEmailOrNameFinder = &userlikeemailornamefinder.MockUserLikeEmailOrNameFinder{}
+	c.userLikeEmailOrNameFinder = &userfilters.MockUserLikeEmailOrNameFinder{}
 	c.getUsersLikeEmailOrNameAWSLambda = NewGetUsersLikeEmailOrNameAWSLambda(c.userLikeEmailOrNameFinder)
 }
 
@@ -34,9 +34,9 @@ func (c *GetUsersLikeEmailOrNameAWSLambdaTests) TearDownTest() {
 
 func (c *GetUsersLikeEmailOrNameAWSLambdaTests) TestHandler() {
 	filterData := "name"
-	request := userlikeemailornamefinder.UserLikeEmailOrNameFinderRequest{FilterData: filterData}
+	request := userfilters.UserLikeEmailOrNameFinderRequest{FilterData: filterData}
 	usersFound := []entities.User{{}, {}}
-	userLikeEmailReturned := userlikeemailornamefinder.UserLikeEmailOrNameFinderResponse{FetchedData: &usersFound}
+	userLikeEmailReturned := userfilters.UserLikeEmailOrNameFinderResponse{FetchedData: &usersFound}
 	c.userLikeEmailOrNameFinder.On("Run", c.ctx, &request).Return(&userLikeEmailReturned, nil)
 
 	got, err := c.getUsersLikeEmailOrNameAWSLambda.Handler(c.ctx, request)
@@ -49,7 +49,7 @@ func (c *GetUsersLikeEmailOrNameAWSLambdaTests) TestHandler() {
 
 func (c *GetUsersLikeEmailOrNameAWSLambdaTests) TestHandler_UnhandledError() {
 	filterData := "name"
-	request := userlikeemailornamefinder.UserLikeEmailOrNameFinderRequest{FilterData: filterData}
+	request := userfilters.UserLikeEmailOrNameFinderRequest{FilterData: filterData}
 	errorReturned := fmt.Errorf("ordinary error")
 	c.userLikeEmailOrNameFinder.On("Run", c.ctx, &request).Return(nil, errorReturned)
 

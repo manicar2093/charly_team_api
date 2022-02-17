@@ -7,7 +7,7 @@ import (
 
 	"github.com/manicar2093/charly_team_api/internal/db/entities"
 	"github.com/manicar2093/charly_team_api/internal/db/paginator"
-	"github.com/manicar2093/charly_team_api/internal/handlers/userfilters/allusersfinder"
+	"github.com/manicar2093/charly_team_api/internal/handlers/userfilters"
 	"github.com/manicar2093/charly_team_api/pkg/models"
 	"github.com/stretchr/testify/suite"
 )
@@ -19,13 +19,13 @@ func TestMain(t *testing.T) {
 type FindBiotestByUUIDAWSLambdaTests struct {
 	suite.Suite
 	ctx                  context.Context
-	allUsersFinder       *allusersfinder.MockAllUsersFinder
+	allUsersFinder       *userfilters.MockAllUsersFinder
 	getAllusersAWSLambda *GetAllUsersAWSLambda
 }
 
 func (c *FindBiotestByUUIDAWSLambdaTests) SetupTest() {
 	c.ctx = context.Background()
-	c.allUsersFinder = &allusersfinder.MockAllUsersFinder{}
+	c.allUsersFinder = &userfilters.MockAllUsersFinder{}
 	c.getAllusersAWSLambda = NewGetAllUsersAWSLambda(c.allUsersFinder)
 }
 
@@ -34,11 +34,11 @@ func (c *FindBiotestByUUIDAWSLambdaTests) TearDownTest() {
 }
 
 func (c *FindBiotestByUUIDAWSLambdaTests) TestHandler() {
-	request := allusersfinder.AllUsersFinderRequest{PageSort: paginator.PageSort{
+	request := userfilters.AllUsersFinderRequest{PageSort: paginator.PageSort{
 		Page: 1,
 	}}
 	usersPaginator := paginator.Paginator{Data: &[]entities.User{{}, {}}}
-	allUsersRunReturned := allusersfinder.AllUsersFinderResponse{UsersFound: &usersPaginator}
+	allUsersRunReturned := userfilters.AllUsersFinderResponse{UsersFound: &usersPaginator}
 	c.allUsersFinder.On("Run", c.ctx, &request).Return(&allUsersRunReturned, nil)
 
 	got, err := c.getAllusersAWSLambda.Handler(c.ctx, request)
@@ -49,7 +49,7 @@ func (c *FindBiotestByUUIDAWSLambdaTests) TestHandler() {
 }
 
 func (c *FindBiotestByUUIDAWSLambdaTests) TestHandler_UnhandledError() {
-	request := allusersfinder.AllUsersFinderRequest{PageSort: paginator.PageSort{
+	request := userfilters.AllUsersFinderRequest{PageSort: paginator.PageSort{
 		Page: 1,
 	}}
 	allUsersErrReturned := fmt.Errorf("ordinary error")

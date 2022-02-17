@@ -5,14 +5,14 @@ import (
 	"github.com/manicar2093/charly_team_api/internal/config"
 	"github.com/manicar2093/charly_team_api/internal/db/connections"
 	"github.com/manicar2093/charly_team_api/internal/db/repositories"
-	"github.com/manicar2093/charly_team_api/internal/handlers/cataloggetter"
+	"github.com/manicar2093/charly_team_api/internal/handlers/catalog"
 	"github.com/manicar2093/charly_team_api/pkg/validators"
 )
 
 func main() {
 	config.StartConfig()
 	conn := connections.PostgressConnection()
-	service := cataloggetter.NewCatalogGetterImpl(
+	service := catalog.NewCatalogGetterImpl(
 		repositories.NewCatalogRepositoryImpl(conn),
 		validators.NewStructValidator(),
 	)

@@ -6,7 +6,7 @@ import (
 	"github.com/manicar2093/charly_team_api/internal/db/connections"
 	"github.com/manicar2093/charly_team_api/internal/db/paginator"
 	"github.com/manicar2093/charly_team_api/internal/db/repositories"
-	"github.com/manicar2093/charly_team_api/internal/handlers/biotestcreator"
+	"github.com/manicar2093/charly_team_api/internal/handlers/biotest"
 	"github.com/manicar2093/charly_team_api/internal/services"
 	"github.com/manicar2093/charly_team_api/pkg/validators"
 )
@@ -16,7 +16,7 @@ func main() {
 	conn := connections.PostgressConnection()
 	paginator := paginator.NewPaginable(conn)
 	biotestRepo := repositories.NewBiotestRepositoryRel(conn, paginator, services.UUIDGeneratorImpl{})
-	service := biotestcreator.NewBiotestCreator(
+	service := biotest.NewBiotestCreator(
 		biotestRepo,
 		validators.NewStructValidator(),
 		services.UUIDGeneratorImpl{},

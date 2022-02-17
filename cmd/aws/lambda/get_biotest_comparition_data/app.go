@@ -4,16 +4,16 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/manicar2093/charly_team_api/internal/handlers/biotestfilters/biotestcomparitiondatafinder"
+	"github.com/manicar2093/charly_team_api/internal/handlers/biotestfilters"
 	"github.com/manicar2093/charly_team_api/pkg/models"
 )
 
 type GetBiotestComparitionDataAWSLambda struct {
-	biotestComparitionDataFinder biotestcomparitiondatafinder.BiotestComparitionDataFinder
+	biotestComparitionDataFinder biotestfilters.BiotestComparitionDataFinder
 }
 
 func NewGetBiotestComparitionDataAWSLambda(
-	biotestComparitionDataFinder biotestcomparitiondatafinder.BiotestComparitionDataFinder,
+	biotestComparitionDataFinder biotestfilters.BiotestComparitionDataFinder,
 ) *GetBiotestComparitionDataAWSLambda {
 	return &GetBiotestComparitionDataAWSLambda{
 		biotestComparitionDataFinder: biotestComparitionDataFinder,
@@ -22,7 +22,7 @@ func NewGetBiotestComparitionDataAWSLambda(
 
 func (c *GetBiotestComparitionDataAWSLambda) Handler(
 	ctx context.Context,
-	req biotestcomparitiondatafinder.BiotestComparitionDataFinderRequest,
+	req biotestfilters.BiotestComparitionDataFinderRequest,
 ) (*models.Response, error) {
 	res, err := c.biotestComparitionDataFinder.Run(ctx, &req)
 
