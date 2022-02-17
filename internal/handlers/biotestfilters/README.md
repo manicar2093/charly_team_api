@@ -1,9 +1,10 @@
-# Biotest by UUID Finder
+# Biotest package
 
+## Biotest by UUID Finder
 
-# Biotest Comparition Data Finder
+## Biotest Comparition Data Finder
 
-# Biotests By User UUID Finder
+## Biotests By User UUID Finder
 
 If AsCatalog is pass as true Page data will contain other response struct:
 
