@@ -6,7 +6,7 @@ import (
 
 	"github.com/go-rel/rel"
 	"github.com/manicar2093/charly_team_api/db/connections"
-	"github.com/manicar2093/charly_team_api/internal/testfunc"
+	"github.com/manicar2093/charly_team_api/pkg/testfunc"
 )
 
 var DB rel.Repository

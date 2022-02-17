@@ -3,7 +3,7 @@ package aws
 import (
 	"testing"
 
-	"github.com/manicar2093/charly_team_api/internal/testfunc/asserts"
+	"github.com/manicar2093/charly_team_api/pkg/testfunc/asserts"
 	"github.com/stretchr/testify/assert"
 )
 

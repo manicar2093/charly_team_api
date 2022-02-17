@@ -10,7 +10,7 @@ import (
 	"github.com/manicar2093/charly_team_api/internal/apperrors"
 	"github.com/manicar2093/charly_team_api/internal/handlers/biotestcreator"
 	"github.com/manicar2093/charly_team_api/internal/models"
-	"github.com/manicar2093/charly_team_api/internal/testfunc"
+	"github.com/manicar2093/charly_team_api/pkg/testfunc"
 	"github.com/stretchr/testify/suite"
 )
 

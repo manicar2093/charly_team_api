@@ -11,7 +11,7 @@ import (
 	"github.com/go-rel/rel/where"
 	"github.com/manicar2093/charly_team_api/db/entities"
 	"github.com/manicar2093/charly_team_api/internal/config"
-	"github.com/manicar2093/charly_team_api/internal/testfunc"
+	"github.com/manicar2093/charly_team_api/pkg/testfunc"
 	"github.com/stretchr/testify/assert"
 )
 
