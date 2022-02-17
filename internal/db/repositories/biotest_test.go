@@ -11,8 +11,8 @@ import (
 	"github.com/go-rel/rel/sort"
 	"github.com/go-rel/rel/where"
 	"github.com/jaswdr/faker"
-	"github.com/manicar2093/charly_team_api/db/entities"
-	"github.com/manicar2093/charly_team_api/db/paginator"
+	"github.com/manicar2093/charly_team_api/internal/db/entities"
+	"github.com/manicar2093/charly_team_api/internal/db/paginator"
 	"github.com/manicar2093/charly_team_api/internal/services"
 	"github.com/stretchr/testify/suite"
 )

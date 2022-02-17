@@ -5,7 +5,7 @@ package userupdater
 import (
 	context "context"
 
-	entities "github.com/manicar2093/charly_team_api/db/entities"
+	entities "github.com/manicar2093/charly_team_api/internal/db/entities"
 	mock "github.com/stretchr/testify/mock"
 )
 

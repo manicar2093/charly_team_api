@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/manicar2093/charly_team_api/db/entities"
-	"github.com/manicar2093/charly_team_api/db/paginator"
+	"github.com/manicar2093/charly_team_api/internal/db/entities"
+	"github.com/manicar2093/charly_team_api/internal/db/paginator"
 	"github.com/manicar2093/charly_team_api/internal/handlers/userfilters/allusersfinder"
 	"github.com/manicar2093/charly_team_api/pkg/models"
 	"github.com/stretchr/testify/suite"

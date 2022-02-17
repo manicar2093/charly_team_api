@@ -1,7 +1,7 @@
 package allusersfinder
 
 import (
-	"github.com/manicar2093/charly_team_api/db/paginator"
+	"github.com/manicar2093/charly_team_api/internal/db/paginator"
 )
 
 type AllUsersFinderRequest struct {

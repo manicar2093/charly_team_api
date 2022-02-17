@@ -5,9 +5,9 @@ module.exports = {
   connection: process.env.DB_URL,
   migrations: {
     tableName: 'schema_migrations',
-    directory: './db/migrations',
+    directory: './internal/db/migrations',
   },
   seeds: {
-    directory: './db/seeds',
+    directory: './internal/db/seeds',
   },
 };
