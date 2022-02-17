@@ -5,7 +5,7 @@ import (
 	"github.com/manicar2093/charly_team_api/db/connections"
 	"github.com/manicar2093/charly_team_api/internal/config"
 	"github.com/manicar2093/charly_team_api/internal/handlers/userupdater"
-	"github.com/manicar2093/charly_team_api/internal/validators"
+	"github.com/manicar2093/charly_team_api/pkg/validators"
 )
 
 func main() {
