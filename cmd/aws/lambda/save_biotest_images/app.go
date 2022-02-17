@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/manicar2093/charly_team_api/internal/handlers/biotestimagessaver"
-	"github.com/manicar2093/charly_team_api/internal/models"
+	"github.com/manicar2093/charly_team_api/pkg/models"
 )
 
 type SaveBiotestImagesAWSLambda struct {

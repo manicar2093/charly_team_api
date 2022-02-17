@@ -3,7 +3,7 @@ package repositories
 import (
 	"time"
 
-	"github.com/manicar2093/charly_team_api/db/entities"
+	"github.com/manicar2093/charly_team_api/internal/db/entities"
 )
 
 type BiotestDetails struct {

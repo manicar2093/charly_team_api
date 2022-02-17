@@ -1,6 +1,6 @@
 package userupdater
 
-import "github.com/manicar2093/charly_team_api/db/entities"
+import "github.com/manicar2093/charly_team_api/internal/db/entities"
 
 type UserUpdaterResponse struct {
 	UserUpdated *entities.User

@@ -8,8 +8,8 @@ import (
 	"strings"
 
 	"github.com/go-playground/validator"
-	"github.com/manicar2093/charly_team_api/internal/apperrors"
-	"github.com/manicar2093/charly_team_api/internal/models"
+	"github.com/manicar2093/charly_team_api/pkg/apperrors"
+	"github.com/manicar2093/charly_team_api/pkg/models"
 )
 
 var (

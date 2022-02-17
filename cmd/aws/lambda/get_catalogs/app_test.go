@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/manicar2093/charly_team_api/internal/apperrors"
 	"github.com/manicar2093/charly_team_api/internal/handlers/cataloggetter"
-	"github.com/manicar2093/charly_team_api/internal/models"
+	"github.com/manicar2093/charly_team_api/pkg/apperrors"
+	"github.com/manicar2093/charly_team_api/pkg/models"
 	"github.com/stretchr/testify/suite"
 )
 
