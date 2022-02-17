@@ -52,11 +52,7 @@ provider:
 
 # you can define service wide environment variables here
   environment:
-    DB_HOST: ${ssm:/charly_api_dev/db_settings/host}
-    DB_PORT: ${ssm:/charly_api_dev/db_settings/port}
-    DB_NAME: ${ssm:/charly_api_dev/db_settings/name}
-    DB_USER: ${ssm:/charly_api_dev/db_settings/user}
-    DB_PASSWORD: ${ssm:/charly_api_dev/db_settings/password}
+    DB_URL: ${ssm:/charly_api_dev/db_settings/url}
     COGNITO_POOL_ID: !Ref CharlyTeamAppUserPool
 
 package:

@@ -7,6 +7,7 @@ import (
 
 	"github.com/go-rel/rel"
 	"github.com/manicar2093/charly_team_api/db/connections"
+	"github.com/manicar2093/charly_team_api/internal/testfunc"
 )
 
 var (
@@ -15,7 +16,8 @@ var (
 )
 
 func TestMain(m *testing.M) {
-	DB = connections.SQLiteConnection()
+	testfunc.LoadEnvFileOrPanic("../../.env")
+	DB = connections.PostgressConnection()
 	Ctx = context.Background()
 	os.Exit(m.Run())
 }

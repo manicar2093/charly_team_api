@@ -8,7 +8,7 @@ This new handler must call `config.Start()` to avoid problems on DB connection
 
 ### Testing
 
-Just run the make command ```make test```.
+All test run using `.env` that you create from `.env.example`. It is need to create the database `charly_team_db_test` and after that just run the make command `make test` and all test should run without any problem.
 
 Into the package ```testfunc``` there is a func to start environment for testing purposes.
 
@@ -19,6 +19,10 @@ You can create a new struct which implements HandableErrors interfaz to be able 
 ### Handlers Logger
 
 All handler have to log its incomings and errors. This should be done using `logger` package
+
+## Deployment
+
+This is done through `serverless` and with the command `make` which compile and active `serverless cli` command.
 
 ## Considerations
 

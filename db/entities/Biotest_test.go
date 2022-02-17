@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/go-rel/rel/where"
+	"github.com/jaswdr/faker"
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/guregu/null.v4"
 )
@@ -19,14 +20,16 @@ func TestBiotestEntity(t *testing.T) {
 	var creator User
 	var biotest Biotest
 
+	faker := faker.New()
+
 	customer = User{
 		BiotypeID:     null.IntFrom(1),
 		BoneDensityID: null.IntFrom(1),
 		RoleID:        1,
-		UserUUID:      "uuid1",
+		UserUUID:      faker.UUID().V4(),
 		Name:          "Test",
 		LastName:      "Test",
-		Email:         "test1@test.com",
+		Email:         faker.Internet().Email(),
 		Birthday:      time.Now(),
 	}
 
@@ -37,10 +40,10 @@ func TestBiotestEntity(t *testing.T) {
 		BiotypeID:     null.IntFrom(1),
 		BoneDensityID: null.IntFrom(1),
 		RoleID:        1,
-		UserUUID:      "uuid2",
+		UserUUID:      faker.UUID().V4(),
 		Name:          "Test",
 		LastName:      "Test",
-		Email:         "creator_test_1@test.com",
+		Email:         faker.Internet().Email(),
 		Birthday:      time.Now(),
 	}
 
@@ -55,7 +58,7 @@ func TestBiotestEntity(t *testing.T) {
 		HeartHealthID:           1,
 		CustomerID:              customer.ID,
 		CreatorID:               creator.ID,
-		BiotestUUID:             "as uniqe uuid testing",
+		BiotestUUID:             faker.UUID().V4(),
 		Weight:                  250.1,
 		Height:                  195,
 		BodyFatPercentage:       12.5,
