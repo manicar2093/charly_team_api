@@ -5,7 +5,7 @@ import (
 
 	"github.com/go-rel/rel"
 	"github.com/manicar2093/charly_team_api/db/entities"
-	"github.com/manicar2093/charly_team_api/internal/apperrors"
+	"github.com/manicar2093/charly_team_api/pkg/apperrors"
 	"github.com/manicar2093/charly_team_api/pkg/logger"
 	"github.com/manicar2093/charly_team_api/pkg/validators"
 )
