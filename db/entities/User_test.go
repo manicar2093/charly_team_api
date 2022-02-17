@@ -6,9 +6,12 @@ import (
 	"time"
 
 	"github.com/go-rel/rel/where"
+	"github.com/jaswdr/faker"
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/guregu/null.v4"
 )
+
+var fake = faker.New()
 
 func TestCustomerEntity(t *testing.T) {
 	user := User{
@@ -16,7 +19,7 @@ func TestCustomerEntity(t *testing.T) {
 		BoneDensityID: null.IntFrom(1),
 		RoleID:        1,
 		GenderID:      null.IntFrom(1),
-		UserUUID:      "an_uuid_testing",
+		UserUUID:      fake.UUID().V4(),
 		Name:          "Test",
 		LastName:      "Test",
 		Email:         "test@test.com",
@@ -38,7 +41,7 @@ func TestCustomerEntity_RoleLoad(t *testing.T) {
 		BoneDensityID: null.IntFrom(1),
 		RoleID:        1,
 		GenderID:      null.IntFrom(1),
-		UserUUID:      "an_uuid_testing",
+		UserUUID:      fake.UUID().V4(),
 		Name:          "Test",
 		LastName:      "Test",
 		Email:         "test@test.com",
