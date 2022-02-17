@@ -6,8 +6,8 @@ import (
 	"github.com/go-rel/rel"
 	"github.com/manicar2093/charly_team_api/db/entities"
 	"github.com/manicar2093/charly_team_api/internal/apperrors"
-	"github.com/manicar2093/charly_team_api/internal/logger"
 	"github.com/manicar2093/charly_team_api/internal/validators"
+	"github.com/manicar2093/charly_team_api/pkg/logger"
 )
 
 type BiotestUpdater interface {

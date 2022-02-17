@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/manicar2093/charly_team_api/db/repositories"
-	"github.com/manicar2093/charly_team_api/internal/logger"
+	"github.com/manicar2093/charly_team_api/pkg/logger"
 )
 
 type TokenClaimsGenerator interface {
