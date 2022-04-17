@@ -21,7 +21,7 @@ func NewBiotestRepositoryRel(
 	repo rel.Repository,
 	paginator paginator.Paginable,
 	uuidGen services.UUIDGenerator,
-) *BiotestRepositoryRel {
+) BiotestRepository {
 	return &BiotestRepositoryRel{
 		repo:      repo,
 		paginator: paginator,
@@ -98,12 +98,16 @@ func (c *BiotestRepositoryRel) GetComparitionDataByUserUUID(
 	ctx context.Context,
 	userUUID string,
 ) (*BiotestComparisionResponse, error) {
+	var (
+		biotestsDetails []BiotestDetails
+		firstBiotest    entities.Biotest
+		lastBiotest     entities.Biotest
+	)
 	userFound, err := c.findUser(ctx, userUUID)
 	if err != nil {
 		return nil, err
 	}
 
-	biotestsDetails := []BiotestDetails{}
 	c.repo.FindAll(
 		ctx,
 		&biotestsDetails,
@@ -112,41 +116,41 @@ func (c *BiotestRepositoryRel) GetComparitionDataByUserUUID(
 		sort.Asc("created_at"),
 	)
 
-	if len(biotestsDetails) == 0 {
+	switch len(biotestsDetails) {
+	case 0:
 		return nil, NotFoundError{Entity: "BiotestComparitionData", Identifier: userUUID}
+	case 1:
+		c.repo.Find(
+			ctx,
+			&firstBiotest,
+			where.Eq("customer_id", userFound.ID),
+			sort.Asc("created_at"),
+		)
+		return &BiotestComparisionResponse{
+			FirstBiotest:       &firstBiotest,
+			LastBiotest:        nil,
+			AllBiotestsDetails: &biotestsDetails,
+		}, nil
+	default:
+		c.repo.Find(
+			ctx,
+			&firstBiotest,
+			where.Eq("customer_id", userFound.ID),
+			sort.Asc("created_at"),
+		)
+		c.repo.Find(
+			ctx,
+			&lastBiotest,
+			where.Eq("customer_id", userFound.ID),
+			sort.Desc("created_at"),
+		)
+		return &BiotestComparisionResponse{
+			FirstBiotest:       &firstBiotest,
+			LastBiotest:        &lastBiotest,
+			AllBiotestsDetails: &biotestsDetails,
+		}, nil
+
 	}
-
-	firstBiotest := entities.Biotest{}
-	c.repo.Find(
-		ctx,
-		&firstBiotest,
-		where.Eq("customer_id", userFound.ID),
-		sort.Asc("created_at"),
-	)
-	lastBiotest := entities.Biotest{}
-	err = c.repo.Find(
-		ctx,
-		&lastBiotest,
-		where.Eq("customer_id", userFound.ID),
-		sort.Desc("created_at"),
-	)
-
-	if err != nil {
-		switch err.(type) {
-		case rel.NotFoundError:
-			return &BiotestComparisionResponse{
-				FirstBiotest:       &firstBiotest,
-				AllBiotestsDetails: &biotestsDetails,
-			}, nil
-		}
-		return nil, err
-	}
-
-	return &BiotestComparisionResponse{
-		FirstBiotest:       &firstBiotest,
-		LastBiotest:        &lastBiotest,
-		AllBiotestsDetails: &biotestsDetails,
-	}, nil
 }
 
 func (c *BiotestRepositoryRel) SaveBiotest(
