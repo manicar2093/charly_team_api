@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/manicar2093/charly_team_api/internal/handlers/user"
+	"github.com/manicar2093/charly_team_api/internal/user"
 	"github.com/manicar2093/charly_team_api/pkg/models"
 )
 
