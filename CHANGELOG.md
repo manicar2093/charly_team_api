@@ -1,3 +1,9 @@
+## v0.74.0 (2022-04-17)
+
+### Feat
+
+- Move packages from handlers to internal (#189)
+
 ## v0.73.0 (2022-02-17)
 
 ### Feat
