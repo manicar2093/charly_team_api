@@ -1,363 +1,375 @@
-package repositories
+package repositories_test
 
 import (
 	"context"
 	"fmt"
-	"testing"
 	"time"
 
 	"github.com/go-rel/rel"
-	"github.com/go-rel/rel/reltest"
 	"github.com/go-rel/rel/sort"
 	"github.com/go-rel/rel/where"
+	"github.com/go-rel/reltest"
 	"github.com/jaswdr/faker"
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
+
 	"github.com/manicar2093/charly_team_api/internal/db/entities"
 	"github.com/manicar2093/charly_team_api/internal/db/paginator"
+	"github.com/manicar2093/charly_team_api/internal/db/repositories"
 	"github.com/manicar2093/charly_team_api/internal/services"
-	"github.com/stretchr/testify/suite"
 )
 
-func TestBiotestRepository(t *testing.T) {
-	suite.Run(t, new(BiotestRepositoryTest))
-}
-
-type BiotestRepositoryTest struct {
-	suite.Suite
-	paginator         *paginator.MockPaginable
-	uuidGen           *services.MockUUIDGenerator
-	repo              *reltest.Repository
-	biotestRepository BiotestRepository
-	ctx               context.Context
-	faker             faker.Faker
-}
-
-func (c *BiotestRepositoryTest) SetupTest() {
-	c.repo = reltest.New()
-	c.paginator = &paginator.MockPaginable{}
-	c.uuidGen = &services.MockUUIDGenerator{}
-	c.biotestRepository = NewBiotestRepositoryRel(c.repo, c.paginator, c.uuidGen)
-	c.ctx = context.TODO()
-	c.faker = faker.New()
-}
-
-func (c *BiotestRepositoryTest) TearDownTest() {
-	t := c.T()
-	c.repo.AssertExpectations(t)
-	c.paginator.AssertExpectations(t)
-	c.uuidGen.AssertExpectations(t)
-}
-
-func (c *BiotestRepositoryTest) TestFindBiotestByUUID() {
-	expectedBiotestUUID := c.faker.UUID().V4()
-	expectedBiotest := entities.Biotest{}
-	expectedBiotest.BiotestUUID = expectedBiotestUUID
-	c.repo.ExpectFind(
-		where.Eq("biotest_uuid", expectedBiotestUUID),
-	).Result(expectedBiotest)
-
-	got, err := c.biotestRepository.FindBiotestByUUID(c.ctx, expectedBiotestUUID)
-
-	c.Nil(err, "FindBiotestByUUID should not return an error")
-	c.Equal(expectedBiotestUUID, got.BiotestUUID, "unexpected biotest uuid")
-
-}
-
-func (c *BiotestRepositoryTest) TestFindBiotestByUUID_NotFound() {
-	expectedBiotestUUID := c.faker.UUID().V4()
-	expectedBiotest := entities.Biotest{}
-	expectedBiotest.BiotestUUID = expectedBiotestUUID
-	c.repo.ExpectFind(
-		where.Eq("biotest_uuid", expectedBiotestUUID),
-	).NotFound()
-
-	got, err := c.biotestRepository.FindBiotestByUUID(c.ctx, expectedBiotestUUID)
-
-	c.Nil(got, "FindBiotestByUUID a entities.Biotest instance")
-	c.IsType(NotFoundError{}, err, "should be an NotFoundError type")
-
-}
-
-func (c *BiotestRepositoryTest) TestGetAllUserBiotestByUserUUID() {
-	expectedUserUUID := c.faker.UUID().V4()
-	expectedUserID := c.faker.Int32()
-	userFindReturn := entities.User{
-		ID:       expectedUserID,
-		UserUUID: expectedUserUUID,
-	}
-	c.repo.ExpectFind(
-		where.Eq("user_uuid", expectedUserUUID),
-	).Result(userFindReturn)
-	pageNumber := c.faker.Float64(2, 1, 2)
-	pageNumberAsInt := int(pageNumber)
-	pageSort := paginator.PageSort{
-		Page: pageNumber,
-	}
-	pageSort.SetFiltersQueries(where.Eq("customer_id", expectedUserID), sort.Asc("created_at"))
-	biotestPaginatorResponse := []entities.Biotest{
-		{ID: 1, BiotestUUID: "uuid1", CreatedAt: time.Now()},
-		{ID: 2, BiotestUUID: "uuid2", CreatedAt: time.Now()},
-	}
-	pageResponse := &paginator.Paginator{
-		TotalPages:   2,
-		CurrentPage:  pageNumberAsInt,
-		PreviousPage: 0,
-		NextPage:     2,
-		Data:         biotestPaginatorResponse,
-	}
-	biotestHolder := []entities.Biotest{}
-	c.paginator.On(
-		"CreatePagination",
-		c.ctx,
-		entities.BiotestTable,
-		&biotestHolder,
-		&pageSort,
-	).Return(pageResponse, nil)
-
-	got, err := c.biotestRepository.GetAllUserBiotestByUserUUID(c.ctx, &pageSort, expectedUserUUID)
-
-	c.Nil(err, "should not return an error")
-	c.Equal(2, len(got.Data.([]entities.Biotest)), "wrong data length")
-
-}
-
-func (c *BiotestRepositoryTest) TestGetAllUserBiotestByUserUUID_UserNotFound() {
-	expectedUserUUID := c.faker.UUID().V4()
-	c.repo.ExpectFind(
-		where.Eq("user_uuid", expectedUserUUID),
-	).Error(rel.ErrNotFound)
-	pageNumber := c.faker.Float64(2, 1, 2)
-	pageSort := paginator.PageSort{
-		Page: pageNumber,
-	}
-
-	got, err := c.biotestRepository.GetAllUserBiotestByUserUUID(c.ctx, &pageSort, expectedUserUUID)
-
-	c.NotNil(err, "should not return an error")
-	c.IsType(err, NotFoundError{}, "error type is not correct")
-	c.Nil(got, "should return a nil paginator")
-}
-
-func (c *BiotestRepositoryTest) TestGetAllUserBiotestByUserUUIDAsCatalog() {
-	expectedUserUUID := c.faker.UUID().V4()
-	expectedUserID := c.faker.Int32()
-	userFindReturn := entities.User{
-		ID:       expectedUserID,
-		UserUUID: expectedUserUUID,
-	}
-	c.repo.ExpectFind(
-		where.Eq("user_uuid", expectedUserUUID),
-	).Result(userFindReturn)
-	pageNumber := c.faker.Float64(2, 1, 2)
-	pageNumberAsInt := int(pageNumber)
-	pageSort := paginator.PageSort{
-		Page: pageNumber,
-	}
-	pageSort.SetFiltersQueries(
-		where.Eq("customer_id", expectedUserID),
-		sort.Asc("created_at"),
-		rel.Select("biotest_uuid", "created_at").From(entities.BiotestTable),
+var _ = Describe("Biotest", func() {
+	var (
+		paginatorMock     *paginator.MockPaginable
+		uuidGen           *services.MockUUIDGenerator
+		repo              *reltest.Repository
+		biotestRepository repositories.BiotestRepository
+		ctx               context.Context
+		fake              faker.Faker
 	)
-	biotestPaginatorResponse := []entities.Biotest{
-		{ID: 1, BiotestUUID: "uuid1", CreatedAt: time.Now()},
-		{ID: 2, BiotestUUID: "uuid2", CreatedAt: time.Now()},
-	}
-	pageResponse := &paginator.Paginator{
-		TotalPages:   2,
-		CurrentPage:  pageNumberAsInt,
-		PreviousPage: 0,
-		NextPage:     2,
-		Data:         biotestPaginatorResponse,
-	}
-	biotestHolder := []BiotestDetails{}
-	c.paginator.On(
-		"CreatePagination",
-		c.ctx,
-		entities.BiotestTable,
-		&biotestHolder,
-		&pageSort,
-	).Return(pageResponse, nil)
 
-	got, err := c.biotestRepository.GetAllUserBiotestByUserUUIDAsCatalog(c.ctx, &pageSort, expectedUserUUID)
-
-	c.Nil(err, "should not return an error")
-	c.Equal(2, len(got.Data.([]entities.Biotest)), "wrong data length")
-
-}
-
-func (c *BiotestRepositoryTest) TestGetAllUserBiotestByUserUUIDAsCatalog_UserNotFound() {
-	expectedUserUUID := c.faker.UUID().V4()
-	c.repo.ExpectFind(
-		where.Eq("user_uuid", expectedUserUUID),
-	).Error(rel.ErrNotFound)
-	pageNumber := c.faker.Float64(2, 1, 2)
-	pageSort := paginator.PageSort{
-		Page: pageNumber,
-	}
-
-	got, err := c.biotestRepository.GetAllUserBiotestByUserUUIDAsCatalog(c.ctx, &pageSort, expectedUserUUID)
-
-	c.NotNil(err, "should not return an error")
-	c.IsType(err, NotFoundError{}, "error type is not correct")
-	c.Nil(got, "should return a nil paginator")
-}
-
-func (c *BiotestRepositoryTest) TestGetComparitionDataByUserUUID() {
-	expectedUserUUID := c.faker.UUID().V4()
-	expectedUserID := c.faker.Int32()
-	userReturned := entities.User{
-		ID:       expectedUserID,
-		UserUUID: expectedUserUUID,
-	}
-	c.repo.ExpectFind(
-		where.Eq("user_uuid", expectedUserUUID),
-	).Result(userReturned)
-	biotestDetails := []BiotestDetails{
-		{BiotestUUID: "uuid1", CreatedAt: time.Now()},
-		{BiotestUUID: "uuid2", CreatedAt: time.Now()},
-	}
-	c.repo.ExpectFindAll(
-		where.Eq("customer_id", expectedUserID),
-		rel.Select("biotest_uuid", "created_at").From(entities.BiotestTable),
-		sort.Asc("created_at"),
-	).Result(biotestDetails)
-	biotestResponses := []entities.Biotest{
-		{ID: 1, BiotestUUID: "uuid1", CreatedAt: time.Now()},
-		{ID: 2, BiotestUUID: "uuid2", CreatedAt: time.Now()},
-	}
-	c.repo.ExpectFind(
-		where.Eq("customer_id", expectedUserID),
-		sort.Asc("created_at"),
-	).Result(biotestResponses[0])
-	c.repo.ExpectFind(
-		where.Eq("customer_id", expectedUserID),
-		sort.Desc("created_at"),
-	).Result(biotestResponses[1])
-
-	got, err := c.biotestRepository.GetComparitionDataByUserUUID(c.ctx, expectedUserUUID)
-
-	c.Nil(err, "should not be an error")
-	c.NotNil(got, "should response with the correct data")
-	c.Len(*got.AllBiotestsDetails, 2, "all biotest data has not required len")
-
-}
-
-func (c *BiotestRepositoryTest) TestGetComparitionDataByUserUUID_UserNotFound() {
-	expectedUserUUID := c.faker.UUID().V4()
-	c.repo.ExpectFind(
-		where.Eq("user_uuid", expectedUserUUID),
-	).NotFound()
-
-	got, err := c.biotestRepository.GetComparitionDataByUserUUID(c.ctx, expectedUserUUID)
-
-	c.IsType(NotFoundError{}, err, "should not be an error")
-	c.Nil(got, "should not response with comparition data")
-}
-
-func (c *BiotestRepositoryTest) TestGetComparitionDataByUserUUID_UserHasNoBiotest() {
-	expectedUserUUID := c.faker.UUID().V4()
-	expectedUserID := c.faker.Int32()
-	userReturned := entities.User{
-		ID:       expectedUserID,
-		UserUUID: expectedUserUUID,
-	}
-	c.repo.ExpectFind(
-		where.Eq("user_uuid", expectedUserUUID),
-	).Result(userReturned)
-	biotestDetails := []BiotestDetails{}
-	c.repo.ExpectFindAll(
-		where.Eq("customer_id", expectedUserID),
-		rel.Select("biotest_uuid", "created_at").From(entities.BiotestTable),
-		sort.Asc("created_at"),
-	).Result(biotestDetails)
-
-	got, err := c.biotestRepository.GetComparitionDataByUserUUID(c.ctx, expectedUserUUID)
-
-	c.IsType(NotFoundError{}, err, "should be an error of NotFoundError type")
-	c.Nil(got, "should not response with comparition data")
-}
-
-func (c *BiotestRepositoryTest) TestGetComparitionDataByUserUUID_LastBiotestNotFound() {
-	expectedUserUUID := c.faker.UUID().V4()
-	expectedUserID := c.faker.Int32()
-	userReturned := entities.User{
-		ID:       expectedUserID,
-		UserUUID: expectedUserUUID,
-	}
-	c.repo.ExpectFind(
-		where.Eq("user_uuid", expectedUserUUID),
-	).Result(userReturned)
-
-	biotestDetails := []BiotestDetails{
-		{BiotestUUID: "uuid1", CreatedAt: time.Now()},
-	}
-	c.repo.ExpectFindAll(
-		where.Eq("customer_id", expectedUserID),
-		rel.Select("biotest_uuid", "created_at").From(entities.BiotestTable),
-		sort.Asc("created_at"),
-	).Result(biotestDetails)
-	biotestResponses := []entities.Biotest{
-		{ID: 1, BiotestUUID: "uuid1", CreatedAt: time.Now()},
-	}
-	c.repo.ExpectFind(
-		where.Eq("customer_id", expectedUserID),
-		sort.Asc("created_at"),
-	).Result(biotestResponses[0])
-
-	c.repo.ExpectFind(
-		where.Eq("customer_id", expectedUserID),
-		sort.Desc("created_at"),
-	).NotFound()
-
-	got, err := c.biotestRepository.GetComparitionDataByUserUUID(c.ctx, expectedUserUUID)
-
-	c.Nil(err, "should not be an error")
-	c.NotNil(got, "should response with the correct data")
-	c.Nil(got.LastBiotest, "should not be an error las biotest data")
-}
-
-func (c *BiotestRepositoryTest) TestSaveBiotest() {
-	UUIDForBiotest := c.faker.UUID().V4()
-	c.uuidGen.On("New").Return(UUIDForBiotest)
-	biotestToSave := entities.Biotest{}
-	c.repo.ExpectTransaction(func(r *reltest.Repository) {
-		c.repo.ExpectInsert().ForType("entities.Biotest").Return(nil)
-		c.repo.ExpectInsert().ForType("entities.HigherMuscleDensity").Return(nil)
-		c.repo.ExpectInsert().ForType("entities.LowerMuscleDensity").Return(nil)
-		c.repo.ExpectInsert().ForType("entities.SkinFolds").Return(nil)
+	BeforeEach(func() {
+		repo = reltest.New()
+		paginatorMock = &paginator.MockPaginable{}
+		uuidGen = &services.MockUUIDGenerator{}
+		biotestRepository = repositories.NewBiotestRepositoryRel(repo, paginatorMock, uuidGen)
+		ctx = context.TODO()
+		fake = faker.New()
 	})
 
-	err := c.biotestRepository.SaveBiotest(c.ctx, &biotestToSave)
-
-	c.Nil(err, "should not return an error")
-	c.NotEmpty(biotestToSave.ID, "biotest was not save")
-	c.Equal(UUIDForBiotest, biotestToSave.BiotestUUID, "not correct uuid on biotest")
-
-}
-
-func (c *BiotestRepositoryTest) TestSaveBiotest_InsertError() {
-	UUIDForBiotest := c.faker.UUID().V4()
-	c.uuidGen.On("New").Return(UUIDForBiotest)
-	biotestToSave := entities.Biotest{}
-	c.repo.ExpectTransaction(func(r *reltest.Repository) {
-		c.repo.ExpectInsert().ForType("entities.Biotest").Error(fmt.Errorf("an error occured"))
+	AfterEach(func() {
+		t := GinkgoT()
+		repo.AssertExpectations(t)
+		paginatorMock.AssertExpectations(t)
+		uuidGen.AssertExpectations(t)
 	})
 
-	err := c.biotestRepository.SaveBiotest(c.ctx, &biotestToSave)
+	Describe("FindBiotestByUUID", func() {
+		It("should be returned", func() {
+			expectedBiotestUUID := fake.UUID().V4()
+			expectedBiotest := entities.Biotest{
+				BiotestUUID: expectedBiotestUUID,
+			}
+			repo.ExpectFind(
+				where.Eq("biotest_uuid", expectedBiotestUUID),
+			).Result(expectedBiotest)
 
-	c.NotNil(err, "should return an error")
-	c.Empty(biotestToSave.BiotestUUID, "should be empty")
-}
+			got, err := biotestRepository.FindBiotestByUUID(ctx, expectedBiotestUUID)
 
-func (c *BiotestRepositoryTest) TestUpdateBiotest() {
-	biotestToUpdate := entities.Biotest{}
-	c.repo.ExpectTransaction(func(r *reltest.Repository) {
-		r.ExpectUpdate().ForType("entities.Biotest").Return(nil)
-		r.ExpectUpdate().ForType("entities.HigherMuscleDensity").Return(nil)
-		r.ExpectUpdate().ForType("entities.LowerMuscleDensity").Return(nil)
-		r.ExpectUpdate().ForType("entities.SkinFolds").Return(nil)
+			Expect(err).ToNot(HaveOccurred())
+			Expect(expectedBiotestUUID).To(Equal(got.BiotestUUID))
+
+		})
+		Context("if biotest does not exist", func() {
+			It("should return a repositories.NotFoundError", func() {
+				expectedBiotestUUID := fake.UUID().V4()
+				repo.ExpectFind(
+					where.Eq("biotest_uuid", expectedBiotestUUID),
+				).NotFound()
+
+				got, err := biotestRepository.FindBiotestByUUID(ctx, expectedBiotestUUID)
+
+				Expect(err).To(BeAssignableToTypeOf(repositories.NotFoundError{}))
+				Expect(got).To(BeNil())
+
+			})
+		})
+
 	})
 
-	err := c.biotestRepository.UpdateBiotest(c.ctx, &biotestToUpdate)
-	c.T().Log(err)
-	c.Nil(err, "should not return an error")
-}
+	Describe("GetAllUserBiotestByUserUUID", func() {
+		It("should return all user biotest", func() {
+			expectedUserUUID := fake.UUID().V4()
+			expectedUserID := fake.Int32()
+			userFindReturn := entities.User{
+				ID:       expectedUserID,
+				UserUUID: expectedUserUUID,
+			}
+			repo.ExpectFind(
+				where.Eq("user_uuid", expectedUserUUID),
+			).Result(userFindReturn)
+			pageNumber := fake.Float64(2, 1, 2)
+			pageNumberAsInt := int(pageNumber)
+			pageSort := paginator.PageSort{
+				Page: pageNumber,
+			}
+			pageSort.SetFiltersQueries(where.Eq("customer_id", expectedUserID), sort.Asc("created_at"))
+			biotestPaginatorResponse := []entities.Biotest{
+				{ID: 1, BiotestUUID: "uuid1", CreatedAt: time.Now()},
+				{ID: 2, BiotestUUID: "uuid2", CreatedAt: time.Now()},
+			}
+			pageResponse := &paginator.Paginator{
+				TotalPages:   2,
+				CurrentPage:  pageNumberAsInt,
+				PreviousPage: 0,
+				NextPage:     2,
+				Data:         biotestPaginatorResponse,
+			}
+			biotestHolder := []entities.Biotest{}
+			paginatorMock.On(
+				"CreatePagination",
+				ctx,
+				entities.BiotestTable,
+				&biotestHolder,
+				&pageSort,
+			).Return(pageResponse, nil)
+
+			got, err := biotestRepository.GetAllUserBiotestByUserUUID(ctx, &pageSort, expectedUserUUID)
+
+			Expect(err).ToNot(HaveOccurred())
+			Expect(got.Data.([]entities.Biotest)).To(HaveLen(2))
+		})
+
+		Context("if user does not exist", func() {
+			It("should return a repositories.NotFoundError", func() {
+				expectedUserUUID := fake.UUID().V4()
+				repo.ExpectFind(
+					where.Eq("user_uuid", expectedUserUUID),
+				).Error(rel.ErrNotFound)
+				pageNumber := fake.Float64(2, 1, 2)
+				pageSort := paginator.PageSort{
+					Page: pageNumber,
+				}
+
+				got, err := biotestRepository.GetAllUserBiotestByUserUUID(ctx, &pageSort, expectedUserUUID)
+
+				Expect(err).To(BeAssignableToTypeOf(repositories.NotFoundError{}))
+				Expect(got).To(BeNil())
+			})
+		})
+	})
+
+	Describe("GetAllUserBiotestByUserUUIDAsCatalog", func() {
+		It("should return biotest data as catalog", func() {
+			expectedUserUUID := fake.UUID().V4()
+			expectedUserID := fake.Int32()
+			userFindReturn := entities.User{
+				ID:       expectedUserID,
+				UserUUID: expectedUserUUID,
+			}
+			repo.ExpectFind(
+				where.Eq("user_uuid", expectedUserUUID),
+			).Result(userFindReturn)
+			pageNumber := fake.Float64(2, 1, 2)
+			pageNumberAsInt := int(pageNumber)
+			pageSort := paginator.PageSort{
+				Page: pageNumber,
+			}
+			pageSort.SetFiltersQueries(
+				where.Eq("customer_id", expectedUserID),
+				sort.Asc("created_at"),
+				rel.Select("biotest_uuid", "created_at").From(entities.BiotestTable),
+			)
+			biotestPaginatorResponse := []repositories.BiotestDetails{
+				{BiotestUUID: "uuid1", CreatedAt: time.Now()},
+				{BiotestUUID: "uuid2", CreatedAt: time.Now()},
+			}
+			pageResponse := &paginator.Paginator{
+				TotalPages:   2,
+				CurrentPage:  pageNumberAsInt,
+				PreviousPage: 0,
+				NextPage:     2,
+				Data:         biotestPaginatorResponse,
+			}
+			biotestHolder := []repositories.BiotestDetails{}
+			paginatorMock.On(
+				"CreatePagination",
+				ctx,
+				entities.BiotestTable,
+				&biotestHolder,
+				&pageSort,
+			).Return(pageResponse, nil)
+
+			got, err := biotestRepository.GetAllUserBiotestByUserUUIDAsCatalog(ctx, &pageSort, expectedUserUUID)
+
+			Expect(err).ToNot(HaveOccurred())
+			Expect(got.Data.([]repositories.BiotestDetails)).To(HaveLen(2))
+		})
+
+		Context("if user does not exist", func() {
+			It("should return a repositories.NotFoundError", func() {
+				expectedUserUUID := fake.UUID().V4()
+				repo.ExpectFind(
+					where.Eq("user_uuid", expectedUserUUID),
+				).Error(rel.ErrNotFound)
+				pageNumber := fake.Float64(2, 1, 2)
+				pageSort := paginator.PageSort{
+					Page: pageNumber,
+				}
+
+				got, err := biotestRepository.GetAllUserBiotestByUserUUIDAsCatalog(ctx, &pageSort, expectedUserUUID)
+
+				Expect(err).To(BeAssignableToTypeOf(repositories.NotFoundError{}))
+				Expect(got).To(BeNil())
+			})
+		})
+	})
+
+	Describe("GetComparitionDataByUserUUID", func() {
+		It("Should return user comparition data", func() {
+			expectedUserUUID := fake.UUID().V4()
+			expectedUserID := fake.Int32()
+			userReturned := entities.User{
+				ID:       expectedUserID,
+				UserUUID: expectedUserUUID,
+			}
+			repo.ExpectFind(
+				where.Eq("user_uuid", expectedUserUUID),
+			).Result(userReturned)
+			biotestDetails := []repositories.BiotestDetails{
+				{BiotestUUID: "uuid1", CreatedAt: time.Now()},
+				{BiotestUUID: "uuid2", CreatedAt: time.Now()},
+			}
+			repo.ExpectFindAll(
+				where.Eq("customer_id", expectedUserID),
+				rel.Select("biotest_uuid", "created_at").From(entities.BiotestTable),
+				sort.Asc("created_at"),
+			).Result(biotestDetails)
+			biotestResponses := []entities.Biotest{
+				{ID: 1, BiotestUUID: "uuid1", CreatedAt: time.Now()},
+				{ID: 2, BiotestUUID: "uuid2", CreatedAt: time.Now()},
+			}
+			repo.ExpectFind(
+				where.Eq("customer_id", expectedUserID),
+				sort.Asc("created_at"),
+			).Result(biotestResponses[0])
+			repo.ExpectFind(
+				where.Eq("customer_id", expectedUserID),
+				sort.Desc("created_at"),
+			).Result(biotestResponses[1])
+
+			got, err := biotestRepository.GetComparitionDataByUserUUID(ctx, expectedUserUUID)
+
+			Expect(err).ToNot(HaveOccurred())
+			Expect(*got.AllBiotestsDetails).To(HaveLen(2))
+		})
+
+		Context("if user does not exist", func() {
+			It("should return a repositories.NotFoundError", func() {
+				expectedUserUUID := fake.UUID().V4()
+				repo.ExpectFind(
+					where.Eq("user_uuid", expectedUserUUID),
+				).NotFound()
+
+				got, err := biotestRepository.GetComparitionDataByUserUUID(ctx, expectedUserUUID)
+
+				Expect(err).To(BeAssignableToTypeOf(repositories.NotFoundError{}))
+				Expect(got).To(BeNil())
+			})
+		})
+
+		Context("if user has no biotests", func() {
+			It("should return a respositories.NotFoundError", func() {
+				expectedUserUUID := fake.UUID().V4()
+				expectedUserID := fake.Int32()
+				userReturned := entities.User{
+					ID:       expectedUserID,
+					UserUUID: expectedUserUUID,
+				}
+				repo.ExpectFind(
+					where.Eq("user_uuid", expectedUserUUID),
+				).Result(userReturned)
+				biotestDetails := []repositories.BiotestDetails{}
+				repo.ExpectFindAll(
+					where.Eq("customer_id", expectedUserID),
+					rel.Select("biotest_uuid", "created_at").From(entities.BiotestTable),
+					sort.Asc("created_at"),
+				).Result(biotestDetails)
+
+				got, err := biotestRepository.GetComparitionDataByUserUUID(ctx, expectedUserUUID)
+
+				Expect(err).To(BeAssignableToTypeOf(repositories.NotFoundError{}))
+				Expect(got).To(BeNil())
+			})
+		})
+
+		Context("if user has only one biotest", func() {
+			It("should return LastBiotest as nil", func() {
+				expectedUserUUID := fake.UUID().V4()
+				expectedUserID := fake.Int32()
+				userReturned := entities.User{
+					ID:       expectedUserID,
+					UserUUID: expectedUserUUID,
+				}
+				repo.ExpectFind(
+					where.Eq("user_uuid", expectedUserUUID),
+				).Result(userReturned)
+
+				biotestDetails := []repositories.BiotestDetails{
+					{BiotestUUID: "uuid1", CreatedAt: time.Now()},
+				}
+				repo.ExpectFindAll(
+					where.Eq("customer_id", expectedUserID),
+					rel.Select("biotest_uuid", "created_at").From(entities.BiotestTable),
+					sort.Asc("created_at"),
+				).Result(biotestDetails)
+				biotestResponse := entities.Biotest{
+					ID: 1, BiotestUUID: "uuid1", CreatedAt: time.Now(),
+				}
+				repo.ExpectFind(
+					where.Eq("customer_id", expectedUserID),
+					sort.Asc("created_at"),
+				).Result(biotestResponse)
+
+				got, err := biotestRepository.GetComparitionDataByUserUUID(ctx, expectedUserUUID)
+
+				Expect(err).ToNot(HaveOccurred())
+				Expect(got.LastBiotest).To(BeNil())
+			})
+		})
+	})
+
+	Describe("SaveBiotest", func() {
+		It("should save a new biotest", func() {
+			UUIDForBiotest := fake.UUID().V4()
+			uuidGen.On("New").Return(UUIDForBiotest)
+			biotestToSave := entities.Biotest{}
+			repo.ExpectTransaction(func(r *reltest.Repository) {
+				repo.ExpectInsert().ForType("entities.Biotest").Success()
+				repo.ExpectInsert().ForType("entities.HigherMuscleDensity").Success()
+				repo.ExpectInsert().ForType("entities.LowerMuscleDensity").Success()
+				repo.ExpectInsert().ForType("entities.SkinFolds").Success()
+			})
+
+			err := biotestRepository.SaveBiotest(ctx, &biotestToSave)
+
+			Expect(err).ToNot(HaveOccurred())
+			Expect(biotestToSave.ID).ToNot(BeZero())
+			Expect(biotestToSave.BiotestUUID).To(Equal(UUIDForBiotest))
+		})
+
+		Context("if a insertion error occurre", func() {
+			It("should return the original error", func() {
+				UUIDForBiotest := fake.UUID().V4()
+				uuidGen.On("New").Return(UUIDForBiotest)
+				biotestToSave := entities.Biotest{}
+				repo.ExpectTransaction(func(r *reltest.Repository) {
+					repo.ExpectInsert().ForType("entities.Biotest").Error(fmt.Errorf("an error occured"))
+				})
+
+				err := biotestRepository.SaveBiotest(ctx, &biotestToSave)
+
+				Expect(err).To(HaveOccurred())
+				Expect(biotestToSave.BiotestUUID).To(BeEmpty())
+			})
+		})
+	})
+
+	Describe("UpdateBiotest", func() {
+		It("should update a entire biotest", func() {
+			biotestToUpdate := entities.Biotest{}
+			repo.ExpectTransaction(func(r *reltest.Repository) {
+				r.ExpectUpdate().ForType("entities.Biotest").Success()
+				r.ExpectUpdate().ForType("entities.HigherMuscleDensity").Success()
+				r.ExpectUpdate().ForType("entities.LowerMuscleDensity").Success()
+				r.ExpectUpdate().ForType("entities.SkinFolds").Success()
+			})
+
+			err := biotestRepository.UpdateBiotest(ctx, &biotestToUpdate)
+
+			Expect(err).ToNot(HaveOccurred())
+
+		})
+	})
+})
