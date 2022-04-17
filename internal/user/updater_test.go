@@ -5,7 +5,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/go-rel/rel/reltest"
+	"github.com/go-rel/reltest"
 	"github.com/manicar2093/charly_team_api/internal/db/entities"
 	"github.com/manicar2093/charly_team_api/pkg/apperrors"
 	"github.com/manicar2093/charly_team_api/pkg/validators"
@@ -44,7 +44,7 @@ func (c *MainTests) TestUpdateUser() {
 		ID: 1,
 	}
 	c.validator.On("Validate", &userRequest).Return(validators.ValidateOutput{IsValid: true, Err: nil})
-	c.repo.ExpectUpdate().ForType("entities.User").Return(nil)
+	c.repo.ExpectUpdate().ForType("entities.User").Success()
 
 	res, err := c.userUpdater.Run(c.ctx, &userRequest)
 
@@ -58,7 +58,7 @@ func (c *MainTests) TestUpdateUser_UpdateError() {
 		ID: 1,
 	}
 	c.validator.On("Validate", &userRequest).Return(validators.ValidateOutput{IsValid: true, Err: nil})
-	c.repo.ExpectUpdate().ForType("entities.User").Return(c.ordinaryError)
+	c.repo.ExpectUpdate().ForType("entities.User").Error(c.ordinaryError)
 
 	res, err := c.userUpdater.Run(c.ctx, &userRequest)
 

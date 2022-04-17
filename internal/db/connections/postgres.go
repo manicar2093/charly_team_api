@@ -1,8 +1,8 @@
 package connections
 
 import (
+	"github.com/go-rel/postgres"
 	"github.com/go-rel/rel"
-	"github.com/go-rel/rel/adapter/postgres"
 	_ "github.com/lib/pq"
 	"github.com/manicar2093/charly_team_api/internal/config"
 )
