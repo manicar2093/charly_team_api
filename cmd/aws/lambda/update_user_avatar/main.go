@@ -6,7 +6,7 @@ import (
 	"github.com/manicar2093/charly_team_api/internal/db/connections"
 	"github.com/manicar2093/charly_team_api/internal/db/paginator"
 	"github.com/manicar2093/charly_team_api/internal/db/repositories"
-	"github.com/manicar2093/charly_team_api/internal/handlers/user"
+	"github.com/manicar2093/charly_team_api/internal/user"
 	"github.com/manicar2093/charly_team_api/pkg/validators"
 )
 
