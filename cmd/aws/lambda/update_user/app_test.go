@@ -8,6 +8,7 @@ import (
 
 	"github.com/manicar2093/charly_team_api/internal/db/entities"
 	"github.com/manicar2093/charly_team_api/internal/user"
+	"github.com/manicar2093/charly_team_api/mocks"
 	"github.com/manicar2093/charly_team_api/pkg/apperrors"
 
 	"github.com/manicar2093/charly_team_api/pkg/models"
@@ -22,7 +23,7 @@ type UpdateUserAWSLambdaTests struct {
 	suite.Suite
 	user                entities.User
 	ctx                 context.Context
-	userUpdater         *user.MockUserUpdater
+	userUpdater         *mocks.UserUpdater
 	updateUserAWSLambda *UpdateUserAWSLambda
 	ordinaryError       error
 }
@@ -30,7 +31,7 @@ type UpdateUserAWSLambdaTests struct {
 func (c *UpdateUserAWSLambdaTests) SetupTest() {
 	c.user = entities.User{}
 	c.ctx = context.Background()
-	c.userUpdater = &user.MockUserUpdater{}
+	c.userUpdater = &mocks.UserUpdater{}
 	c.updateUserAWSLambda = NewUpdateUserAWSLambda(c.userUpdater)
 	c.ordinaryError = errors.New("An ordinary error :O")
 

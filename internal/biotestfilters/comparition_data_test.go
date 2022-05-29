@@ -1,11 +1,13 @@
-package biotestfilters
+package biotestfilters_test
 
 import (
 	"context"
 	"testing"
 
 	"github.com/jaswdr/faker"
+	"github.com/manicar2093/charly_team_api/internal/biotestfilters"
 	"github.com/manicar2093/charly_team_api/internal/db/repositories"
+	"github.com/manicar2093/charly_team_api/mocks"
 	"github.com/manicar2093/charly_team_api/pkg/apperrors"
 	"github.com/manicar2093/charly_team_api/pkg/validators"
 	"github.com/stretchr/testify/suite"
@@ -18,17 +20,17 @@ func TestComparitionData(t *testing.T) {
 type BiotestComparitionDataFinderTest struct {
 	suite.Suite
 	ctx                          context.Context
-	biotestRepo                  *repositories.MockBiotestRepository
-	validator                    *validators.MockValidatorService
-	biotestComparitionDataFinder *biotestComparitionDataFinderImpl
+	biotestRepo                  *mocks.BiotestRepository
+	validator                    *mocks.ValidatorService
+	biotestComparitionDataFinder *biotestfilters.BiotestComparitionDataFinderImpl
 	faker                        faker.Faker
 }
 
 func (c *BiotestComparitionDataFinderTest) SetupTest() {
 	c.ctx = context.Background()
-	c.biotestRepo = &repositories.MockBiotestRepository{}
-	c.validator = &validators.MockValidatorService{}
-	c.biotestComparitionDataFinder = NewBiotestComparitionDataFinderImpl(c.biotestRepo, c.validator)
+	c.biotestRepo = &mocks.BiotestRepository{}
+	c.validator = &mocks.ValidatorService{}
+	c.biotestComparitionDataFinder = biotestfilters.NewBiotestComparitionDataFinderImpl(c.biotestRepo, c.validator)
 	c.faker = faker.New()
 }
 
@@ -39,7 +41,7 @@ func (c *BiotestComparitionDataFinderTest) TearDownTest() {
 
 func (c *BiotestComparitionDataFinderTest) TestHandler() {
 	userUUID := c.faker.UUID().V4()
-	request := BiotestComparitionDataFinderRequest{UserUUID: userUUID}
+	request := biotestfilters.BiotestComparitionDataFinderRequest{UserUUID: userUUID}
 	comparitionDataReturn := repositories.BiotestComparisionResponse{}
 	c.validator.On("Validate", &request).Return(validators.ValidateOutput{Err: nil, IsValid: true})
 	c.biotestRepo.On("GetComparitionDataByUserUUID", c.ctx, userUUID).Return(&comparitionDataReturn, nil)
@@ -53,7 +55,7 @@ func (c *BiotestComparitionDataFinderTest) TestHandler() {
 
 func (c *BiotestComparitionDataFinderTest) TestHandler_ValidationError() {
 	userUUID := c.faker.UUID().V4()
-	request := BiotestComparitionDataFinderRequest{UserUUID: userUUID}
+	request := biotestfilters.BiotestComparitionDataFinderRequest{UserUUID: userUUID}
 	validationErrors := apperrors.ValidationErrors{
 		{Field: "user_uuid", Validation: "required"},
 	}

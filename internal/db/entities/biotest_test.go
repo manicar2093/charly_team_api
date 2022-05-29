@@ -1,4 +1,4 @@
-package entities
+package entities_test
 
 import (
 	"context"
@@ -8,21 +8,22 @@ import (
 
 	"github.com/go-rel/rel/where"
 	"github.com/jaswdr/faker"
+	"github.com/manicar2093/charly_team_api/internal/db/entities"
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/guregu/null.v4"
 )
 
 func TestBiotestEntity(t *testing.T) {
-	var higherMuscleDensity HigherMuscleDensity
-	var lowerMuscleDensity LowerMuscleDensity
-	var skinFolds SkinFolds
-	var customer User
-	var creator User
-	var biotest Biotest
+	var higherMuscleDensity entities.HigherMuscleDensity
+	var lowerMuscleDensity entities.LowerMuscleDensity
+	var skinFolds entities.SkinFolds
+	var customer entities.User
+	var creator entities.User
+	var biotest entities.Biotest
 
 	faker := faker.New()
 
-	customer = User{
+	customer = entities.User{
 		BiotypeID:     null.IntFrom(1),
 		BoneDensityID: null.IntFrom(1),
 		RoleID:        1,
@@ -36,7 +37,7 @@ func TestBiotestEntity(t *testing.T) {
 	DB.Insert(context.Background(), &customer)
 	assert.NotEmpty(t, customer.ID, "ID should not be empty")
 
-	creator = User{
+	creator = entities.User{
 		BiotypeID:     null.IntFrom(1),
 		BoneDensityID: null.IntFrom(1),
 		RoleID:        1,
@@ -50,7 +51,7 @@ func TestBiotestEntity(t *testing.T) {
 	DB.Insert(context.Background(), &creator)
 	assert.NotEmpty(t, creator.ID, "ID should not be empty")
 
-	biotest = Biotest{
+	biotest = entities.Biotest{
 		HigherMuscleDensity:     higherMuscleDensity,
 		LowerMuscleDensity:      lowerMuscleDensity,
 		SkinFolds:               skinFolds,
@@ -80,7 +81,7 @@ func TestBiotestEntity(t *testing.T) {
 	err := DB.Insert(context.Background(), &biotest)
 	assert.Nil(t, err, "Unexpected error")
 
-	higherMuscleDensity = HigherMuscleDensity{
+	higherMuscleDensity = entities.HigherMuscleDensity{
 		BiotestID:            &biotest.ID,
 		Neck:                 null.FloatFrom(10.0),
 		Shoulders:            null.FloatFrom(42.5),
@@ -101,7 +102,7 @@ func TestBiotestEntity(t *testing.T) {
 	DB.Insert(context.Background(), &higherMuscleDensity)
 	assert.NotEmpty(t, higherMuscleDensity.ID, "ID should not be empty")
 
-	lowerMuscleDensity = LowerMuscleDensity{
+	lowerMuscleDensity = entities.LowerMuscleDensity{
 		BiotestID: &biotest.ID,
 		Hips:      null.FloatFrom(45.0),
 		RightLeg:  null.FloatFrom(24.6),
@@ -113,7 +114,7 @@ func TestBiotestEntity(t *testing.T) {
 	DB.Insert(context.Background(), &lowerMuscleDensity)
 	assert.NotEmpty(t, lowerMuscleDensity.ID, "ID should not be empty")
 
-	skinFolds = SkinFolds{
+	skinFolds = entities.SkinFolds{
 		BiotestID:   &biotest.ID,
 		Subscapular: null.IntFrom(32),
 		Suprailiac:  null.IntFrom(100),
@@ -124,7 +125,7 @@ func TestBiotestEntity(t *testing.T) {
 	DB.Insert(context.Background(), &skinFolds)
 	assert.NotEmpty(t, skinFolds.ID, "ID should not be empty")
 
-	var biotestFound Biotest
+	var biotestFound entities.Biotest
 	DB.Find(context.Background(), &biotestFound, where.Eq("id", biotest.ID))
 	assert.NotEmpty(t, biotestFound.Customer.ID, "Customer was not loaded correctly")
 	assert.NotEmpty(t, biotestFound.ID, "ID should not be empty")
@@ -133,7 +134,7 @@ func TestBiotestEntity(t *testing.T) {
 	assert.NotEmpty(t, biotestFound.LowerMuscleDensity.ID, "ID should not be empty")
 
 	biotestAsBytes, _ := json.Marshal(biotestFound)
-	var biotestFromJson Biotest
+	var biotestFromJson entities.Biotest
 
 	json.Unmarshal(biotestAsBytes, &biotestFromJson)
 

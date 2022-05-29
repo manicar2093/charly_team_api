@@ -1,11 +1,12 @@
-package biotest
+package biotest_test
 
 import (
 	"context"
 	"testing"
 
+	"github.com/manicar2093/charly_team_api/internal/biotest"
 	"github.com/manicar2093/charly_team_api/internal/db/entities"
-	"github.com/manicar2093/charly_team_api/internal/db/repositories"
+	"github.com/manicar2093/charly_team_api/mocks"
 	"github.com/manicar2093/charly_team_api/pkg/validators"
 	"github.com/stretchr/testify/suite"
 	"gopkg.in/guregu/null.v4"
@@ -18,32 +19,32 @@ func TestSaveBiotestImage(t *testing.T) {
 type SaveBiotestImagesTest struct {
 	suite.Suite
 	ctx                                                       context.Context
-	validator                                                 *validators.MockValidatorService
-	biotestRepo                                               *repositories.MockBiotestRepository
+	validator                                                 *mocks.ValidatorService
+	biotestRepo                                               *mocks.BiotestRepository
 	biotestUUID, frontImage, backImage, leftImage, rightImage string
 	biotestExpectedUpdateCall, biotestFound                   entities.Biotest
-	biotestImagesSaver                                        BiotestImagesSaver
-	request                                                   BiotestImagesSaverRequest
+	biotestImagesSaver                                        biotest.BiotestImagesSaver
+	request                                                   biotest.BiotestImagesSaverRequest
 	validationOutput                                          validators.ValidateOutput
 }
 
 func (c *SaveBiotestImagesTest) SetupTest() {
 	c.ctx = context.Background()
-	c.validator = &validators.MockValidatorService{}
-	c.biotestRepo = &repositories.MockBiotestRepository{}
+	c.validator = &mocks.ValidatorService{}
+	c.biotestRepo = &mocks.BiotestRepository{}
 	c.biotestUUID = "biotest_uuid"
 	c.frontImage = "front/image/path"
 	c.backImage = "back/image/path"
 	c.leftImage = "left/image/path"
 	c.rightImage = "right/image/path"
-	c.request = BiotestImagesSaverRequest{
+	c.request = biotest.BiotestImagesSaverRequest{
 		BiotestUUID:      c.biotestUUID,
 		FrontPicture:     c.frontImage,
 		BackPicture:      c.backImage,
 		LeftSidePicture:  c.leftImage,
 		RightSidePicture: c.rightImage,
 	}
-	c.biotestImagesSaver = NewBiotestImagesSaverImpl(c.biotestRepo, c.validator)
+	c.biotestImagesSaver = biotest.NewBiotestImagesSaverImpl(c.biotestRepo, c.validator)
 	c.biotestFound = entities.Biotest{
 		BiotestUUID: c.biotestUUID,
 	}

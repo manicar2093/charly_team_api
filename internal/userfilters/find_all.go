@@ -12,7 +12,7 @@ type AllUsersFinder interface {
 	Run(ctx context.Context, req *AllUsersFinderRequest) (*AllUsersFinderResponse, error)
 }
 
-type allUsersFinderImpl struct {
+type AllUsersFinderImpl struct {
 	userRepo  repositories.UserRepository
 	validator validators.ValidatorService
 }
@@ -20,11 +20,11 @@ type allUsersFinderImpl struct {
 func NewAllUsersFinderImpl(
 	userRepo repositories.UserRepository,
 	validator validators.ValidatorService,
-) *allUsersFinderImpl {
-	return &allUsersFinderImpl{userRepo: userRepo, validator: validator}
+) *AllUsersFinderImpl {
+	return &AllUsersFinderImpl{userRepo: userRepo, validator: validator}
 }
 
-func (c *allUsersFinderImpl) Run(ctx context.Context, req *AllUsersFinderRequest) (*AllUsersFinderResponse, error) {
+func (c *AllUsersFinderImpl) Run(ctx context.Context, req *AllUsersFinderRequest) (*AllUsersFinderResponse, error) {
 	logger.Info(req)
 	if validation := c.validator.Validate(req); !validation.IsValid {
 		logger.Error(validation.Err)

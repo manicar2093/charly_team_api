@@ -1,4 +1,4 @@
-package userfilters
+package userfilters_test
 
 import (
 	"context"
@@ -7,7 +7,8 @@ import (
 
 	"github.com/jaswdr/faker"
 	"github.com/manicar2093/charly_team_api/internal/db/entities"
-	"github.com/manicar2093/charly_team_api/internal/db/repositories"
+	"github.com/manicar2093/charly_team_api/internal/userfilters"
+	"github.com/manicar2093/charly_team_api/mocks"
 	"github.com/manicar2093/charly_team_api/pkg/apperrors"
 	"github.com/manicar2093/charly_team_api/pkg/validators"
 	"github.com/stretchr/testify/suite"
@@ -20,17 +21,17 @@ func TestByUUID(t *testing.T) {
 type UserByUUIDFinderTests struct {
 	suite.Suite
 	ctx                  context.Context
-	userRepo             *repositories.MockUserRepository
-	validator            *validators.MockValidatorService
-	userByUUIDFinderImpl *userByUUIDFinderImpl
+	userRepo             *mocks.UserRepository
+	validator            *mocks.ValidatorService
+	userByUUIDFinderImpl *userfilters.UserByUUIDFinderImpl
 	faker                faker.Faker
 }
 
 func (c *UserByUUIDFinderTests) SetupTest() {
 	c.ctx = context.Background()
-	c.userRepo = &repositories.MockUserRepository{}
-	c.validator = &validators.MockValidatorService{}
-	c.userByUUIDFinderImpl = NewUserByUUIDFinderImpl(c.userRepo, c.validator)
+	c.userRepo = &mocks.UserRepository{}
+	c.validator = &mocks.ValidatorService{}
+	c.userByUUIDFinderImpl = userfilters.NewUserByUUIDFinderImpl(c.userRepo, c.validator)
 	c.faker = faker.New()
 }
 
@@ -41,7 +42,7 @@ func (c *UserByUUIDFinderTests) TearDownTest() {
 
 func (c *UserByUUIDFinderTests) TestRun() {
 	userUUID := c.faker.UUID().V4()
-	request := UserByUUIDFinderRequest{UserUUID: userUUID}
+	request := userfilters.UserByUUIDFinderRequest{UserUUID: userUUID}
 	userRepoReturn := entities.User{UserUUID: userUUID}
 	c.validator.On("Validate", &request).Return(validators.ValidateOutput{IsValid: true, Err: nil})
 	c.userRepo.On("FindUserByUUID", c.ctx, userUUID).Return(&userRepoReturn, nil)
@@ -55,7 +56,7 @@ func (c *UserByUUIDFinderTests) TestRun() {
 
 func (c *UserByUUIDFinderTests) TestRun_ValidationError() {
 	userUUID := c.faker.UUID().V4()
-	request := UserByUUIDFinderRequest{UserUUID: userUUID}
+	request := userfilters.UserByUUIDFinderRequest{UserUUID: userUUID}
 	validationErr := apperrors.ValidationErrors{
 		{Field: "user_uuid", Validation: "required"},
 	}
@@ -70,7 +71,7 @@ func (c *UserByUUIDFinderTests) TestRun_ValidationError() {
 
 func (c *UserByUUIDFinderTests) TestRun_UserRepoErr() {
 	userUUID := c.faker.UUID().V4()
-	request := UserByUUIDFinderRequest{UserUUID: userUUID}
+	request := userfilters.UserByUUIDFinderRequest{UserUUID: userUUID}
 	returnErr := fmt.Errorf("ordinary error")
 	c.validator.On("Validate", &request).Return(validators.ValidateOutput{IsValid: true, Err: nil})
 	c.userRepo.On("FindUserByUUID", c.ctx, userUUID).Return(nil, returnErr)

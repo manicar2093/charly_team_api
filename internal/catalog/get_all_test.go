@@ -1,12 +1,13 @@
-package catalog
+package catalog_test
 
 import (
 	"context"
 	"testing"
 	"time"
 
+	"github.com/manicar2093/charly_team_api/internal/catalog"
 	"github.com/manicar2093/charly_team_api/internal/db/entities"
-	"github.com/manicar2093/charly_team_api/internal/db/repositories"
+	"github.com/manicar2093/charly_team_api/mocks"
 	"github.com/manicar2093/charly_team_api/pkg/apperrors"
 	"github.com/manicar2093/charly_team_api/pkg/validators"
 	"github.com/stretchr/testify/mock"
@@ -15,19 +16,19 @@ import (
 
 type MainTests struct {
 	suite.Suite
-	catalogRepo    repositories.MockCatalogRepository
-	validator      validators.MockValidatorService
-	catalogsGetter CatalogGetter
+	catalogRepo    *mocks.CatalogRepository
+	validator      *mocks.ValidatorService
+	catalogsGetter catalog.CatalogGetter
 	ctx            context.Context
 	biotypesReturn []entities.Biotype
 	rolesReturn    []entities.Role
 }
 
 func (c *MainTests) SetupTest() {
-	c.catalogRepo = repositories.MockCatalogRepository{}
-	c.validator = validators.MockValidatorService{}
+	c.catalogRepo = &mocks.CatalogRepository{}
+	c.validator = &mocks.ValidatorService{}
 	c.ctx = context.Background()
-	c.catalogsGetter = NewCatalogGetterImpl(&c.catalogRepo, &c.validator)
+	c.catalogsGetter = catalog.NewCatalogGetterImpl(c.catalogRepo, c.validator)
 	c.biotypesReturn = []entities.Biotype{
 		{ID: 1, Description: "biotype1", CreatedAt: time.Now()},
 		{ID: 2, Description: "biotype2", CreatedAt: time.Now()},
@@ -48,7 +49,7 @@ func (c *MainTests) TearDownTest() {
 }
 
 func (c *MainTests) TestGetCatalogs() {
-	catalogs := CatalogGetterRequest{
+	catalogs := catalog.CatalogGetterRequest{
 		CatalogNames: []string{"biotype", "roles"},
 	}
 	c.validator.On("Validate", &catalogs).Return(validators.ValidateOutput{IsValid: true, Err: nil}).Once()
@@ -65,7 +66,7 @@ func (c *MainTests) TestGetCatalogs() {
 }
 
 func (c *MainTests) TestGetCatalogs_NotExists() {
-	catalogs := CatalogGetterRequest{
+	catalogs := catalog.CatalogGetterRequest{
 		CatalogNames: []string{"biotype", "no_exists"},
 	}
 	c.validator.On("Validate", &catalogs).Return(validators.ValidateOutput{IsValid: true, Err: nil}).Once()
@@ -75,12 +76,12 @@ func (c *MainTests) TestGetCatalogs_NotExists() {
 
 	c.NotNil(err)
 	c.Nil(res)
-	c.IsType(NoCatalogFound{}, err)
+	c.IsType(catalog.NoCatalogFound{}, err)
 
 }
 
 func (c *MainTests) TestGetCatalogs_ValidationError() {
-	catalogs := CatalogGetterRequest{
+	catalogs := catalog.CatalogGetterRequest{
 		CatalogNames: []string{"biotype", "roles"},
 	}
 	c.validator.On("Validate", &catalogs).Return(

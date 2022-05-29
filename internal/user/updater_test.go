@@ -1,4 +1,4 @@
-package user
+package user_test
 
 import (
 	"context"
@@ -7,6 +7,8 @@ import (
 
 	"github.com/go-rel/reltest"
 	"github.com/manicar2093/charly_team_api/internal/db/entities"
+	"github.com/manicar2093/charly_team_api/internal/user"
+	"github.com/manicar2093/charly_team_api/mocks"
 	"github.com/manicar2093/charly_team_api/pkg/apperrors"
 	"github.com/manicar2093/charly_team_api/pkg/validators"
 	"github.com/stretchr/testify/suite"
@@ -19,17 +21,17 @@ func TestUpdater(t *testing.T) {
 type MainTests struct {
 	suite.Suite
 	repo          *reltest.Repository
-	validator     *validators.MockValidatorService
+	validator     *mocks.ValidatorService
 	ctx           context.Context
-	userUpdater   UserUpdater
+	userUpdater   user.UserUpdater
 	ordinaryError error
 }
 
 func (c *MainTests) SetupTest() {
 	c.repo = reltest.New()
-	c.validator = &validators.MockValidatorService{}
+	c.validator = &mocks.ValidatorService{}
 	c.ctx = context.Background()
-	c.userUpdater = NewUpdateUser(c.repo, c.validator)
+	c.userUpdater = user.NewUpdateUser(c.repo, c.validator)
 	c.ordinaryError = errors.New("An ordinary error :O")
 
 }

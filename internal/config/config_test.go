@@ -1,17 +1,18 @@
-package config
+package config_test
 
 import (
 	"os"
 	"testing"
 
 	"github.com/joho/godotenv"
+	"github.com/manicar2093/charly_team_api/internal/config"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestMain(m *testing.M) {
 
 	godotenv.Load("../../.env")
-	StartConfig()
+	config.StartConfig()
 
 	os.Exit(m.Run())
 }
@@ -21,9 +22,9 @@ func TestGetDBConnectionURL(t *testing.T) {
 	t.Run("if DB_URL is set should return the env variable value", func(t *testing.T) {
 		expected := "my_setted_url"
 		os.Setenv("DB_URL", expected)
-		StartConfig()
+		config.StartConfig()
 
-		got := DBConnectionURL()
+		got := config.DBConnectionURL()
 
 		assert.Equal(t, expected, got, "unexpected url")
 	})

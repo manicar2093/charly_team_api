@@ -1,13 +1,13 @@
-package biotest
+package biotest_test
 
 import (
 	"context"
 	"errors"
 	"testing"
 
+	"github.com/manicar2093/charly_team_api/internal/biotest"
 	"github.com/manicar2093/charly_team_api/internal/db/entities"
-	"github.com/manicar2093/charly_team_api/internal/db/repositories"
-	"github.com/manicar2093/charly_team_api/internal/services"
+	"github.com/manicar2093/charly_team_api/mocks"
 	"github.com/manicar2093/charly_team_api/pkg/apperrors"
 	"github.com/manicar2093/charly_team_api/pkg/validators"
 	"github.com/stretchr/testify/suite"
@@ -19,21 +19,21 @@ func TestCreator(t *testing.T) {
 
 type MainTests struct {
 	suite.Suite
-	biotestRepo    *repositories.MockBiotestRepository
-	validator      validators.MockValidatorService
-	uuidGen        services.MockUUIDGenerator
+	biotestRepo    *mocks.BiotestRepository
+	validator      *mocks.ValidatorService
+	uuidGen        *mocks.UUIDGenerator
 	ctx            context.Context
-	biotestUpdater *BiotestCreatorImpl
+	biotestUpdater *biotest.BiotestCreatorImpl
 	ordinaryError  error
 }
 
 func (c *MainTests) SetupTest() {
-	c.biotestRepo = &repositories.MockBiotestRepository{}
-	c.validator = validators.MockValidatorService{}
-	c.uuidGen = services.MockUUIDGenerator{}
+	c.biotestRepo = &mocks.BiotestRepository{}
+	c.validator = &mocks.ValidatorService{}
+	c.uuidGen = &mocks.UUIDGenerator{}
 	c.uuidGen.On("New").Return("an generated uuid")
 	c.ctx = context.Background()
-	c.biotestUpdater = NewBiotestCreator(c.biotestRepo, &c.validator, &c.uuidGen)
+	c.biotestUpdater = biotest.NewBiotestCreator(c.biotestRepo, c.validator, c.uuidGen)
 	c.ordinaryError = errors.New("An ordinary error :O")
 
 }

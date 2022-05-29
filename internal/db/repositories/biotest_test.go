@@ -16,13 +16,13 @@ import (
 	"github.com/manicar2093/charly_team_api/internal/db/entities"
 	"github.com/manicar2093/charly_team_api/internal/db/paginator"
 	"github.com/manicar2093/charly_team_api/internal/db/repositories"
-	"github.com/manicar2093/charly_team_api/internal/services"
+	"github.com/manicar2093/charly_team_api/mocks"
 )
 
 var _ = Describe("Biotest", func() {
 	var (
-		paginatorMock     *paginator.MockPaginable
-		uuidGen           *services.MockUUIDGenerator
+		paginatorMock     *mocks.Paginable
+		uuidGen           *mocks.UUIDGenerator
 		repo              *reltest.Repository
 		biotestRepository repositories.BiotestRepository
 		ctx               context.Context
@@ -31,8 +31,8 @@ var _ = Describe("Biotest", func() {
 
 	BeforeEach(func() {
 		repo = reltest.New()
-		paginatorMock = &paginator.MockPaginable{}
-		uuidGen = &services.MockUUIDGenerator{}
+		paginatorMock = &mocks.Paginable{}
+		uuidGen = &mocks.UUIDGenerator{}
 		biotestRepository = repositories.NewBiotestRepositoryRel(repo, paginatorMock, uuidGen)
 		ctx = context.TODO()
 		fake = faker.New()

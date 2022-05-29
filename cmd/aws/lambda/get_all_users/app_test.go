@@ -8,6 +8,7 @@ import (
 	"github.com/manicar2093/charly_team_api/internal/db/entities"
 	"github.com/manicar2093/charly_team_api/internal/db/paginator"
 	"github.com/manicar2093/charly_team_api/internal/userfilters"
+	"github.com/manicar2093/charly_team_api/mocks"
 	"github.com/manicar2093/charly_team_api/pkg/models"
 	"github.com/stretchr/testify/suite"
 )
@@ -19,13 +20,13 @@ func TestMain(t *testing.T) {
 type FindBiotestByUUIDAWSLambdaTests struct {
 	suite.Suite
 	ctx                  context.Context
-	allUsersFinder       *userfilters.MockAllUsersFinder
+	allUsersFinder       *mocks.AllUsersFinder
 	getAllusersAWSLambda *GetAllUsersAWSLambda
 }
 
 func (c *FindBiotestByUUIDAWSLambdaTests) SetupTest() {
 	c.ctx = context.Background()
-	c.allUsersFinder = &userfilters.MockAllUsersFinder{}
+	c.allUsersFinder = &mocks.AllUsersFinder{}
 	c.getAllusersAWSLambda = NewGetAllUsersAWSLambda(c.allUsersFinder)
 }
 

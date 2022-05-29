@@ -1,4 +1,4 @@
-package repositories
+package repositories_test
 
 import (
 	"context"
@@ -11,6 +11,8 @@ import (
 	"github.com/jaswdr/faker"
 	"github.com/manicar2093/charly_team_api/internal/db/entities"
 	"github.com/manicar2093/charly_team_api/internal/db/paginator"
+	"github.com/manicar2093/charly_team_api/internal/db/repositories"
+	"github.com/manicar2093/charly_team_api/mocks"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -20,17 +22,17 @@ func TestUserRepository(t *testing.T) {
 
 type UserRepositoryTest struct {
 	suite.Suite
-	paginator      *paginator.MockPaginable
+	paginator      *mocks.Paginable
 	repo           *reltest.Repository
-	userRepository UserRepository
+	userRepository repositories.UserRepository
 	ctx            context.Context
 	faker          faker.Faker
 }
 
 func (c *UserRepositoryTest) SetupTest() {
 	c.repo = reltest.New()
-	c.paginator = &paginator.MockPaginable{}
-	c.userRepository = NewUserRepositoryRel(c.repo, c.paginator)
+	c.paginator = &mocks.Paginable{}
+	c.userRepository = repositories.NewUserRepositoryRel(c.repo, c.paginator)
 	c.ctx = context.TODO()
 	c.faker = faker.New()
 }
@@ -67,7 +69,7 @@ func (c *UserRepositoryTest) TestFilterUserByUUID_NotFound() {
 
 	got, err := c.userRepository.FindUserByUUID(c.ctx, expectedUserUUID)
 
-	c.IsType(NotFoundError{}, err, "error is not the correct type")
+	c.IsType(repositories.NotFoundError{}, err, "error is not the correct type")
 	c.Contains(err.Error(), expectedUserUUID, "error should contain the used identifier")
 	c.Nil(got, "user should has no data")
 }

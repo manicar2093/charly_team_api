@@ -1,4 +1,4 @@
-package token
+package token_test
 
 import (
 	"context"
@@ -6,19 +6,10 @@ import (
 	"testing"
 
 	"github.com/manicar2093/charly_team_api/internal/db/entities"
-	"github.com/manicar2093/charly_team_api/internal/db/repositories"
+	"github.com/manicar2093/charly_team_api/internal/token"
+	"github.com/manicar2093/charly_team_api/mocks"
 	"github.com/stretchr/testify/assert"
 )
-
-func TestCreateNameToShow(t *testing.T) {
-	name := "Test Testing"
-	lastName := "Great System"
-
-	got := createNameToShow(name, lastName)
-
-	assert.Contains(t, got, "Test", "Name is not in got name to show")
-	assert.Contains(t, got, "Great", "Last Name is not in name to show")
-}
 
 func TestCognitoTokenGen(t *testing.T) {
 	email := "an_email@email.com"
@@ -39,10 +30,10 @@ func TestCognitoTokenGen(t *testing.T) {
 		Role:      entities.Role{ID: 1, Description: roleDescription},
 	}
 	ctx := context.Background()
-	userRepo := repositories.MockUserRepository{}
+	userRepo := mocks.UserRepository{}
 	userRepo.On("FindUserByUUID", ctx, userUUID).Return(&userFound, nil)
-	request := TokenClaimsGeneratorRequest{UserUUID: userUUID}
-	service := NewTokenClaimsGeneratorImpl(&userRepo)
+	request := token.TokenClaimsGeneratorRequest{UserUUID: userUUID}
+	service := token.NewTokenClaimsGeneratorImpl(&userRepo)
 
 	got, err := service.Run(ctx, &request)
 

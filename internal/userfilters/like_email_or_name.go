@@ -12,7 +12,7 @@ type UserLikeEmailOrNameFinder interface {
 	Run(ctx context.Context, req *UserLikeEmailOrNameFinderRequest) (*UserLikeEmailOrNameFinderResponse, error)
 }
 
-type userLikeEmailOrNameFinderImpl struct {
+type UserLikeEmailOrNameFinderImpl struct {
 	userRepo  repositories.UserRepository
 	validator validators.ValidatorService
 }
@@ -20,11 +20,11 @@ type userLikeEmailOrNameFinderImpl struct {
 func NewUserLikeEmailOrNameFinderImpl(
 	userRepo repositories.UserRepository,
 	validator validators.ValidatorService,
-) *userLikeEmailOrNameFinderImpl {
-	return &userLikeEmailOrNameFinderImpl{userRepo: userRepo, validator: validator}
+) *UserLikeEmailOrNameFinderImpl {
+	return &UserLikeEmailOrNameFinderImpl{userRepo: userRepo, validator: validator}
 }
 
-func (c *userLikeEmailOrNameFinderImpl) Run(
+func (c *UserLikeEmailOrNameFinderImpl) Run(
 	ctx context.Context,
 	req *UserLikeEmailOrNameFinderRequest,
 ) (*UserLikeEmailOrNameFinderResponse, error) {

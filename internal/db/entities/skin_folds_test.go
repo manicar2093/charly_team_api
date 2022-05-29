@@ -1,16 +1,17 @@
-package entities
+package entities_test
 
 import (
 	"context"
 	"testing"
 
+	"github.com/manicar2093/charly_team_api/internal/db/entities"
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/guregu/null.v4"
 )
 
 func TestSkinFoldsEntity(t *testing.T) {
 	biotestID := int32(1)
-	skinFold := SkinFolds{
+	skinFold := entities.SkinFolds{
 		BiotestID:   &biotestID,
 		Subscapular: null.IntFrom(12),
 		Suprailiac:  null.IntFrom(12),

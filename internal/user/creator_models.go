@@ -14,9 +14,9 @@ const (
 )
 
 var (
-	errGenerationPass = errors.New("error generating temporary password")
-	errSavingUserDB   = errors.New("error saving user into db")
-	errSavingUserAWS  = errors.New("error saving user into cognito")
+	ErrGenerationPass = errors.New("error generating temporary password")
+	ErrSavingUserDB   = errors.New("error saving user into db")
+	ErrSavingUserAWS  = errors.New("error saving user into cognito")
 )
 
 type UserCreatorRequest struct {

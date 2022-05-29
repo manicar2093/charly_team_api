@@ -12,16 +12,16 @@ type BiotestByUUID interface {
 	Run(ctx context.Context, req *BiotestByUUIDRequest) (*BiotestByUUIDResponse, error)
 }
 
-type biotestByUUIDImpl struct {
+type BiotestByUUIDImpl struct {
 	biotestRepo repositories.BiotestRepository
 	validator   validators.ValidatorService
 }
 
-func NewBiotestByUUIDImpl(biotestRepo repositories.BiotestRepository, validator validators.ValidatorService) *biotestByUUIDImpl {
-	return &biotestByUUIDImpl{biotestRepo: biotestRepo, validator: validator}
+func NewBiotestByUUIDImpl(biotestRepo repositories.BiotestRepository, validator validators.ValidatorService) *BiotestByUUIDImpl {
+	return &BiotestByUUIDImpl{biotestRepo: biotestRepo, validator: validator}
 }
 
-func (c *biotestByUUIDImpl) Run(ctx context.Context, req *BiotestByUUIDRequest) (*BiotestByUUIDResponse, error) {
+func (c *BiotestByUUIDImpl) Run(ctx context.Context, req *BiotestByUUIDRequest) (*BiotestByUUIDResponse, error) {
 	logger.Info(req)
 	validation := c.validator.Validate(req)
 

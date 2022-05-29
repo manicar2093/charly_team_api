@@ -12,7 +12,7 @@ type BiotestComparitionDataFinder interface {
 	Run(ctx context.Context, req *BiotestComparitionDataFinderRequest) (*BiotestComparitionDataFinderResponse, error)
 }
 
-type biotestComparitionDataFinderImpl struct {
+type BiotestComparitionDataFinderImpl struct {
 	biotestRepo repositories.BiotestRepository
 	validator   validators.ValidatorService
 }
@@ -20,11 +20,11 @@ type biotestComparitionDataFinderImpl struct {
 func NewBiotestComparitionDataFinderImpl(
 	biotestRepo repositories.BiotestRepository,
 	validator validators.ValidatorService,
-) *biotestComparitionDataFinderImpl {
-	return &biotestComparitionDataFinderImpl{biotestRepo: biotestRepo, validator: validator}
+) *BiotestComparitionDataFinderImpl {
+	return &BiotestComparitionDataFinderImpl{biotestRepo: biotestRepo, validator: validator}
 }
 
-func (c *biotestComparitionDataFinderImpl) Run(
+func (c *BiotestComparitionDataFinderImpl) Run(
 	ctx context.Context,
 	req *BiotestComparitionDataFinderRequest,
 ) (*BiotestComparitionDataFinderResponse, error) {

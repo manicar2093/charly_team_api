@@ -1,12 +1,14 @@
-package biotestfilters
+package biotestfilters_test
 
 import (
 	"context"
 	"testing"
 
 	"github.com/jaswdr/faker"
+	"github.com/manicar2093/charly_team_api/internal/biotestfilters"
 	"github.com/manicar2093/charly_team_api/internal/db/entities"
 	"github.com/manicar2093/charly_team_api/internal/db/repositories"
+	"github.com/manicar2093/charly_team_api/mocks"
 	"github.com/manicar2093/charly_team_api/pkg/apperrors"
 	"github.com/manicar2093/charly_team_api/pkg/validators"
 	"github.com/stretchr/testify/suite"
@@ -19,17 +21,17 @@ func TestByUUID(t *testing.T) {
 type BiotestByUUIDTests struct {
 	suite.Suite
 	ctx           context.Context
-	biotestRepo   *repositories.MockBiotestRepository
-	validator     *validators.MockValidatorService
-	biotestByUUID *biotestByUUIDImpl
+	biotestRepo   *mocks.BiotestRepository
+	validator     *mocks.ValidatorService
+	biotestByUUID *biotestfilters.BiotestByUUIDImpl
 	fake          faker.Faker
 }
 
 func (c *BiotestByUUIDTests) SetupTest() {
 	c.ctx = context.Background()
-	c.biotestRepo = &repositories.MockBiotestRepository{}
-	c.validator = &validators.MockValidatorService{}
-	c.biotestByUUID = NewBiotestByUUIDImpl(c.biotestRepo, c.validator)
+	c.biotestRepo = &mocks.BiotestRepository{}
+	c.validator = &mocks.ValidatorService{}
+	c.biotestByUUID = biotestfilters.NewBiotestByUUIDImpl(c.biotestRepo, c.validator)
 	c.fake = faker.New()
 }
 
@@ -41,7 +43,7 @@ func (c *BiotestByUUIDTests) TearDownTest() {
 func (c *BiotestByUUIDTests) TestBiotestByUUID() {
 	biotestUUID := c.fake.UUID().V4()
 	biotestResponse := entities.Biotest{BiotestUUID: biotestUUID}
-	request := BiotestByUUIDRequest{UUID: biotestUUID}
+	request := biotestfilters.BiotestByUUIDRequest{UUID: biotestUUID}
 	c.validator.On("Validate", &request).Return(validators.ValidateOutput{Err: nil, IsValid: true})
 	c.biotestRepo.On("FindBiotestByUUID", c.ctx, biotestUUID).Return(&biotestResponse, nil)
 
@@ -54,7 +56,7 @@ func (c *BiotestByUUIDTests) TestBiotestByUUID() {
 
 func (c *BiotestByUUIDTests) TestBiotestByUUID_NotFound() {
 	biotestUUID := c.fake.UUID().V4()
-	request := BiotestByUUIDRequest{UUID: biotestUUID}
+	request := biotestfilters.BiotestByUUIDRequest{UUID: biotestUUID}
 	c.validator.On("Validate", &request).Return(validators.ValidateOutput{Err: nil, IsValid: true})
 	c.biotestRepo.On("FindBiotestByUUID", c.ctx, biotestUUID).Return(nil, repositories.NotFoundError{})
 
@@ -67,7 +69,7 @@ func (c *BiotestByUUIDTests) TestBiotestByUUID_NotFound() {
 
 func (c *BiotestByUUIDTests) TestBiotestByUUID_ValidationError() {
 	biotestUUID := c.fake.UUID().V4()
-	request := BiotestByUUIDRequest{UUID: biotestUUID}
+	request := biotestfilters.BiotestByUUIDRequest{UUID: biotestUUID}
 	validationErrors := apperrors.ValidationErrors{{Field: "uuid", Validation: "required"}}
 	c.validator.On("Validate", &request).Return(validators.ValidateOutput{Err: validationErrors, IsValid: false})
 
