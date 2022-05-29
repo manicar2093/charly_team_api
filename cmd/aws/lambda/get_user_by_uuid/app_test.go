@@ -8,6 +8,7 @@ import (
 	"github.com/manicar2093/charly_team_api/internal/db/entities"
 	"github.com/manicar2093/charly_team_api/internal/db/repositories"
 	"github.com/manicar2093/charly_team_api/internal/userfilters"
+	"github.com/manicar2093/charly_team_api/mocks"
 	"github.com/manicar2093/charly_team_api/pkg/models"
 	"github.com/stretchr/testify/suite"
 )
@@ -19,14 +20,14 @@ func TestMain(t *testing.T) {
 type GetUserByUUIDAWSLambdaTest struct {
 	suite.Suite
 	ctx                    context.Context
-	userByUUIDFinder       *userfilters.MockUserByUUIDFinder
+	userByUUIDFinder       *mocks.UserByUUIDFinder
 	getUserByUUIDAWSLambda *GetUserByUUIDAWSLambda
 	faker                  faker.Faker
 }
 
 func (c *GetUserByUUIDAWSLambdaTest) SetupTest() {
 	c.ctx = context.Background()
-	c.userByUUIDFinder = &userfilters.MockUserByUUIDFinder{}
+	c.userByUUIDFinder = &mocks.UserByUUIDFinder{}
 	c.getUserByUUIDAWSLambda = NewGetUserByUUIDAWSLambda(c.userByUUIDFinder)
 	c.faker = faker.New()
 }

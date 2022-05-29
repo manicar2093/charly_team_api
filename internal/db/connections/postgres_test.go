@@ -1,14 +1,15 @@
-package connections
+package connections_test
 
 import (
 	"context"
 	"testing"
 
+	"github.com/manicar2093/charly_team_api/internal/db/connections"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestPostgressConn(t *testing.T) {
-	conn := PostgressConnection()
+	conn := connections.PostgressConnection()
 
 	assert.NotNil(t, conn, "connection should not be nil")
 

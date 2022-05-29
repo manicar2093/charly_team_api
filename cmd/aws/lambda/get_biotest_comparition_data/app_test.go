@@ -9,6 +9,7 @@ import (
 	"github.com/manicar2093/charly_team_api/internal/biotestfilters"
 	"github.com/manicar2093/charly_team_api/internal/db/entities"
 	"github.com/manicar2093/charly_team_api/internal/db/repositories"
+	"github.com/manicar2093/charly_team_api/mocks"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -19,14 +20,14 @@ func TestMain(t *testing.T) {
 type GetBiotestComparitionDataAWSLambdaTests struct {
 	suite.Suite
 	ctx                                context.Context
-	biotestComparitionDataFinder       *biotestfilters.MockBiotestComparitionDataFinder
+	biotestComparitionDataFinder       *mocks.BiotestComparitionDataFinder
 	getBiotestComparitionDataAWSLambda *GetBiotestComparitionDataAWSLambda
 	faker                              faker.Faker
 }
 
 func (c *GetBiotestComparitionDataAWSLambdaTests) SetupTest() {
 	c.ctx = context.Background()
-	c.biotestComparitionDataFinder = &biotestfilters.MockBiotestComparitionDataFinder{}
+	c.biotestComparitionDataFinder = &mocks.BiotestComparitionDataFinder{}
 	c.getBiotestComparitionDataAWSLambda = NewGetBiotestComparitionDataAWSLambda(c.biotestComparitionDataFinder)
 	c.faker = faker.New()
 }

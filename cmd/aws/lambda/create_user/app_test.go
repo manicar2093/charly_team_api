@@ -8,6 +8,7 @@ import (
 
 	"github.com/manicar2093/charly_team_api/internal/db/entities"
 	"github.com/manicar2093/charly_team_api/internal/user"
+	"github.com/manicar2093/charly_team_api/mocks"
 	"github.com/manicar2093/charly_team_api/pkg/apperrors"
 	"github.com/manicar2093/charly_team_api/pkg/models"
 	"github.com/stretchr/testify/suite"
@@ -22,7 +23,7 @@ type CreateUserAWSLambdaTests struct {
 	user                entities.User
 	userCreateReq       user.UserCreatorRequest
 	ctx                 context.Context
-	userCreator         *user.MockUserCreator
+	userCreator         *mocks.UserCreator
 	createUserAWSLambda *CreateUserAWSLambda
 	ordinaryError       error
 }
@@ -31,7 +32,7 @@ func (c *CreateUserAWSLambdaTests) SetupTest() {
 	c.user = entities.User{}
 	c.userCreateReq = user.UserCreatorRequest{}
 	c.ctx = context.Background()
-	c.userCreator = &user.MockUserCreator{}
+	c.userCreator = &mocks.UserCreator{}
 	c.createUserAWSLambda = NewUserCreatorAWSLambda(c.userCreator)
 	c.ordinaryError = errors.New("An ordinary error :O")
 

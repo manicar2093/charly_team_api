@@ -1,4 +1,4 @@
-package entities
+package entities_test
 
 import (
 	"context"
@@ -7,6 +7,7 @@ import (
 
 	"github.com/go-rel/rel/where"
 	"github.com/jaswdr/faker"
+	"github.com/manicar2093/charly_team_api/internal/db/entities"
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/guregu/null.v4"
 )
@@ -14,7 +15,7 @@ import (
 var fake = faker.New()
 
 func TestCustomerEntity(t *testing.T) {
-	user := User{
+	user := entities.User{
 		BiotypeID:     null.IntFrom(1),
 		BoneDensityID: null.IntFrom(1),
 		RoleID:        1,
@@ -36,7 +37,7 @@ func TestCustomerEntity(t *testing.T) {
 
 func TestCustomerEntity_RoleLoad(t *testing.T) {
 	ctx := context.Background()
-	userToSave := User{
+	userToSave := entities.User{
 		BiotypeID:     null.IntFrom(1),
 		BoneDensityID: null.IntFrom(1),
 		RoleID:        1,
@@ -48,7 +49,7 @@ func TestCustomerEntity_RoleLoad(t *testing.T) {
 		Birthday:      time.Now(),
 	}
 	DB.Insert(ctx, &userToSave)
-	var userFound User
+	var userFound entities.User
 
 	DB.Find(ctx, &userFound, where.Eq("id", userToSave.ID))
 

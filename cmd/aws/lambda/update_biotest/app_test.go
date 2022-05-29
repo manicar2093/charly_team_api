@@ -8,6 +8,7 @@ import (
 
 	"github.com/manicar2093/charly_team_api/internal/biotest"
 	"github.com/manicar2093/charly_team_api/internal/db/entities"
+	"github.com/manicar2093/charly_team_api/mocks"
 	"github.com/manicar2093/charly_team_api/pkg/apperrors"
 	"github.com/manicar2093/charly_team_api/pkg/models"
 	"github.com/stretchr/testify/suite"
@@ -21,7 +22,7 @@ type UpdateBiotestAWSLambdaTests struct {
 	suite.Suite
 	biotest             entities.Biotest
 	ctx                 context.Context
-	biotestUpdater      *biotest.MockBiotestUpdater
+	biotestUpdater      *mocks.BiotestUpdater
 	updateUserAWSLambda *UpdateBiotestAWSLambda
 	ordinaryError       error
 }
@@ -29,7 +30,7 @@ type UpdateBiotestAWSLambdaTests struct {
 func (c *UpdateBiotestAWSLambdaTests) SetupTest() {
 	c.biotest = entities.Biotest{}
 	c.ctx = context.Background()
-	c.biotestUpdater = &biotest.MockBiotestUpdater{}
+	c.biotestUpdater = &mocks.BiotestUpdater{}
 	c.updateUserAWSLambda = NewUpdateBiotestAWSLambda(c.biotestUpdater)
 	c.ordinaryError = errors.New("An ordinary error :O")
 

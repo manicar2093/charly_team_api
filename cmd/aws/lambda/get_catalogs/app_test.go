@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/manicar2093/charly_team_api/internal/catalog"
+	"github.com/manicar2093/charly_team_api/mocks"
 	"github.com/manicar2093/charly_team_api/pkg/apperrors"
 	"github.com/manicar2093/charly_team_api/pkg/models"
 	"github.com/stretchr/testify/suite"
@@ -19,14 +20,14 @@ func TestMain(t *testing.T) {
 type GetCatalogsAWSLambdaTests struct {
 	suite.Suite
 	ctx                  context.Context
-	catalogGetter        *catalog.MockCatalogGetter
+	catalogGetter        *mocks.CatalogGetter
 	getCatalogsAWSLambda *GetCatalogsAWSLambda
 	ordinaryError        error
 }
 
 func (c *GetCatalogsAWSLambdaTests) SetupTest() {
 	c.ctx = context.Background()
-	c.catalogGetter = &catalog.MockCatalogGetter{}
+	c.catalogGetter = &mocks.CatalogGetter{}
 	c.getCatalogsAWSLambda = NewGetCatalogsAWSLambda(c.catalogGetter)
 	c.ordinaryError = errors.New("An ordinary error :O")
 

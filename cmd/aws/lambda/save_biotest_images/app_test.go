@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/manicar2093/charly_team_api/internal/biotest"
+	"github.com/manicar2093/charly_team_api/mocks"
 	"github.com/manicar2093/charly_team_api/pkg/apperrors"
 	"github.com/manicar2093/charly_team_api/pkg/models"
 	"github.com/stretchr/testify/suite"
@@ -19,7 +20,7 @@ func TestMain(t *testing.T) {
 type SaveBiotestImagesAWSLambdaTests struct {
 	suite.Suite
 	ctx                                                       context.Context
-	biotestImagesSaver                                        *biotest.MockBiotestImagesSaver
+	biotestImagesSaver                                        *mocks.BiotestImagesSaver
 	saveBiotestImagesAWSLambda                                *SaveBiotestImagesAWSLambda
 	request                                                   biotest.BiotestImagesSaverRequest
 	biotestUUID, frontImage, backImage, leftImage, rightImage string
@@ -28,7 +29,7 @@ type SaveBiotestImagesAWSLambdaTests struct {
 
 func (c *SaveBiotestImagesAWSLambdaTests) SetupTest() {
 	c.ctx = context.Background()
-	c.biotestImagesSaver = &biotest.MockBiotestImagesSaver{}
+	c.biotestImagesSaver = &mocks.BiotestImagesSaver{}
 	c.saveBiotestImagesAWSLambda = NewSaveBiotestImagesAWSLambda(c.biotestImagesSaver)
 	c.biotestUUID = "biotest_uuid"
 	c.frontImage = "front/image/path"

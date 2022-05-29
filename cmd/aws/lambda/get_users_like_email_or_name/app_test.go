@@ -7,6 +7,7 @@ import (
 
 	"github.com/manicar2093/charly_team_api/internal/db/entities"
 	"github.com/manicar2093/charly_team_api/internal/userfilters"
+	"github.com/manicar2093/charly_team_api/mocks"
 	"github.com/manicar2093/charly_team_api/pkg/models"
 	"github.com/stretchr/testify/suite"
 )
@@ -18,13 +19,13 @@ func TestMain(t *testing.T) {
 type GetUsersLikeEmailOrNameAWSLambdaTests struct {
 	suite.Suite
 	ctx                              context.Context
-	userLikeEmailOrNameFinder        *userfilters.MockUserLikeEmailOrNameFinder
+	userLikeEmailOrNameFinder        *mocks.UserLikeEmailOrNameFinder
 	getUsersLikeEmailOrNameAWSLambda *GetUsersLikeEmailOrNameAWSLambda
 }
 
 func (c *GetUsersLikeEmailOrNameAWSLambdaTests) SetupTest() {
 	c.ctx = context.Background()
-	c.userLikeEmailOrNameFinder = &userfilters.MockUserLikeEmailOrNameFinder{}
+	c.userLikeEmailOrNameFinder = &mocks.UserLikeEmailOrNameFinder{}
 	c.getUsersLikeEmailOrNameAWSLambda = NewGetUsersLikeEmailOrNameAWSLambda(c.userLikeEmailOrNameFinder)
 }
 

@@ -1,14 +1,15 @@
-package entities
+package entities_test
 
 import (
 	"context"
 	"testing"
 
+	"github.com/manicar2093/charly_team_api/internal/db/entities"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestBiotype(t *testing.T) {
-	var data []Biotype
+	var data []entities.Biotype
 	err := DB.FindAll(context.Background(), &data)
 
 	if err != nil {

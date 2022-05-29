@@ -1,9 +1,10 @@
-package repositories
+package repositories_test
 
 import (
 	"testing"
 
 	"github.com/manicar2093/charly_team_api/internal/db/entities"
+	"github.com/manicar2093/charly_team_api/internal/db/repositories"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -11,7 +12,7 @@ type NotAnEntity struct{}
 
 func TestFindAllCatalogItems(t *testing.T) {
 
-	repository := NewCatalogRepositoryImpl(DB)
+	repository := repositories.NewCatalogRepositoryImpl(DB)
 
 	data, err := repository.FindAllCatalogItems(Ctx, &[]entities.Biotype{})
 
@@ -25,7 +26,7 @@ func TestFindAllCatalogItems(t *testing.T) {
 
 func TestFindAllCatalogItemsError(t *testing.T) {
 
-	repository := NewCatalogRepositoryImpl(DB)
+	repository := repositories.NewCatalogRepositoryImpl(DB)
 
 	_, err := repository.FindAllCatalogItems(Ctx, &[]NotAnEntity{})
 

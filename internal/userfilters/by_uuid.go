@@ -12,7 +12,7 @@ type UserByUUIDFinder interface {
 	Run(ctx context.Context, req *UserByUUIDFinderRequest) (*UserByUUIDFinderResponse, error)
 }
 
-type userByUUIDFinderImpl struct {
+type UserByUUIDFinderImpl struct {
 	userRepo  repositories.UserRepository
 	validator validators.ValidatorService
 }
@@ -20,11 +20,11 @@ type userByUUIDFinderImpl struct {
 func NewUserByUUIDFinderImpl(
 	userRepo repositories.UserRepository,
 	validator validators.ValidatorService,
-) *userByUUIDFinderImpl {
-	return &userByUUIDFinderImpl{userRepo: userRepo, validator: validator}
+) *UserByUUIDFinderImpl {
+	return &UserByUUIDFinderImpl{userRepo: userRepo, validator: validator}
 }
 
-func (c *userByUUIDFinderImpl) Run(ctx context.Context, req *UserByUUIDFinderRequest) (*UserByUUIDFinderResponse, error) {
+func (c *UserByUUIDFinderImpl) Run(ctx context.Context, req *UserByUUIDFinderRequest) (*UserByUUIDFinderResponse, error) {
 	logger.Info(req)
 	if validation := c.validator.Validate(req); !validation.IsValid {
 		logger.Error(validation.Err)

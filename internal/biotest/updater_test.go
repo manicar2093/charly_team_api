@@ -1,4 +1,4 @@
-package biotest
+package biotest_test
 
 import (
 	"context"
@@ -6,7 +6,9 @@ import (
 	"testing"
 
 	"github.com/go-rel/reltest"
+	"github.com/manicar2093/charly_team_api/internal/biotest"
 	"github.com/manicar2093/charly_team_api/internal/db/entities"
+	"github.com/manicar2093/charly_team_api/mocks"
 	"github.com/manicar2093/charly_team_api/pkg/apperrors"
 	"github.com/manicar2093/charly_team_api/pkg/validators"
 	"github.com/stretchr/testify/suite"
@@ -19,17 +21,17 @@ func TestUpdater(t *testing.T) {
 type MainUpdater struct {
 	suite.Suite
 	repo           *reltest.Repository
-	validator      *validators.MockValidatorService
+	validator      *mocks.ValidatorService
 	ctx            context.Context
-	biotestUpdater *BiotestUpdaterImpl
+	biotestUpdater *biotest.BiotestUpdaterImpl
 	ordinaryError  error
 }
 
 func (c *MainUpdater) SetupTest() {
 	c.repo = reltest.New()
-	c.validator = &validators.MockValidatorService{}
+	c.validator = &mocks.ValidatorService{}
 	c.ctx = context.Background()
-	c.biotestUpdater = NewBiotestUpdater(c.repo, c.validator)
+	c.biotestUpdater = biotest.NewBiotestUpdater(c.repo, c.validator)
 	c.ordinaryError = errors.New("An ordinary error :O")
 
 }

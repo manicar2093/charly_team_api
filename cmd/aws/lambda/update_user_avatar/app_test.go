@@ -6,6 +6,7 @@ import (
 
 	"github.com/manicar2093/charly_team_api/internal/db/entities"
 	"github.com/manicar2093/charly_team_api/internal/user"
+	"github.com/manicar2093/charly_team_api/mocks"
 	"github.com/manicar2093/charly_team_api/pkg/apperrors"
 	"github.com/manicar2093/charly_team_api/pkg/models"
 	"github.com/stretchr/testify/suite"
@@ -18,13 +19,13 @@ func TestMain(t *testing.T) {
 type UpdateUserAWSLambdaTests struct {
 	suite.Suite
 	ctx                 context.Context
-	userAvatarUpdater   *user.MockAvatarUpdater
+	userAvatarUpdater   *mocks.AvatarUpdater
 	updateUserAWSLambda *UpdateUserAWSLambda
 }
 
 func (c *UpdateUserAWSLambdaTests) SetupTest() {
 	c.ctx = context.Background()
-	c.userAvatarUpdater = &user.MockAvatarUpdater{}
+	c.userAvatarUpdater = &mocks.AvatarUpdater{}
 	c.updateUserAWSLambda = NewUpdateUserAWSLambda(c.userAvatarUpdater)
 }
 

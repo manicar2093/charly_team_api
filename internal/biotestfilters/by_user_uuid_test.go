@@ -1,13 +1,15 @@
-package biotestfilters
+package biotestfilters_test
 
 import (
 	"context"
 	"testing"
 
 	"github.com/jaswdr/faker"
+	"github.com/manicar2093/charly_team_api/internal/biotestfilters"
 	"github.com/manicar2093/charly_team_api/internal/db/entities"
 	"github.com/manicar2093/charly_team_api/internal/db/paginator"
 	"github.com/manicar2093/charly_team_api/internal/db/repositories"
+	"github.com/manicar2093/charly_team_api/mocks"
 	"github.com/manicar2093/charly_team_api/pkg/apperrors"
 	"github.com/manicar2093/charly_team_api/pkg/validators"
 	"github.com/stretchr/testify/suite"
@@ -20,17 +22,17 @@ func TestByUserUUID(t *testing.T) {
 type BiotestByUserUUIDTests struct {
 	suite.Suite
 	ctx               context.Context
-	biotestRepo       *repositories.MockBiotestRepository
-	validator         *validators.MockValidatorService
-	biotestByUserUUID *biotestByUserUUIDImpl
+	biotestRepo       *mocks.BiotestRepository
+	validator         *mocks.ValidatorService
+	biotestByUserUUID *biotestfilters.BiotestByUserUUIDImpl
 	fake              faker.Faker
 }
 
 func (c *BiotestByUserUUIDTests) SetupTest() {
 	c.ctx = context.Background()
-	c.biotestRepo = &repositories.MockBiotestRepository{}
-	c.validator = &validators.MockValidatorService{}
-	c.biotestByUserUUID = NewBiotestByUserUUIDImpl(c.biotestRepo, c.validator)
+	c.biotestRepo = &mocks.BiotestRepository{}
+	c.validator = &mocks.ValidatorService{}
+	c.biotestByUserUUID = biotestfilters.NewBiotestByUserUUIDImpl(c.biotestRepo, c.validator)
 	c.fake = faker.New()
 }
 
@@ -42,7 +44,7 @@ func (c *BiotestByUserUUIDTests) TearDownTest() {
 func (c *BiotestByUserUUIDTests) TestBiotestByUserUUID() {
 	userUUID := c.fake.UUID().V4()
 	paginatorResponse := paginator.Paginator{Data: &[]entities.Biotest{}}
-	request := BiotestByUserUUIDRequest{UserUUID: userUUID}
+	request := biotestfilters.BiotestByUserUUIDRequest{UserUUID: userUUID}
 	c.validator.On("Validate", &request).Return(validators.ValidateOutput{Err: nil, IsValid: true})
 	c.biotestRepo.On("GetAllUserBiotestByUserUUID", c.ctx, &request.PageSort, userUUID).Return(&paginatorResponse, nil)
 
@@ -57,7 +59,7 @@ func (c *BiotestByUserUUIDTests) TestBiotestByUserUUID() {
 func (c *BiotestByUserUUIDTests) TestBiotestByUserUUID_AsCatalog() {
 	userUUID := c.fake.UUID().V4()
 	paginatorResponse := paginator.Paginator{Data: &[]repositories.BiotestDetails{}}
-	request := BiotestByUserUUIDRequest{UserUUID: userUUID, AsCatalog: true}
+	request := biotestfilters.BiotestByUserUUIDRequest{UserUUID: userUUID, AsCatalog: true}
 	c.validator.On("Validate", &request).Return(validators.ValidateOutput{Err: nil, IsValid: true})
 	c.biotestRepo.On("GetAllUserBiotestByUserUUIDAsCatalog", c.ctx, &request.PageSort, userUUID).Return(&paginatorResponse, nil)
 
@@ -71,7 +73,7 @@ func (c *BiotestByUserUUIDTests) TestBiotestByUserUUID_AsCatalog() {
 
 func (c *BiotestByUserUUIDTests) TestBiotestByUserUUID_ValidationError() {
 	userUUID := c.fake.UUID().V4()
-	request := BiotestByUserUUIDRequest{UserUUID: userUUID}
+	request := biotestfilters.BiotestByUserUUIDRequest{UserUUID: userUUID}
 	validationErrors := apperrors.ValidationErrors{{Field: "uuid", Validation: "required"}}
 	c.validator.On("Validate", &request).Return(validators.ValidateOutput{Err: validationErrors, IsValid: false})
 

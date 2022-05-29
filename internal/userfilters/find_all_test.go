@@ -1,4 +1,4 @@
-package userfilters
+package userfilters_test
 
 import (
 	"context"
@@ -7,7 +7,8 @@ import (
 
 	"github.com/manicar2093/charly_team_api/internal/db/entities"
 	"github.com/manicar2093/charly_team_api/internal/db/paginator"
-	"github.com/manicar2093/charly_team_api/internal/db/repositories"
+	"github.com/manicar2093/charly_team_api/internal/userfilters"
+	"github.com/manicar2093/charly_team_api/mocks"
 	"github.com/manicar2093/charly_team_api/pkg/apperrors"
 	"github.com/manicar2093/charly_team_api/pkg/validators"
 	"github.com/stretchr/testify/suite"
@@ -20,16 +21,16 @@ func TestFindAll(t *testing.T) {
 type AllUsersFinderTests struct {
 	suite.Suite
 	ctx           context.Context
-	userRepo      *repositories.MockUserRepository
-	validator     *validators.MockValidatorService
-	allUserFinder *allUsersFinderImpl
+	userRepo      *mocks.UserRepository
+	validator     *mocks.ValidatorService
+	allUserFinder *userfilters.AllUsersFinderImpl
 }
 
 func (c *AllUsersFinderTests) SetupTest() {
 	c.ctx = context.Background()
-	c.userRepo = &repositories.MockUserRepository{}
-	c.validator = &validators.MockValidatorService{}
-	c.allUserFinder = NewAllUsersFinderImpl(c.userRepo, c.validator)
+	c.userRepo = &mocks.UserRepository{}
+	c.validator = &mocks.ValidatorService{}
+	c.allUserFinder = userfilters.NewAllUsersFinderImpl(c.userRepo, c.validator)
 }
 
 func (c *AllUsersFinderTests) TearDownTest() {
@@ -38,7 +39,7 @@ func (c *AllUsersFinderTests) TearDownTest() {
 }
 
 func (c *AllUsersFinderTests) TestRun() {
-	request := AllUsersFinderRequest{PageSort: paginator.PageSort{
+	request := userfilters.AllUsersFinderRequest{PageSort: paginator.PageSort{
 		Page: 1,
 	}}
 	c.validator.On("Validate", &request).Return(validators.ValidateOutput{IsValid: true, Err: nil})
@@ -54,7 +55,7 @@ func (c *AllUsersFinderTests) TestRun() {
 }
 
 func (c *AllUsersFinderTests) TestRun_ValidationError() {
-	request := AllUsersFinderRequest{PageSort: paginator.PageSort{
+	request := userfilters.AllUsersFinderRequest{PageSort: paginator.PageSort{
 		Page: 1,
 	}}
 	validationErrReturn := apperrors.ValidationErrors{{Field: "page", Validation: "required"}}
@@ -68,7 +69,7 @@ func (c *AllUsersFinderTests) TestRun_ValidationError() {
 }
 
 func (c *AllUsersFinderTests) TestRun_UserRepoErr() {
-	request := AllUsersFinderRequest{PageSort: paginator.PageSort{
+	request := userfilters.AllUsersFinderRequest{PageSort: paginator.PageSort{
 		Page: 1,
 	}}
 	c.validator.On("Validate", &request).Return(validators.ValidateOutput{IsValid: true, Err: nil})

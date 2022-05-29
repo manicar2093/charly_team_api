@@ -9,6 +9,7 @@ import (
 	"github.com/manicar2093/charly_team_api/internal/biotestfilters"
 	"github.com/manicar2093/charly_team_api/internal/db/entities"
 	"github.com/manicar2093/charly_team_api/internal/db/paginator"
+	"github.com/manicar2093/charly_team_api/mocks"
 	"github.com/manicar2093/charly_team_api/pkg/apperrors"
 	"github.com/manicar2093/charly_team_api/pkg/models"
 	"github.com/stretchr/testify/suite"
@@ -21,14 +22,14 @@ func TestMain(t *testing.T) {
 type GetAllBiotestByUserUUIDAWSLambdaTest struct {
 	suite.Suite
 	ctx                               context.Context
-	biotestsByUserUUIDFinder          *biotestfilters.MockBiotestByUserUUID
+	biotestsByUserUUIDFinder          *mocks.BiotestByUserUUID
 	getAllBiotestsByUserUUIDAWSLambda *GetAllBiotestByUserUUIDAWSLambda
 	faker                             faker.Faker
 }
 
 func (c *GetAllBiotestByUserUUIDAWSLambdaTest) SetupTest() {
 	c.ctx = context.Background()
-	c.biotestsByUserUUIDFinder = &biotestfilters.MockBiotestByUserUUID{}
+	c.biotestsByUserUUIDFinder = &mocks.BiotestByUserUUID{}
 	c.getAllBiotestsByUserUUIDAWSLambda = NewGetAllBiotestByUserUUIDAWSLambda(c.biotestsByUserUUIDFinder)
 	c.faker = faker.New()
 }

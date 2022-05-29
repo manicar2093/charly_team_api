@@ -25,7 +25,7 @@ type UserCreator interface {
 	Run(ctx context.Context, user *UserCreatorRequest) (*UserCreatorResponse, error)
 }
 
-type userCreatorImpl struct {
+type UserCreatorImpl struct {
 	authProvider aws.CongitoClient
 	passGen      services.PassGen
 	userRepo     repositories.UserRepository
@@ -39,8 +39,8 @@ func NewUserCreatorImpl(
 	userRepo repositories.UserRepository,
 	uuidGen services.UUIDGenerator,
 	validator validators.ValidatorService,
-) *userCreatorImpl {
-	return &userCreatorImpl{
+) *UserCreatorImpl {
+	return &UserCreatorImpl{
 		authProvider: authProvider,
 		passGen:      passGen,
 		userRepo:     userRepo,
@@ -49,7 +49,7 @@ func NewUserCreatorImpl(
 	}
 }
 
-func (c *userCreatorImpl) Run(ctx context.Context, user *UserCreatorRequest) (*UserCreatorResponse, error) {
+func (c *UserCreatorImpl) Run(ctx context.Context, user *UserCreatorRequest) (*UserCreatorResponse, error) {
 	logger.Info(user)
 	if err := c.isValidRequest(user); err != nil {
 		logger.Error(err)
@@ -59,7 +59,7 @@ func (c *userCreatorImpl) Run(ctx context.Context, user *UserCreatorRequest) (*U
 	pass, err := c.passGen.Generate()
 	if err != nil {
 		logger.Error(err)
-		return nil, errGenerationPass
+		return nil, ErrGenerationPass
 	}
 
 	requestData := cognitoidentityprovider.AdminCreateUserInput{
@@ -75,7 +75,7 @@ func (c *userCreatorImpl) Run(ctx context.Context, user *UserCreatorRequest) (*U
 	userOutput, err := c.authProvider.AdminCreateUser(&requestData)
 	if err != nil {
 		logger.Error(err)
-		return nil, errSavingUserAWS
+		return nil, ErrSavingUserAWS
 	}
 
 	userEntity := entities.User{
@@ -96,13 +96,13 @@ func (c *userCreatorImpl) Run(ctx context.Context, user *UserCreatorRequest) (*U
 
 	if err != nil {
 		logger.Error(err)
-		return nil, errSavingUserDB
+		return nil, ErrSavingUserDB
 	}
 
 	return &UserCreatorResponse{UserCreated: &userEntity}, nil
 }
 
-func (c *userCreatorImpl) isValidRequest(createUserReq *UserCreatorRequest) error {
+func (c *UserCreatorImpl) isValidRequest(createUserReq *UserCreatorRequest) error {
 	if validation := c.validator.Validate(createUserReq); !validation.IsValid {
 		return validation.Err
 	}

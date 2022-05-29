@@ -1,4 +1,4 @@
-package user
+package user_test
 
 import (
 	"context"
@@ -7,6 +7,8 @@ import (
 
 	"github.com/manicar2093/charly_team_api/internal/db/entities"
 	"github.com/manicar2093/charly_team_api/internal/db/repositories"
+	"github.com/manicar2093/charly_team_api/internal/user"
+	"github.com/manicar2093/charly_team_api/mocks"
 	"github.com/manicar2093/charly_team_api/pkg/apperrors"
 	"github.com/manicar2093/charly_team_api/pkg/validators"
 	"github.com/stretchr/testify/suite"
@@ -19,9 +21,9 @@ func TestAvatarUpdater(t *testing.T) {
 type AvatarUpdaterTests struct {
 	suite.Suite
 	ctx           context.Context
-	userRepo      *repositories.MockUserRepository
-	validator     *validators.MockValidatorService
-	avatarUpdater AvatarUpdater
+	userRepo      *mocks.UserRepository
+	validator     *mocks.ValidatorService
+	avatarUpdater user.AvatarUpdater
 	userID        int32
 	userUUID      string
 	user          entities.User
@@ -29,9 +31,9 @@ type AvatarUpdaterTests struct {
 
 func (c *AvatarUpdaterTests) SetupTest() {
 	c.ctx = context.Background()
-	c.userRepo = &repositories.MockUserRepository{}
-	c.validator = &validators.MockValidatorService{}
-	c.avatarUpdater = NewUserAvatarUpdater(c.userRepo, c.validator)
+	c.userRepo = &mocks.UserRepository{}
+	c.validator = &mocks.ValidatorService{}
+	c.avatarUpdater = user.NewUserAvatarUpdater(c.userRepo, c.validator)
 	c.userID = int32(1)
 	c.userUUID = "a_uuid"
 	c.user = entities.User{ID: c.userID, UserUUID: c.userUUID}
@@ -44,7 +46,7 @@ func (c *AvatarUpdaterTests) TearDownTest() {
 
 func (c *AvatarUpdaterTests) TestRun() {
 	expectedAvatarURL := "avatar/url.jpg"
-	req := AvatarUpdaterRequest{UserUUID: c.userUUID, AvatarURL: expectedAvatarURL}
+	req := user.AvatarUpdaterRequest{UserUUID: c.userUUID, AvatarURL: expectedAvatarURL}
 	c.validator.On("Validate", &req).Return(validators.ValidateOutput{IsValid: true, Err: nil})
 	c.userRepo.On("FindUserByUUID", c.ctx, c.userUUID).Return(&c.user, nil)
 	c.user.AvatarUrl = expectedAvatarURL
@@ -60,7 +62,7 @@ func (c *AvatarUpdaterTests) TestRun() {
 
 func (c *AvatarUpdaterTests) TestRun_UserNotFound() {
 	expectedAvatarURL := "avatar/url.jpg"
-	req := AvatarUpdaterRequest{UserUUID: c.userUUID, AvatarURL: expectedAvatarURL}
+	req := user.AvatarUpdaterRequest{UserUUID: c.userUUID, AvatarURL: expectedAvatarURL}
 	c.validator.On("Validate", &req).Return(validators.ValidateOutput{IsValid: true, Err: nil})
 	c.userRepo.On("FindUserByUUID", c.ctx, c.userUUID).Return(nil, repositories.NotFoundError{})
 
@@ -74,7 +76,7 @@ func (c *AvatarUpdaterTests) TestRun_UserNotFound() {
 
 func (c *AvatarUpdaterTests) TestRun_ValidationError() {
 	expectedAvatarURL := "avatar/url.jpg"
-	req := AvatarUpdaterRequest{UserUUID: c.userUUID, AvatarURL: expectedAvatarURL}
+	req := user.AvatarUpdaterRequest{UserUUID: c.userUUID, AvatarURL: expectedAvatarURL}
 	validationErr := apperrors.ValidationErrors{{Field: "user_uuid", Validation: "required"}}
 	c.validator.On("Validate", &req).Return(validators.ValidateOutput{IsValid: false, Err: validationErr})
 
@@ -88,7 +90,7 @@ func (c *AvatarUpdaterTests) TestRun_ValidationError() {
 
 func (c *AvatarUpdaterTests) TestRun_UpdateError() {
 	expectedAvatarURL := "avatar/url.jpg"
-	req := AvatarUpdaterRequest{UserUUID: c.userUUID, AvatarURL: expectedAvatarURL}
+	req := user.AvatarUpdaterRequest{UserUUID: c.userUUID, AvatarURL: expectedAvatarURL}
 	c.validator.On("Validate", &req).Return(validators.ValidateOutput{IsValid: true, Err: nil})
 	c.userRepo.On("FindUserByUUID", c.ctx, c.userUUID).Return(&c.user, nil)
 	c.user.AvatarUrl = expectedAvatarURL

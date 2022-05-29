@@ -1,4 +1,4 @@
-package user
+package user_test
 
 import (
 	"context"
@@ -9,10 +9,9 @@ import (
 	"github.com/aws/aws-sdk-go/service/cognitoidentityprovider"
 	"github.com/jaswdr/faker"
 	"github.com/manicar2093/charly_team_api/internal/config"
-	"github.com/manicar2093/charly_team_api/internal/db/repositories"
-	"github.com/manicar2093/charly_team_api/internal/services"
+	"github.com/manicar2093/charly_team_api/internal/user"
+	"github.com/manicar2093/charly_team_api/mocks"
 	"github.com/manicar2093/charly_team_api/pkg/apperrors"
-	"github.com/manicar2093/charly_team_api/pkg/aws"
 
 	"github.com/manicar2093/charly_team_api/pkg/validators"
 	"github.com/stretchr/testify/mock"
@@ -25,33 +24,33 @@ func TestMain(t *testing.T) {
 
 type UserCreatorTests struct {
 	suite.Suite
-	authProviderMock                                                   *aws.MockCongitoClient
-	validator                                                          validators.MockValidatorService
-	passGenMock                                                        *services.MockPassGen
-	uuidGen                                                            *services.MockUUIDGenerator
-	userRepo                                                           *repositories.MockUserRepository
-	userCreator                                                        *userCreatorImpl
+	authProviderMock                                                   *mocks.CongitoClient
+	validator                                                          *mocks.ValidatorService
+	passGenMock                                                        *mocks.PassGen
+	uuidGen                                                            *mocks.UUIDGenerator
+	userRepo                                                           *mocks.UserRepository
+	userCreator                                                        *user.UserCreatorImpl
 	ctx                                                                context.Context
-	userRequestBase                                                    UserCreatorRequest
+	userRequestBase                                                    user.UserCreatorRequest
 	emailAttribute, emailVerifiedAttribute, emailVerifiedAttributValue string
 	userEmail                                                          string
 	faker                                                              faker.Faker
 }
 
 func (c *UserCreatorTests) SetupTest() {
-	c.authProviderMock = &aws.MockCongitoClient{}
-	c.validator = validators.MockValidatorService{}
-	c.passGenMock = &services.MockPassGen{}
-	c.uuidGen = &services.MockUUIDGenerator{}
-	c.userRepo = &repositories.MockUserRepository{}
-	c.userCreator = NewUserCreatorImpl(c.authProviderMock, c.passGenMock, c.userRepo, c.uuidGen, &c.validator)
+	c.authProviderMock = &mocks.CongitoClient{}
+	c.validator = &mocks.ValidatorService{}
+	c.passGenMock = &mocks.PassGen{}
+	c.uuidGen = &mocks.UUIDGenerator{}
+	c.userRepo = &mocks.UserRepository{}
+	c.userCreator = user.NewUserCreatorImpl(c.authProviderMock, c.passGenMock, c.userRepo, c.uuidGen, c.validator)
 	c.ctx = context.Background()
 	c.faker = faker.New()
 	c.userEmail = "testing@main-func.com"
 	c.emailAttribute = "email"
 	c.emailVerifiedAttribute = "email_verified"
 	c.emailVerifiedAttributValue = "true"
-	c.userRequestBase = UserCreatorRequest{
+	c.userRequestBase = user.UserCreatorRequest{
 		Name:     "testing",
 		LastName: "main",
 		Email:    c.userEmail,
@@ -174,7 +173,7 @@ func (c *UserCreatorTests) TestUserCreator_PassGenError() {
 
 	c.NotNil(err)
 	c.Nil(res)
-	c.Equal(errGenerationPass, err)
+	c.Equal(user.ErrGenerationPass, err)
 
 }
 
@@ -194,7 +193,7 @@ func (c *UserCreatorTests) TestUserCreator_AWSCognitoError() {
 
 	c.NotNil(err)
 	c.Nil(res)
-	c.Equal(errSavingUserAWS, err)
+	c.Equal(user.ErrSavingUserAWS, err)
 
 }
 
@@ -222,6 +221,6 @@ func (c *UserCreatorTests) TestUserCreator_SaveUserDBError() {
 
 	c.NotNil(err)
 	c.Nil(res)
-	c.Equal(errSavingUserDB, err)
+	c.Equal(user.ErrSavingUserDB, err)
 
 }

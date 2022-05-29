@@ -1,4 +1,4 @@
-package userfilters
+package userfilters_test
 
 import (
 	"context"
@@ -6,7 +6,8 @@ import (
 	"testing"
 
 	"github.com/manicar2093/charly_team_api/internal/db/entities"
-	"github.com/manicar2093/charly_team_api/internal/db/repositories"
+	"github.com/manicar2093/charly_team_api/internal/userfilters"
+	"github.com/manicar2093/charly_team_api/mocks"
 	"github.com/manicar2093/charly_team_api/pkg/validators"
 	"github.com/stretchr/testify/suite"
 )
@@ -18,16 +19,16 @@ func TestLikeEmailOrName(t *testing.T) {
 type UserLikeEmailOrNameFinderTests struct {
 	suite.Suite
 	ctx                       context.Context
-	userRepo                  *repositories.MockUserRepository
-	validator                 *validators.MockValidatorService
-	userLikeEmailOrNameFinder *userLikeEmailOrNameFinderImpl
+	userRepo                  *mocks.UserRepository
+	validator                 *mocks.ValidatorService
+	userLikeEmailOrNameFinder *userfilters.UserLikeEmailOrNameFinderImpl
 }
 
 func (c *UserLikeEmailOrNameFinderTests) SetupTest() {
 	c.ctx = context.Background()
-	c.userRepo = &repositories.MockUserRepository{}
-	c.validator = &validators.MockValidatorService{}
-	c.userLikeEmailOrNameFinder = NewUserLikeEmailOrNameFinderImpl(c.userRepo, c.validator)
+	c.userRepo = &mocks.UserRepository{}
+	c.validator = &mocks.ValidatorService{}
+	c.userLikeEmailOrNameFinder = userfilters.NewUserLikeEmailOrNameFinderImpl(c.userRepo, c.validator)
 }
 
 func (c *UserLikeEmailOrNameFinderTests) TearDownTest() {
@@ -37,7 +38,7 @@ func (c *UserLikeEmailOrNameFinderTests) TearDownTest() {
 
 func (c *UserLikeEmailOrNameFinderTests) TestHandler() {
 	filterData := "name"
-	request := UserLikeEmailOrNameFinderRequest{FilterData: filterData}
+	request := userfilters.UserLikeEmailOrNameFinderRequest{FilterData: filterData}
 	usersFound := []entities.User{{}, {}}
 	c.validator.On("Validate", &request).Return(validators.ValidateOutput{IsValid: true, Err: nil})
 	c.userRepo.On("FindUserLikeEmailOrNameOrLastName", c.ctx, filterData).Return(&usersFound, nil)
@@ -51,7 +52,7 @@ func (c *UserLikeEmailOrNameFinderTests) TestHandler() {
 
 func (c *UserLikeEmailOrNameFinderTests) TestHandler_ValidationErr() {
 	filterData := "name"
-	request := UserLikeEmailOrNameFinderRequest{FilterData: filterData}
+	request := userfilters.UserLikeEmailOrNameFinderRequest{FilterData: filterData}
 	validationErrReturned := fmt.Errorf("ordinary error")
 	c.validator.On("Validate", &request).Return(validators.ValidateOutput{IsValid: false, Err: validationErrReturned})
 
@@ -64,7 +65,7 @@ func (c *UserLikeEmailOrNameFinderTests) TestHandler_ValidationErr() {
 
 func (c *UserLikeEmailOrNameFinderTests) TestHandler_RepoError() {
 	filterData := "name"
-	request := UserLikeEmailOrNameFinderRequest{FilterData: filterData}
+	request := userfilters.UserLikeEmailOrNameFinderRequest{FilterData: filterData}
 	userRepoErrReturned := fmt.Errorf("ordinary error")
 	c.validator.On("Validate", &request).Return(validators.ValidateOutput{IsValid: true, Err: nil})
 	c.userRepo.On("FindUserLikeEmailOrNameOrLastName", c.ctx, filterData).Return(nil, userRepoErrReturned)
