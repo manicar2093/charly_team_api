@@ -12,7 +12,7 @@ db_fill:
 	@ knex seed:run
 
 mocking:
-	@ mockery --all --inpackage
+	@ mockery --all
 
 test:
 	@ - make db_fill
