@@ -4,12 +4,10 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/aws/aws-sdk-go/service/cognitoidentityprovider"
 	"github.com/manicar2093/charly_team_api/internal/config"
 	"github.com/manicar2093/charly_team_api/internal/db/entities"
 	"github.com/manicar2093/charly_team_api/internal/db/repositories"
 	"github.com/manicar2093/charly_team_api/internal/services"
-	"github.com/manicar2093/charly_team_api/pkg/aws"
 	"github.com/manicar2093/charly_team_api/pkg/logger"
 	"github.com/manicar2093/charly_team_api/pkg/validators"
 	"github.com/manicar2093/charly_team_api/pkg/validators/nullsql"
@@ -26,26 +24,26 @@ type UserCreator interface {
 }
 
 type UserCreatorImpl struct {
-	authProvider aws.CongitoClient
-	passGen      services.PassGen
-	userRepo     repositories.UserRepository
-	uuidGen      services.UUIDGenerator
-	validator    validators.ValidatorService
+	passGen    services.PassGen
+	userRepo   repositories.UserRepository
+	uuidGen    services.UUIDGenerator
+	validator  validators.ValidatorService
+	passHasher services.HashPassword
 }
 
 func NewUserCreatorImpl(
-	authProvider aws.CongitoClient,
 	passGen services.PassGen,
 	userRepo repositories.UserRepository,
 	uuidGen services.UUIDGenerator,
 	validator validators.ValidatorService,
+	passHasher services.HashPassword,
 ) *UserCreatorImpl {
 	return &UserCreatorImpl{
-		authProvider: authProvider,
-		passGen:      passGen,
-		userRepo:     userRepo,
-		uuidGen:      uuidGen,
-		validator:    validator,
+		passGen:    passGen,
+		userRepo:   userRepo,
+		uuidGen:    uuidGen,
+		validator:  validator,
+		passHasher: passHasher,
 	}
 }
 
@@ -62,20 +60,9 @@ func (c *UserCreatorImpl) Run(ctx context.Context, user *UserCreatorRequest) (*U
 		return nil, ErrGenerationPass
 	}
 
-	requestData := cognitoidentityprovider.AdminCreateUserInput{
-		UserPoolId:        &config.CognitoPoolID,
-		Username:          &user.Email,
-		TemporaryPassword: &pass,
-		UserAttributes: []*cognitoidentityprovider.AttributeType{
-			{Name: &emailAttributeName, Value: &user.Email},
-			{Name: &emailVerifiedAttributeName, Value: &emailVerifiedAttributeValue},
-		},
-	}
-
-	userOutput, err := c.authProvider.AdminCreateUser(&requestData)
+	passDigested, err := c.passHasher.Digest(pass)
 	if err != nil {
-		logger.Error(err)
-		return nil, ErrSavingUserAWS
+		return nil, err
 	}
 
 	userEntity := entities.User{
@@ -84,17 +71,16 @@ func (c *UserCreatorImpl) Run(ctx context.Context, user *UserCreatorRequest) (*U
 		RoleID:        int32(user.RoleID),
 		GenderID:      nullsql.ValidateIntSQLValid(int64(user.GenderID)),
 		Email:         user.Email,
+		Password:      passDigested,
 		Birthday:      user.Birthday,
-		AvatarUrl:     fmt.Sprintf("%s%s.svg", config.AvatarURLSrc, c.uuidGen.New()),
 		BiotypeID:     nullsql.ValidateIntSQLValid(int64(user.BiotypeID)),
 		BoneDensityID: nullsql.ValidateIntSQLValid(int64(user.BoneDensityID)),
 	}
 
-	userEntity.UserUUID = *userOutput.User.Username
+	userEntity.UserUUID = c.uuidGen.New()
+	userEntity.AvatarUrl = fmt.Sprintf("%s%s.svg", config.AvatarURLSrc, c.uuidGen.New())
 
-	err = c.userRepo.SaveUser(ctx, &userEntity)
-
-	if err != nil {
+	if err := c.userRepo.SaveUser(ctx, &userEntity); err != nil {
 		logger.Error(err)
 		return nil, ErrSavingUserDB
 	}
