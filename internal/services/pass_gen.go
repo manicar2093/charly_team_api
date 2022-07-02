@@ -6,11 +6,15 @@ import (
 )
 
 // PassGen is a helper interface to wrap password generator
-type PassGen interface {
-	Generate() (string, error)
-}
-
-type PasswordGenerator struct{}
+type (
+	PassGen interface {
+		Generate() (string, error)
+	}
+	// Deprecated: Should user DefaultPasswordGenerator until new implementation
+	PasswordGenerator struct{}
+	// DefaultPasswordGenerator generates a default pass for user creation
+	DefaultPasswordGenerator struct{}
+)
 
 func (p PasswordGenerator) Generate() (string, error) {
 	pass, err := password.Generate(
@@ -24,4 +28,8 @@ func (p PasswordGenerator) Generate() (string, error) {
 		return "", err
 	}
 	return pass, nil
+}
+
+func (c *DefaultPasswordGenerator) Generate() (string, error) {
+	return "Rm7r5P<c", nil
 }
