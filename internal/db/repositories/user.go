@@ -27,7 +27,7 @@ func (c *UserRepositoryRel) FindUserByUUID(ctx context.Context, userUUID string)
 	if err := c.repo.Find(ctx, &userFound, where.Eq("user_uuid", userUUID)); err != nil {
 		switch err.(type) {
 		case rel.NotFoundError:
-			return nil, NotFoundError{Entity: "User", Identifier: userUUID}
+			return nil, &NotFoundError{Entity: "User", Identifier: userUUID}
 		}
 		return nil, err
 	}
