@@ -8,7 +8,6 @@ import (
 	"github.com/manicar2093/charly_team_api/internal/db/repositories"
 	"github.com/manicar2093/charly_team_api/internal/services"
 	"github.com/manicar2093/charly_team_api/internal/user"
-	"github.com/manicar2093/charly_team_api/pkg/aws"
 	"github.com/manicar2093/charly_team_api/pkg/validators"
 )
 
@@ -17,11 +16,11 @@ func main() {
 	conn := connections.PostgressConnection()
 	paginator := paginator.NewPaginable(conn)
 	service := user.NewUserCreatorImpl(
-		aws.NewCognitoClient(),
-		services.PasswordGenerator{},
+		&services.DefaultPasswordGenerator{},
 		repositories.NewUserRepositoryRel(conn, paginator),
 		services.UUIDGeneratorImpl{},
 		validators.NewStructValidator(),
+		services.NewBcryptImpl(),
 	)
 	lambda.Start(
 		NewUserCreatorAWSLambda(service).Handler,
