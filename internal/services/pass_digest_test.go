@@ -1,17 +1,44 @@
 package services_test
 
 import (
-	"testing"
-
 	"github.com/bxcodec/faker/v3"
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
+
 	"github.com/manicar2093/charly_team_api/internal/services"
-	"github.com/stretchr/testify/assert"
 )
 
-func TestPassDigest(t *testing.T) {
-	dig := services.BcryptImpl{}
-	pass := faker.Password()
-	pass, err := dig.Digest(pass)
-	assert.Nil(t, err, "should not be error")
-	assert.NotEmpty(t, pass, "pass is empty. not generated")
-}
+var _ = Describe("Passwords", func() {
+	var (
+		passService    *services.BcryptImpl
+		passwordToHash string
+	)
+
+	BeforeEach(func() {
+		passService = &services.BcryptImpl{}
+		passwordToHash = faker.Password()
+	})
+
+	Describe("Digest", func() {
+		It("generate a password hash from a string", func() {
+			got, err := passService.Digest(passwordToHash)
+
+			Expect(err).ToNot(HaveOccurred())
+			Expect(got).ToNot(BeEmpty())
+		})
+	})
+
+	Describe("Compare", func() {
+		It("sends a nil error when pass is ok", func() {
+			var (
+				plainPassword  = "bCLxihZAbTLcaGEGeRsoBnuwWxNJqQTSpeDMxswQKJoJdbyWxD"
+				hashedPassword = "$2a$10$oPHltqIW/TtZ2GlMz7RfM.sglZIgPoaglBQa3P8mJMtkjcGG4aVDm"
+			)
+
+			err := passService.Compare(hashedPassword, plainPassword)
+
+			Expect(err).ToNot(HaveOccurred())
+		})
+	})
+
+})
