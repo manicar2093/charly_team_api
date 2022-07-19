@@ -69,3 +69,16 @@ func (c *UserRepositoryRel) UpdateUser(ctx context.Context, user *entities.User)
 		return c.repo.Update(ctx, user)
 	})
 }
+
+func (c *UserRepositoryRel) FindUserByEmail(ctx context.Context, email string) (*entities.User, error) {
+	var userToReturn entities.User
+	if err := c.repo.Find(ctx, &userToReturn, where.Eq("email", email)); err != nil {
+		switch err.(type) {
+		case rel.NotFoundError:
+			return nil, &NotFoundError{Entity: "User", Identifier: email}
+		default:
+			return nil, err
+		}
+	}
+	return &userToReturn, nil
+}

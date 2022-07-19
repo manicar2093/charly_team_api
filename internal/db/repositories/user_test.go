@@ -15,7 +15,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = FDescribe("UserRepository", func() {
+var _ = Describe("UserRepository", func() {
 	var (
 		paginatorMock  *mocks.Paginable
 		repo           *reltest.Repository
@@ -150,5 +150,48 @@ var _ = FDescribe("UserRepository", func() {
 
 			Expect(err).ToNot(HaveOccurred())
 		})
+	})
+
+	Describe("FindUserByEmail", func() {
+		var (
+			expectedEmail string
+		)
+
+		BeforeEach(func() {
+			expectedEmail = fake.Internet().Email()
+		})
+
+		It("returns a user found by given email", func() {
+			var (
+				userToReturn = entities.User{
+					Email: expectedEmail,
+				}
+			)
+			repo.ExpectFind(where.Eq("email", expectedEmail)).Result(userToReturn)
+
+			got, err := userRepository.FindUserByEmail(ctx, expectedEmail)
+
+			Expect(err).ToNot(HaveOccurred())
+			Expect(got).To(Equal(&userToReturn))
+		})
+
+		When("user does not exists", func() {
+			It("returns a repositories.NotFound error", func() {
+				repo.ExpectFind(where.Eq("email", expectedEmail)).NotFound()
+
+				got, err := userRepository.FindUserByEmail(ctx, expectedEmail)
+
+				Expect(err).To(
+					Equal(
+						&repositories.NotFoundError{
+							Entity:     "User",
+							Identifier: expectedEmail,
+						},
+					),
+				)
+				Expect(got).To(BeNil())
+			})
+		})
+
 	})
 })

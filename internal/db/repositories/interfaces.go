@@ -57,4 +57,8 @@ type UserRepository interface {
 		ctx context.Context,
 		user *entities.User,
 	) error
+	FindUserByEmail(
+		ctx context.Context,
+		email string,
+	) (*entities.User, error)
 }

@@ -39,6 +39,29 @@ func (_m *UserRepository) FindAllUsers(ctx context.Context, pageSort *paginator.
 	return r0, r1
 }
 
+// FindUserByEmail provides a mock function with given fields: ctx, email
+func (_m *UserRepository) FindUserByEmail(ctx context.Context, email string) (*entities.User, error) {
+	ret := _m.Called(ctx, email)
+
+	var r0 *entities.User
+	if rf, ok := ret.Get(0).(func(context.Context, string) *entities.User); ok {
+		r0 = rf(ctx, email)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*entities.User)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, email)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // FindUserByUUID provides a mock function with given fields: ctx, userUUID
 func (_m *UserRepository) FindUserByUUID(ctx context.Context, userUUID string) (*entities.User, error) {
 	ret := _m.Called(ctx, userUUID)
