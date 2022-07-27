@@ -7,23 +7,30 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/manicar2093/charly_team_api/internal/db/entities"
 	"github.com/manicar2093/charly_team_api/internal/db/repositories"
 	"github.com/manicar2093/charly_team_api/pkg/logger"
 )
 
-type TokenClaimsGenerator interface {
-	Run(ctx context.Context, req *TokenClaimsGeneratorRequest) (*TokenClaimsGeneratorResponse, error)
+type (
+	TokenClaimsGenerator interface {
+		Run(ctx context.Context, req *TokenClaimsGeneratorRequest) (*TokenClaimsGeneratorResponse, error)
+	}
+	TokenClaimsGeneratorImpl struct {
+		userRepo repositories.UserRepository
+	}
+
+	TokenClaimsFromUserGenerable interface {
+		Generate(ctx context.Context, user *entities.User) map[string]interface{}
+	}
+	TokenClaimsFromUserImpl struct{}
+)
+
+func NewTokenClaimsGeneratorImpl(userRepo repositories.UserRepository) *TokenClaimsGeneratorImpl {
+	return &TokenClaimsGeneratorImpl{userRepo: userRepo}
 }
 
-type tokenClaimsGeneratorImpl struct {
-	userRepo repositories.UserRepository
-}
-
-func NewTokenClaimsGeneratorImpl(userRepo repositories.UserRepository) *tokenClaimsGeneratorImpl {
-	return &tokenClaimsGeneratorImpl{userRepo: userRepo}
-}
-
-func (c *tokenClaimsGeneratorImpl) Run(
+func (c *TokenClaimsGeneratorImpl) Run(
 	ctx context.Context,
 	req *TokenClaimsGeneratorRequest,
 ) (*TokenClaimsGeneratorResponse, error) {
@@ -44,6 +51,20 @@ func (c *tokenClaimsGeneratorImpl) Run(
 	}
 
 	return &TokenClaimsGeneratorResponse{Claims: myClaims}, nil
+}
+
+func NewTokenClaimsFromUserImpl() *TokenClaimsFromUserImpl {
+	return &TokenClaimsFromUserImpl{}
+}
+
+func (c *TokenClaimsFromUserImpl) Generate(ctx context.Context, user *entities.User) map[string]interface{} {
+	return map[string]interface{}{
+		"name_to_show": createNameToShow(user.Name, user.LastName),
+		"avatar_url":   user.AvatarUrl,
+		"uuid":         user.UserUUID,
+		"id":           user.ID,
+		"role":         user.Role.Description,
+	}
 }
 
 // CreateNameToShow will split names to create a full name compose by first name and paternal surename
