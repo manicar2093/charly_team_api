@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/manicar2093/charly_team_api/internal/db/connections"
+	"github.com/manicar2093/health_records/internal/db/connections"
 	"github.com/stretchr/testify/assert"
 )
 

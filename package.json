@@ -5,5 +5,5 @@
     "pg": "^8.6.0",
     "serverless-prune-plugin": "^1.6.1"
   },
-  "name": "charly-team-api"
+  "name": "health-records-api"
 }

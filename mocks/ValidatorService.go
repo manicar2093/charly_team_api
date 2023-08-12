@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	validators "github.com/manicar2093/charly_team_api/pkg/validators"
+	validators "github.com/manicar2093/health_records/pkg/validators"
 	mock "github.com/stretchr/testify/mock"
 )
 

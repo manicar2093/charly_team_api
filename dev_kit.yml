@@ -1,19 +1,19 @@
 services:
-    charly_team_db:
-        container_name: charly_team_db_dev
+    health_records_db:
+        container_name: health_records_db_dev
         image: postgres
         ports:
             - "3456:5432"
         environment:
             - "POSTGRES_USER=development"
             - "POSTGRES_PASSWORD=development"
-            - "POSTGRES_DB=charly_team_db_dev"
+            - "POSTGRES_DB=health_records_db_dev"
         volumes:
-            - "charly_team_db_dev_vol:/var/lib/postgresql/data"
+            - "health_records_db_dev_vol:/var/lib/postgresql/data"
         restart: always
         networks:
-            - charly_team_dev_net
+            - health_records_dev_net
 volumes:
-    charly_team_db_dev_vol: 
+    health_records_db_dev_vol:
 networks:
-    charly_team_dev_net:
+    health_records_dev_net:

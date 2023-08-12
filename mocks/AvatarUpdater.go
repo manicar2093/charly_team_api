@@ -5,7 +5,7 @@ package mocks
 import (
 	context "context"
 
-	user "github.com/manicar2093/charly_team_api/internal/user"
+	user "github.com/manicar2093/health_records/internal/user"
 	mock "github.com/stretchr/testify/mock"
 )
 

@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/joho/godotenv"
-	"github.com/manicar2093/charly_team_api/internal/config"
+	"github.com/manicar2093/health_records/internal/config"
 	"github.com/stretchr/testify/assert"
 )
 

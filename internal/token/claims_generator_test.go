@@ -5,9 +5,9 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/manicar2093/charly_team_api/internal/db/entities"
-	"github.com/manicar2093/charly_team_api/internal/token"
-	"github.com/manicar2093/charly_team_api/mocks"
+	"github.com/manicar2093/health_records/internal/db/entities"
+	"github.com/manicar2093/health_records/internal/token"
+	"github.com/manicar2093/health_records/mocks"
 	"github.com/stretchr/testify/assert"
 )
 

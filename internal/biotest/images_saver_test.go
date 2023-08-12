@@ -4,10 +4,10 @@ import (
 	"context"
 	"testing"
 
-	"github.com/manicar2093/charly_team_api/internal/biotest"
-	"github.com/manicar2093/charly_team_api/internal/db/entities"
-	"github.com/manicar2093/charly_team_api/mocks"
-	"github.com/manicar2093/charly_team_api/pkg/validators"
+	"github.com/manicar2093/health_records/internal/biotest"
+	"github.com/manicar2093/health_records/internal/db/entities"
+	"github.com/manicar2093/health_records/mocks"
+	"github.com/manicar2093/health_records/pkg/validators"
 	"github.com/stretchr/testify/suite"
 	"gopkg.in/guregu/null.v4"
 )

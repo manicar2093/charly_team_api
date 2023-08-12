@@ -5,7 +5,7 @@ package mocks
 import (
 	context "context"
 
-	userfilters "github.com/manicar2093/charly_team_api/internal/userfilters"
+	userfilters "github.com/manicar2093/health_records/internal/userfilters"
 	mock "github.com/stretchr/testify/mock"
 )
 

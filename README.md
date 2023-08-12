@@ -1,4 +1,4 @@
-# Charly Team API
+# Health Records API
 
 ## Conventions
 
@@ -8,7 +8,7 @@ This new handler must call `config.Start()` to avoid problems on DB connection
 
 ### Testing
 
-All test run using `.env` that you create from `.env.example`. It is need to create the database `charly_team_db_test` and after that just run the make command `make test` and all test should run without any problem.
+All test run using `.env` that you create from `.env.example`. It is need to create the database `health_records_db_test` and after that just run the make command `make test` and all test should run without any problem.
 
 Into the package ```testfunc``` there is a func to start environment for testing purposes.
 

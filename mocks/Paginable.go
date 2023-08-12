@@ -5,7 +5,7 @@ package mocks
 import (
 	context "context"
 
-	paginator "github.com/manicar2093/charly_team_api/internal/db/paginator"
+	paginator "github.com/manicar2093/health_records/internal/db/paginator"
 	mock "github.com/stretchr/testify/mock"
 
 	rel "github.com/go-rel/rel"

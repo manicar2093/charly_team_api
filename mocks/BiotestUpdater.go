@@ -5,9 +5,9 @@ package mocks
 import (
 	context "context"
 
-	biotest "github.com/manicar2093/charly_team_api/internal/biotest"
+	biotest "github.com/manicar2093/health_records/internal/biotest"
 
-	entities "github.com/manicar2093/charly_team_api/internal/db/entities"
+	entities "github.com/manicar2093/health_records/internal/db/entities"
 
 	mock "github.com/stretchr/testify/mock"
 )

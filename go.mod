@@ -1,4 +1,4 @@
-module github.com/manicar2093/charly_team_api
+module github.com/manicar2093/health_records
 
 go 1.16
 

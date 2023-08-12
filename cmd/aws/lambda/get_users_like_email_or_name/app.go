@@ -4,8 +4,8 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/manicar2093/charly_team_api/internal/userfilters"
-	"github.com/manicar2093/charly_team_api/pkg/models"
+	"github.com/manicar2093/health_records/internal/userfilters"
+	"github.com/manicar2093/health_records/pkg/models"
 )
 
 type GetUsersLikeEmailOrNameAWSLambda struct {

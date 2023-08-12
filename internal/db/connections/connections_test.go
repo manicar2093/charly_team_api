@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/manicar2093/charly_team_api/pkg/testfunc"
+	"github.com/manicar2093/health_records/pkg/testfunc"
 )
 
 func TestMain(m *testing.M) {

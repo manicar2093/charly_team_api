@@ -11,7 +11,7 @@
 #
 # Happy Coding!
 
-service: charly-team-api
+service: health-records-api
 # app and org for use with dashboard.serverless.com
 #app: your-app-name
 #org: your-org-name
@@ -52,8 +52,8 @@ provider:
 
 # you can define service wide environment variables here
   environment:
-    DB_URL: ${ssm:/charly_api_dev/db_settings/url}
-    COGNITO_POOL_ID: !Ref CharlyTeamAppUserPool
+    DB_URL: ${ssm:/health_records_api_dev/db_settings/url}
+    COGNITO_POOL_ID: !Ref HealthRecordsAppUserPool
 
 package:
   patterns:
@@ -91,7 +91,7 @@ functions:
     handler: bin/aws/lambda/generate_cognito_token_claims
     events:
       - cognitoUserPool:
-          pool: CharlyTeamAppUserPool
+          pool: HealthRecordsAppUserPool
           trigger: PreTokenGeneration
 
   get_all_biotests_by_user_uuid:
@@ -118,7 +118,7 @@ functions:
   update_biotest:
     handler: bin/aws/lambda/update_biotest
 
-  update_user: 
+  update_user:
     handler: bin/aws/lambda/update_user
 
   update_user_avatar:
@@ -128,20 +128,20 @@ functions:
 resources:
   Resources:
 
-    CharlyTeamAppUserPool:
+    HealthRecordsAppUserPool:
       Type: AWS::Cognito::UserPool
       Properties:
-        UserPoolName: charly-team-app-dev-user-pool
+        UserPoolName: health-records-app-dev-user-pool
         AdminCreateUserConfig:
           AllowAdminCreateUserOnly: true
           InviteMessageTemplate:
-            EmailMessage: ¡Ingresa a CharlyApp con tu usuario {username} y esta contraseña temporal {####} para continuar con tu plan! 
-            EmailSubject: "¡Bienvenido a #CharlyTeam!"
+            EmailMessage: ¡Ingresa a HealthRecords con tu usuario {username} y esta contraseña temporal {####} para continuar con tu plan!
+            EmailSubject: "¡Bienvenido a #HealthRecords!"
         AccountRecoverySetting:
           RecoveryMechanisms:
             - Name: verified_email
               Priority: 1
-        UsernameAttributes: 
+        UsernameAttributes:
           - email
         AutoVerifiedAttributes:
           - email
@@ -154,21 +154,21 @@ resources:
               RequireUppercase: true
               TemporaryPasswordValidityDays: 14
 
-    CharlyTeamAppUserPoolClient:
+    HealthRecordsAppUserPoolClient:
       Type: AWS::Cognito::UserPoolClient
       Properties:
-        ClientName: charly-team-app-dev-user-pool-client
-        ExplicitAuthFlows: 
+        ClientName: health-records-app-dev-user-pool-client
+        ExplicitAuthFlows:
           - ALLOW_ADMIN_USER_PASSWORD_AUTH
           - ALLOW_USER_PASSWORD_AUTH
           - ALLOW_REFRESH_TOKEN_AUTH
           - ALLOW_USER_SRP_AUTH
-        UserPoolId: !Ref CharlyTeamAppUserPool 
+        UserPoolId: !Ref HealthRecordsAppUserPool
 
-    CharlyTeamBiotestImagesBucket:
+    HealthRecordsBiotestImagesBucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: charly-team-api-dev-biotest-images-bucket
+        BucketName: health-records-api-dev-biotest-images-bucket
         CorsConfiguration:
           CorsRules:
             - AllowedHeaders:
@@ -184,6 +184,6 @@ resources:
                 - Date
               Id: BasicCORSRule
               MaxAge: 3600
-            
+
 
 
