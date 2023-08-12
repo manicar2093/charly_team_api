@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/manicar2093/charly_team_api/internal/db/entities"
+	"github.com/manicar2093/health_records/internal/db/entities"
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/guregu/null.v4"
 )

@@ -7,7 +7,7 @@ import (
 
 	"github.com/go-rel/rel"
 	"github.com/go-rel/rel/sort"
-	"github.com/manicar2093/charly_team_api/internal/config"
+	"github.com/manicar2093/health_records/internal/config"
 )
 
 // PageSort

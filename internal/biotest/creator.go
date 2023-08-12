@@ -3,11 +3,11 @@ package biotest
 import (
 	"context"
 
-	"github.com/manicar2093/charly_team_api/internal/db/entities"
-	"github.com/manicar2093/charly_team_api/internal/db/repositories"
-	"github.com/manicar2093/charly_team_api/internal/services"
-	"github.com/manicar2093/charly_team_api/pkg/logger"
-	"github.com/manicar2093/charly_team_api/pkg/validators"
+	"github.com/manicar2093/health_records/internal/db/entities"
+	"github.com/manicar2093/health_records/internal/db/repositories"
+	"github.com/manicar2093/health_records/internal/services"
+	"github.com/manicar2093/health_records/pkg/logger"
+	"github.com/manicar2093/health_records/pkg/validators"
 )
 
 type BiotestCreator interface {

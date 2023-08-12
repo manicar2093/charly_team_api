@@ -9,10 +9,10 @@ import (
 	"github.com/go-rel/rel/where"
 	"github.com/go-rel/reltest"
 	"github.com/jaswdr/faker"
-	"github.com/manicar2093/charly_team_api/internal/db/entities"
-	"github.com/manicar2093/charly_team_api/internal/db/paginator"
-	"github.com/manicar2093/charly_team_api/internal/db/repositories"
-	"github.com/manicar2093/charly_team_api/mocks"
+	"github.com/manicar2093/health_records/internal/db/entities"
+	"github.com/manicar2093/health_records/internal/db/paginator"
+	"github.com/manicar2093/health_records/internal/db/repositories"
+	"github.com/manicar2093/health_records/mocks"
 	"github.com/stretchr/testify/suite"
 )
 

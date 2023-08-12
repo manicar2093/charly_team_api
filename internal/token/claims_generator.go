@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/manicar2093/charly_team_api/internal/db/repositories"
-	"github.com/manicar2093/charly_team_api/pkg/logger"
+	"github.com/manicar2093/health_records/internal/db/repositories"
+	"github.com/manicar2093/health_records/pkg/logger"
 )
 
 type TokenClaimsGenerator interface {

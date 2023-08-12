@@ -5,7 +5,7 @@ package mocks
 import (
 	context "context"
 
-	catalog "github.com/manicar2093/charly_team_api/internal/catalog"
+	catalog "github.com/manicar2093/health_records/internal/catalog"
 
 	mock "github.com/stretchr/testify/mock"
 )

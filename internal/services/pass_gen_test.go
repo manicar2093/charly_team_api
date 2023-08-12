@@ -3,7 +3,7 @@ package services_test
 import (
 	"testing"
 
-	"github.com/manicar2093/charly_team_api/internal/services"
+	"github.com/manicar2093/health_records/internal/services"
 	"github.com/stretchr/testify/assert"
 )
 

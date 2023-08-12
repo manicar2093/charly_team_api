@@ -3,7 +3,7 @@ package aws
 import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/manicar2093/charly_team_api/internal/config"
+	"github.com/manicar2093/health_records/internal/config"
 )
 
 var awsSession *session.Session

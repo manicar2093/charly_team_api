@@ -6,9 +6,9 @@ import (
 	"github.com/go-rel/rel"
 	"github.com/go-rel/rel/sort"
 	"github.com/go-rel/rel/where"
-	"github.com/manicar2093/charly_team_api/internal/db/entities"
-	"github.com/manicar2093/charly_team_api/internal/db/paginator"
-	"github.com/manicar2093/charly_team_api/internal/services"
+	"github.com/manicar2093/health_records/internal/db/entities"
+	"github.com/manicar2093/health_records/internal/db/paginator"
+	"github.com/manicar2093/health_records/internal/services"
 )
 
 type BiotestRepositoryRel struct {

@@ -1,5 +1,5 @@
 build_deploy: compile_aws
-	serverless deploy --aws-profile charly_team_api_dev
+	serverless deploy --aws-profile health_records_dev
 
 compile_aws:
 	./compiler.sh cmd/aws/lambda bin/aws/lambda/

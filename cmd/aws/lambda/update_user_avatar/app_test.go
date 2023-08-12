@@ -4,11 +4,11 @@ import (
 	"context"
 	"testing"
 
-	"github.com/manicar2093/charly_team_api/internal/db/entities"
-	"github.com/manicar2093/charly_team_api/internal/user"
-	"github.com/manicar2093/charly_team_api/mocks"
-	"github.com/manicar2093/charly_team_api/pkg/apperrors"
-	"github.com/manicar2093/charly_team_api/pkg/models"
+	"github.com/manicar2093/health_records/internal/db/entities"
+	"github.com/manicar2093/health_records/internal/user"
+	"github.com/manicar2093/health_records/mocks"
+	"github.com/manicar2093/health_records/pkg/apperrors"
+	"github.com/manicar2093/health_records/pkg/models"
 	"github.com/stretchr/testify/suite"
 )
 

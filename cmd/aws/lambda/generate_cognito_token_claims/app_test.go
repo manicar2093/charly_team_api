@@ -5,8 +5,8 @@ import (
 	"testing"
 
 	"github.com/aws/aws-lambda-go/events"
-	"github.com/manicar2093/charly_team_api/internal/token"
-	"github.com/manicar2093/charly_team_api/mocks"
+	"github.com/manicar2093/health_records/internal/token"
+	"github.com/manicar2093/health_records/mocks"
 	"github.com/stretchr/testify/assert"
 )
 

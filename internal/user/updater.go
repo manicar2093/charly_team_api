@@ -4,10 +4,10 @@ import (
 	"context"
 
 	"github.com/go-rel/rel"
-	"github.com/manicar2093/charly_team_api/internal/db/entities"
-	"github.com/manicar2093/charly_team_api/pkg/apperrors"
-	"github.com/manicar2093/charly_team_api/pkg/logger"
-	"github.com/manicar2093/charly_team_api/pkg/validators"
+	"github.com/manicar2093/health_records/internal/db/entities"
+	"github.com/manicar2093/health_records/pkg/apperrors"
+	"github.com/manicar2093/health_records/pkg/logger"
+	"github.com/manicar2093/health_records/pkg/validators"
 )
 
 type UserUpdater interface {

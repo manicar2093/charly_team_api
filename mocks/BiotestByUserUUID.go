@@ -5,7 +5,7 @@ package mocks
 import (
 	context "context"
 
-	biotestfilters "github.com/manicar2093/charly_team_api/internal/biotestfilters"
+	biotestfilters "github.com/manicar2093/health_records/internal/biotestfilters"
 
 	mock "github.com/stretchr/testify/mock"
 )
