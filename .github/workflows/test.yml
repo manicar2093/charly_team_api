@@ -15,8 +15,6 @@ jobs:
         os: [ ubuntu-latest ]
         node-version: [ 16.14.x ]
     runs-on: ${{ matrix.os }}
-    env:
-        DB_URL: ${{ secrets.DB_URL_TEST }}
 
     services:
       postgres:
@@ -52,6 +50,8 @@ jobs:
       run: npm install
 
     - name: Migrate DB
+      env:
+        DB_URL: ${{ secrets.DB_URL_TEST }}
       run: make db_fill
       
     - name: Test
