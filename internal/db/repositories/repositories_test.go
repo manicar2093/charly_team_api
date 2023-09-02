@@ -7,7 +7,6 @@ import (
 
 	"github.com/go-rel/rel"
 	"github.com/manicar2093/health_records/internal/db/connections"
-	"github.com/manicar2093/health_records/pkg/testfunc"
 )
 
 var (
@@ -16,7 +15,7 @@ var (
 )
 
 func TestMain(m *testing.M) {
-	testfunc.LoadEnvFileOrPanic("../../../.env")
+	// testfunc.LoadEnvFileOrPanic("../../../.env")
 	DB = connections.PostgressConnection()
 	Ctx = context.Background()
 	os.Exit(m.Run())
