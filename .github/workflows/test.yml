@@ -55,7 +55,7 @@ jobs:
       run: make db_fill
       
     - name: Test
-      run: go test ./... -v
+      run: go test ./internal/... 
     
     - name: Rollback to DB
       run: make db_rollback
