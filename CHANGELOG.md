@@ -1,3 +1,9 @@
+## v0.75.1 (2023-09-02)
+
+### Refactor
+
+- change DB_URL in test action
+
 ## v0.75.0 (2022-05-29)
 
 ### Feat
