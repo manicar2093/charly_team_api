@@ -1,3 +1,5 @@
+console.log(process.env)
+
 module.exports = {
   client: 'postgresql',
   connection: process.env.DB_URL,
