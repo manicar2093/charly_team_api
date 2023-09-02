@@ -1,3 +1,9 @@
+## v0.75.2 (2023-09-02)
+
+### Refactor
+
+- remove dotenv call
+
 ## v0.75.1 (2023-09-02)
 
 ### Refactor
