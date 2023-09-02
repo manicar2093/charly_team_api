@@ -16,7 +16,7 @@ mocking:
 
 test:
 	@ - make db_fill
-	@ - go test ./... -v
+	@ - go test ./internal/... -v
 	@ - make db_rollback
 
 coverage:
